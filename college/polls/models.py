@@ -1,15 +1,50 @@
 from django.db import models
-
+from django.db.models.functions import Now
+from datetime import datetime, timedelta, date
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 class Student(models.Model):
+    def validate_date(date_of_birth):
+        today = date.today()
+        age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
+        if age < 14:
+            raise  ValidationError(
+                _("%(value)s is less than 14"),
+                params={"value": date_of_birth},
+            )
+
+
     student_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     second_name = models.CharField(max_length=128, blank=True)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(validators=[validate_date])
+
+    # def calculate_age(born):
+    #     today = date.today()
+    #     return today.year - born.year - \
+    #         ((today.month, today.day) < (born.month, born.day))
+    #
+    # @deconstructible
+    # class MinAgeValidator(BaseValidator):
+    #     message = _("Age must be at least %(limit_value)d.")
+    #     code = 'min_age'
+    #
+    #     def compare(self, a, b):
+    #         return calculate_age(a) < b
+
+
+
 
     class Meta:
         db_table = 'student'
+        # constraints = [
+        #     models.CheckConstraint(
+        #         check=models.Q(date_of_birth__gte=models.F(Now() - timedelta(years=18))),
+        #         name="start_date_gte_14"
+        #     )
+        # ]
 
 
 class Group(models.Model):
@@ -30,11 +65,20 @@ class Discipline(models.Model):
 
 
 class Tutor(models.Model):
+    def validate_date(date_of_birth):
+        today = date.today()
+        age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
+        if age < 18:
+            raise  ValidationError(
+                _("%(value)s is less than 18"),
+                params={"value": date_of_birth},
+            )
+
     tutor_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     second_name = models.CharField(max_length=128, blank=True)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(validators=[validate_date])
 
     class Meta:
         db_table = 'tutor'
@@ -47,6 +91,12 @@ class GroupSemester(models.Model):
 
     class Meta:
         db_table = 'group_semester'
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(semester_num__gte=0),
+                name='semester_num_gte_0'
+            )
+        ]
 
 
 class GroupMember(models.Model):
@@ -66,6 +116,12 @@ class Curriculum(models.Model):
 
     class Meta:
         db_table = 'curriculum'
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(duration__gte=0),
+                name='duration_gte_0'
+            )
+        ]
 
 
 class FinalGrade(models.Model):
@@ -115,6 +171,12 @@ class LessonTime(models.Model):
 
     class Meta:
         db_table = 'lessons_time'
+        constraints = [
+            models.CheckConstraint(
+                check = models.Q(end_time__gt=models.F('start_time')),
+                name = 'check_start_time',
+            ),
+        ]
 
 
 class Classroom(models.Model):
