@@ -1,3 +1,5 @@
-from django.test import TestCase
+"""
+Tests for timetable app.
+"""
 
-# Create your tests here.
+# from django.test import TestCase

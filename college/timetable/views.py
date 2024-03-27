@@ -1,3 +1,5 @@
-from django.shortcuts import render
+"""
+Views for timetable app.
+"""
 
-# Create your views here.
+# from django.shortcuts import render

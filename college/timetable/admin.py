@@ -1,13 +1,17 @@
+"""
+Configuration for timetable app models on admin panel.
+"""
+
 from django.contrib import admin
-
-# Register your models here.
-
 from .models import Student
 from .models import FinalGrade
 
 
 class MarksAdminSite(admin.ModelAdmin):
-    model=FinalGrade
+    """
+    Class for custom configuration for models.
+    """
+    model = FinalGrade
     fields = ['is_final', 'scale_100']
     list_display = ('is_final', 'scale_100', 'scale_5', 'scale_word', 'scale_letter')
 

@@ -161,3 +161,8 @@ cython_debug/
 
 # Migration files
 college/timetable/migrations/*
+
+# Pylint
+college/.pylintrc
+college/.pylintrc1
+
