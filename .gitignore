@@ -160,4 +160,4 @@ cython_debug/
 .idea/
 
 # Migration files
-college/polls/migrations/*
+college/timetable/migrations/*
