@@ -1,87 +1,69 @@
 from django.db import models
-from django.db.models.functions import Now
-from datetime import datetime, timedelta, date
+from datetime import date
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser
+from computed_property import ComputedTextField, ComputedIntegerField, ComputedCharField
+
+
+class CustomUser(AbstractUser):
+    first_name = models.CharField(_("first name"), max_length=128)
+    last_name = models.CharField(_("last name"), max_length=128)
+    second_name = models.CharField(_("second name"), max_length=128, null=True, blank=True)
+
 
 class Student(models.Model):
-    def validate_date(date_of_birth):
+    def validate_date(self: models.DateField()):
         today = date.today()
-        age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
+        age = today.year - self.year - ((today.month, today.day) < (self.month, self.day))
         if age < 14:
-            raise  ValidationError(
+            raise ValidationError(
                 _("%(value)s is less than 14"),
-                params={"value": date_of_birth},
+                params={"value": self},
             )
 
-
     student_id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
-    second_name = models.CharField(max_length=128, blank=True)
     date_of_birth = models.DateField(validators=[validate_date])
-
-    # def calculate_age(born):
-    #     today = date.today()
-    #     return today.year - born.year - \
-    #         ((today.month, today.day) < (born.month, born.day))
-    #
-    # @deconstructible
-    # class MinAgeValidator(BaseValidator):
-    #     message = _("Age must be at least %(limit_value)d.")
-    #     code = 'min_age'
-    #
-    #     def compare(self, a, b):
-    #         return calculate_age(a) < b
-
-
-
+    user_id = models.ForeignKey(CustomUser, on_delete=models.PROTECT, db_column='user_id')
 
     class Meta:
-        db_table = 'student'
-        # constraints = [
-        #     models.CheckConstraint(
-        #         check=models.Q(date_of_birth__gte=models.F(Now() - timedelta(years=18))),
-        #         name="start_date_gte_14"
-        #     )
-        # ]
+        db_table = 'students'
 
 
 class Group(models.Model):
     group_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=16)
+    name = models.CharField(max_length=16, unique=True)
 
     class Meta:
-        db_table = 'group'
+        db_table = 'groups'
 
 
 class Discipline(models.Model):
     discipline_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=128)
-    description = models.CharField(max_length=1000, blank=True)
+    name = models.CharField(max_length=128, unique=True)
+    description = models.CharField(max_length=1000, null=True, blank=True)
 
     class Meta:
-        db_table = 'discipline'
+        db_table = 'disciplines'
 
 
 class Tutor(models.Model):
-    def validate_date(date_of_birth):
+    def validate_date(self: models.DateField()):
         today = date.today()
-        age = today.year - date_of_birth.year - ((today.month, today.day) < (date_of_birth.month, date_of_birth.day))
+        age = today.year - self.year - ((today.month, today.day) < (self.month, self.day))
         if age < 18:
-            raise  ValidationError(
+            raise ValidationError(
                 _("%(value)s is less than 18"),
-                params={"value": date_of_birth},
+                params={"value": self},
             )
 
     tutor_id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
-    second_name = models.CharField(max_length=128, blank=True)
     date_of_birth = models.DateField(validators=[validate_date])
 
+    user_id = models.ForeignKey(CustomUser, on_delete=models.PROTECT, db_column='user_id')
+
     class Meta:
-        db_table = 'tutor'
+        db_table = 'tutors'
 
 
 class GroupSemester(models.Model):
@@ -90,11 +72,11 @@ class GroupSemester(models.Model):
     group_id = models.ForeignKey(Group, on_delete=models.PROTECT, db_column='group_id')
 
     class Meta:
-        db_table = 'group_semester'
+        db_table = 'group_semesters'
         constraints = [
             models.CheckConstraint(
-                check=models.Q(semester_num__gte=0),
-                name='semester_num_gte_0'
+                check=models.Q(semester_num__lte=10),
+                name="%(app_label)s_%(class)s_semester_num_lte_10"
             )
         ]
 
@@ -105,63 +87,129 @@ class GroupMember(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
     class Meta:
-        db_table = 'group_member'
+        db_table = 'group_members'
 
 
 class Curriculum(models.Model):
     curriculum_id = models.AutoField(primary_key=True)
-    duration = models.PositiveSmallIntegerField()
     discipline_id = models.ForeignKey(Discipline, on_delete=models.PROTECT, db_column='discipline_id')
     group_semester_id = models.ForeignKey(GroupSemester, on_delete=models.PROTECT, db_column='group_semester_id')
 
     class Meta:
-        db_table = 'curriculum'
+        db_table = 'curriculums'
+
+
+class GradesScaleWord:
+    EXCELLENT = "отлично"
+    GOOD = "хорошо"
+    SATISFYING = "удовлетворительно"
+    UNSATISFYING = "неудовлетворительно"
+
+
+class FinalGrade(models.Model):
+    final_grade_id = models.AutoField(primary_key=True)
+    is_final = models.BooleanField()
+    scale_100 = models.PositiveSmallIntegerField()
+    scale_5 = ComputedIntegerField(compute_from='calc_scale_5')
+    scale_word = ComputedTextField(max_length=128, compute_from='calc_scale_word')
+    scale_letter = ComputedCharField(max_length=1, compute_from='calc_scale_letter')
+    student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
+    curriculum_id = models.ForeignKey(Curriculum, on_delete=models.PROTECT, db_column='curriculum_id')
+
+    @property
+    def calc_scale_5(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return 5
+            case grade if 89 >= grade >= 70:
+                return 4
+            case grade if 69 >= grade >= 60:
+                return 3
+            case _:
+                return 2
+
+    @property
+    def calc_scale_word(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return GradesScaleWord.EXCELLENT
+            case grade if 89 >= grade >= 70:
+                return GradesScaleWord.GOOD
+            case grade if 69 >= grade >= 60:
+                return GradesScaleWord.SATISFYING
+            case _:
+                return GradesScaleWord.UNSATISFYING
+
+    @property
+    def calc_scale_letter(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return "A"
+            case grade if 89 >= grade >= 85:
+                return "B"
+            case grade if 84 >= grade >= 75:
+                return "C"
+            case grade if 74 >= grade >= 65:
+                return "D"
+            case grade if 64 >= grade >= 60:
+                return "E"
+            case _:
+                return "F"
+
+    class Meta:
+        db_table = 'final_grades'
         constraints = [
             models.CheckConstraint(
-                check=models.Q(duration__gte=0),
-                name='duration_gte_0'
+                check=models.Q(scale_5__lte=5),
+                name='%(app_label)s_%(class)s_mark_scale_5_lte_5'
+            ),
+            models.CheckConstraint(
+                check=models.Q(scale_100__lte=100),
+                name='%(app_label)s_%(class)s_mark_scale_100_lte_100'
+            ),
+            models.CheckConstraint(
+                check=models.Q(
+                    scale_word__in=[GradesScaleWord.EXCELLENT, GradesScaleWord.GOOD, GradesScaleWord.SATISFYING,
+                                    GradesScaleWord.UNSATISFYING]),
+                name='%(app_label)s_%(class)s_mark_scale_word_correct'
+            ),
+            models.CheckConstraint(
+                check=models.Q(
+                    scale_letter__in=["A", "B", "C", "D", "E", "F"]),
+                name='%(app_label)s_%(class)s_mark_scale_letter_correct'
             )
         ]
 
 
-class FinalGrade(models.Model):
-    # semester_num = models.PositiveSmallIntegerField(blank=True)
-    final_grade_id = models.AutoField(primary_key=True)
-    is_final = models.BooleanField()
-    scale_5 = models.PositiveSmallIntegerField()
-    scale_100 = models.PositiveSmallIntegerField()
-    scale_letter = models.CharField(max_length=1)
-    scale_word = models.CharField(max_length=128)
-    student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
-    curriculum_id = models.ForeignKey(Curriculum, on_delete=models.PROTECT, db_column='curriculum_id')
-
-    class Meta:
-        db_table = 'finalGrade'
+class TypesOfLesson(models.TextChoices):
+    PRACTICE = "PRA", _("Практика")
+    LECTURE = "LEC", _("Лекция")
+    LABORATORY = "LAB", _("Лабораторная работа")
+    CREDIT = "CRD", _("Зачет")
+    EXAM = "EXM", _("Экзамен")
 
 
 class CurriculumLesson(models.Model):
-    PRACTICE = "PRA"
-    LECTURE = "LEC"
-    LABORATORY = "LAB"
-    CREDIT = "CRD"
-    EXAM = "EXM"
-    TYPE_OF_LESSON_CHOICES = [
-        (PRACTICE, "Практика"),
-        (LECTURE, "Лекция"),
-        (LABORATORY, "Лабораторная работа"),
-        (CREDIT, "Зачет"),
-        (EXAM, "Экзамен")
-    ]
-
     curriculum_lesson_id = models.AutoField(primary_key=True)
     lesson_type = models.CharField(max_length=3,
-                                   choices=TYPE_OF_LESSON_CHOICES
+                                   choices=TypesOfLesson.choices
                                    )
+    duration = models.PositiveSmallIntegerField()
     curriculum_id = models.ForeignKey(Curriculum, on_delete=models.PROTECT, db_column='curriculum_id')
     tutor_id = models.ForeignKey(Tutor, on_delete=models.PROTECT, db_column='tutor_id')
 
     class Meta:
-        db_table = 'curriculum_lesson'
+        db_table = 'curriculum_lessons'
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(lesson_type__in=TypesOfLesson.values),
+                name="%(app_label)s_%(class)s_correct_lesson_type",
+            ),
+            models.CheckConstraint(
+                check=models.Q(duration__gte=0),
+                name='%(app_label)s_%(class)s_duration_gte_0'
+            )
+        ]
 
 
 class LessonTime(models.Model):
@@ -173,8 +221,8 @@ class LessonTime(models.Model):
         db_table = 'lessons_time'
         constraints = [
             models.CheckConstraint(
-                check = models.Q(end_time__gt=models.F('start_time')),
-                name = 'check_start_time',
+                check=models.Q(end_time__gt=models.F('start_time')),
+                name='check_start_time',
             ),
         ]
 
