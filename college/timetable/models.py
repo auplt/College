@@ -286,11 +286,17 @@ class TTLesson(models.Model):
 
 
 class Homework(models.Model):
+    INDIVIDUAL = "IND"
+    GROUP = "GRP"
+    TYPE_OF_TYPE_CHOICES = [
+        (INDIVIDUAL, "индивидуальное"),
+        (GROUP, "групповое")
+    ]
     hw_id = models.AutoField(primary_key=True)
     description = models.CharField(max_length=2048)
     day_given = models.ForeignKey(TTLesson, on_delete=models.PROTECT, related_name='day_given', db_column='day_given')
     day_due = models.ForeignKey(TTLesson, on_delete=models.PROTECT, related_name='day_due', db_column='day_due')
-    hw_type = models.PositiveSmallIntegerField()
+    hw_type = models.CharField(max_length=2, choices=TYPE_OF_TYPE_CHOICES)
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
     class Meta:
@@ -305,7 +311,7 @@ class File(models.Model):
     hw_id = models.ForeignKey(Homework, on_delete=models.PROTECT, db_column='hw_id')
 
     class Meta:
-        db_table = 'file'
+        db_table = 'files'
 
 
 class StudentAttendance(models.Model):
@@ -333,19 +339,80 @@ class Coefficient(models.Model):
     description = models.CharField(max_length=64)
 
     class Meta:
-        db_table = 'coefficient'
+        db_table = 'coefficients'
 
 
 class Grade(models.Model):
     grade_id = models.AutoField(primary_key=True)
-    scale_5 = models.PositiveSmallIntegerField()
-    scale_word = models.CharField(max_length=32)
     scale_100 = models.PositiveSmallIntegerField()
-    scale_letter = models.CharField(max_length=1)
+    scale_5 = ComputedIntegerField(compute_from='calc_scale_5')
+    scale_word = ComputedTextField(max_length=128, compute_from='calc_scale_word')
+    scale_letter = ComputedCharField(max_length=1, compute_from='calc_scale_letter')
     coef_num = models.PositiveSmallIntegerField()
     coef_description = models.CharField(max_length=64)
     coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id')
     progress_id = models.ForeignKey(StudentProgress, on_delete=models.PROTECT, db_column='progress_id')
 
+    @property
+    def calc_scale_5(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return 5
+            case grade if 89 >= grade >= 70:
+                return 4
+            case grade if 69 >= grade >= 60:
+                return 3
+            case _:
+                return 2
+
+    @property
+    def calc_scale_word(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return GradesScaleWord.EXCELLENT
+            case grade if 89 >= grade >= 70:
+                return GradesScaleWord.GOOD
+            case grade if 69 >= grade >= 60:
+                return GradesScaleWord.SATISFYING
+            case _:
+                return GradesScaleWord.UNSATISFYING
+
+    @property
+    def calc_scale_letter(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return "A"
+            case grade if 89 >= grade >= 85:
+                return "B"
+            case grade if 84 >= grade >= 75:
+                return "C"
+            case grade if 74 >= grade >= 65:
+                return "D"
+            case grade if 64 >= grade >= 60:
+                return "E"
+            case _:
+                return "F"
+
     class Meta:
-        db_table = 'grade'
+        db_table = 'grades'
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(scale_5__lte=5),
+                name='%(app_label)s_%(class)s_mark_scale_5_lte_5'
+            ),
+            models.CheckConstraint(
+                check=models.Q(scale_100__lte=100),
+                name='%(app_label)s_%(class)s_mark_scale_100_lte_100'
+            ),
+            models.CheckConstraint(
+                check=models.Q(
+                    scale_word__in=[GradesScaleWord.EXCELLENT, GradesScaleWord.GOOD, GradesScaleWord.SATISFYING,
+                                    GradesScaleWord.UNSATISFYING]),
+                name='%(app_label)s_%(class)s_mark_scale_word_correct'
+            ),
+            models.CheckConstraint(
+                check=models.Q(
+                    scale_letter__in=["A", "B", "C", "D", "E", "F"]),
+                name='%(app_label)s_%(class)s_mark_scale_letter_correct'
+            )
+        ]
