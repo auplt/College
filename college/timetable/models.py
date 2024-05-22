@@ -334,8 +334,9 @@ class StudentProgress(models.Model):
 
 
 class Coefficient(models.Model):
+    TYPE_OF_COEFFICIENT_CHOICES = [ 1, 2, 3, 4, 5 ]
     coefficient_id = models.AutoField(primary_key=True)
-    coef_num = models.PositiveSmallIntegerField()
+    coef_num = models.PositiveSmallIntegerField(сhoices=TYPE_OF_COEFFICIENT_CHOICES)
     description = models.CharField(max_length=64)
 
     class Meta:
