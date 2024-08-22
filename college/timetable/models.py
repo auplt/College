@@ -15,6 +15,10 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(_("last name"), max_length=128)
     second_name = models.CharField(_("second name"), max_length=128, null=True, blank=True)
 
+    # def __str__(self):
+    #     return super().__str__
+    # #     return f'{self.last_name} {self.first_name} {self.second_name}'
+
 
 class Student(models.Model):
     def validate_date(self: models.DateField()):
@@ -26,9 +30,15 @@ class Student(models.Model):
                 params={"value": self},
             )
 
+    def set_user_id(self, user_id):
+        self.user_id = user_id
+
     student_id = models.AutoField(primary_key=True)
     date_of_birth = models.DateField(validators=[validate_date])
     user_id = models.ForeignKey(CustomUser, on_delete=models.PROTECT, db_column='user_id')
+
+    def __str__(self):
+        return f'{self.user_id.last_name} {self.user_id.first_name} {self.user_id.second_name}'
 
     class Meta:
         db_table = 'students'
@@ -38,6 +48,9 @@ class Group(models.Model):
     group_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=16, unique=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'groups'
 
@@ -46,6 +59,9 @@ class Discipline(models.Model):
     discipline_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128, unique=True)
     description = models.CharField(max_length=1000, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'disciplines'
@@ -61,10 +77,16 @@ class Tutor(models.Model):
                 params={"value": self},
             )
 
+    def set_user_id(self, user_id):
+        self.user_id = user_id
+
     tutor_id = models.AutoField(primary_key=True)
     date_of_birth = models.DateField(validators=[validate_date])
 
     user_id = models.ForeignKey(CustomUser, on_delete=models.PROTECT, db_column='user_id')
+
+    def __str__(self):
+        return f'{self.user_id.last_name} {self.user_id.first_name} {self.user_id.second_name}'
 
     class Meta:
         db_table = 'tutors'
@@ -75,13 +97,23 @@ class GroupSemester(models.Model):
     semester_num = models.PositiveSmallIntegerField()
     group_id = models.ForeignKey(Group, on_delete=models.PROTECT, db_column='group_id')
 
+    def set_semester_num(self, semester_num):
+        self.semester_num = semester_num
+
+    def set_group_id(self, group_id):
+        self.group_id = group_id
+
+    def __str__(self):
+        return f'{self.group_id} {self.semester_num}'
+
     class Meta:
         db_table = 'group_semesters'
         constraints = [
             models.CheckConstraint(
                 check=models.Q(semester_num__lte=10),
                 name="%(app_label)s_%(class)s_semester_num_lte_10"
-            )
+            ),
+            models.UniqueConstraint(fields=['group_id', 'semester_num'], name='group_semester_num_unique')
         ]
 
 
@@ -99,8 +131,41 @@ class Curriculum(models.Model):
     discipline_id = models.ForeignKey(Discipline, on_delete=models.PROTECT, db_column='discipline_id')
     group_semester_id = models.ForeignKey(GroupSemester, on_delete=models.PROTECT, db_column='group_semester_id')
 
+    def set_discipline(self, discipline_id):
+        self.discipline_id = discipline_id
+
+    def set_group_semester(self, group_semester_id):
+        self.group_semester_id = group_semester_id
+
+    def __str__(self):
+        return f'{self.discipline_id.name} {self.group_semester_id.group_id.name}'
+
+
+    # def clean_discipline_id(self):
+    #     cd = self.cleaned_data.get('discipline_id')
+    #     print(cd)
+    #     return cd
+    #
+    # def clean(self):
+    #     self.clean_discipline_id()
+
+
+    # def validate_unique_curriculum(self):
+    #     print(Curriculum.objects.filter(discipline_id_id=self.discipline_id, group_semester_id_id=self.group_semester_id))
+    #     if Curriculum.objects.filter(
+    #             discipline_id_id=self.discipline_id,
+    #             group_semester_id_id=self.group_semester_id).exists():
+    #         raise ValidationError({'discipline_id': ['Name must be unique per site.', ]})
+
+    # def save(self, *args, **kwargs):
+    #     self.validate_unique_curriculum()
+    #     super().save(*args, **kwargs)
+
     class Meta:
         db_table = 'curriculums'
+        constraints = [
+            models.UniqueConstraint(fields=['discipline_id', 'group_semester_id'], name='discipline_group_sem_unique')
+        ]
 
 
 class GradesScaleWord:
@@ -202,6 +267,9 @@ class CurriculumLesson(models.Model):
     curriculum_id = models.ForeignKey(Curriculum, on_delete=models.PROTECT, db_column='curriculum_id')
     tutor_id = models.ForeignKey(Tutor, on_delete=models.PROTECT, db_column='tutor_id')
 
+    def __str__(self):
+        return f'{self.curriculum_id} {self.get_lesson_type_display()}'
+
     class Meta:
         db_table = 'curriculum_lessons'
         constraints = [
@@ -218,8 +286,13 @@ class CurriculumLesson(models.Model):
 
 class LessonTime(models.Model):
     lesson_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=64, unique=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+    def __str__(self):
+        return f'{self.name} {self.start_time} {self.end_time}'
+
 
     class Meta:
         db_table = 'lessons_time'
@@ -233,7 +306,12 @@ class LessonTime(models.Model):
 
 class Classroom(models.Model):
     classroom_id = models.AutoField(primary_key=True)
-    number = models.CharField(max_length=8)
+    number = models.CharField(max_length=8, unique=True)
+    description = models.CharField(max_length=256, blank=True)
+
+    def __str__(self):
+        return f'{self.number}'
+
 
     class Meta:
         db_table = 'classroom'

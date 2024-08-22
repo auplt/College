@@ -40,6 +40,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'timetable.apps.TimeTableConfig',
+    'formset',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

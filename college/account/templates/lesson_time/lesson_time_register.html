@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block page_scripts %}
+ {% load static %}
+  <script src="{% static 'js/time_form.js' %}"></script>
+{% endblock %}
+
+{% block title %}Create lesson time{% endblock %}
+
+{% block content %}
+  <h1>Создание нового времени занятия</h1>
+  <p>Создайте время занятия, используя форму ниже:</p>
+  <form class="register_group" method="post">
+    {{ lesson_time_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Создать время занятия"></p>
+  </form>
+{% endblock %}

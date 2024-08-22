@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block page_scripts %}
+ {% load static %}
+  <script src="{% static 'js/tt_lesson_form.js' %}"></script>
+{% endblock %}
+
+{% block title %}Create a lesson{% endblock %}
+
+{% block content %}
+  <h1>Создание нового занятия</h1>
+  <p>Создайте занятие, используя форму ниже:</p>
+  <form class="register_lesson" method="post">
+    {{ tt_lesson_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Добавить"></p>
+  </form>
+{% endblock %}

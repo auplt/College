@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Create a discipline{% endblock %}
+
+{% block content %}
+  <h1>Создание новой дисциплины</h1>
+  <p>Создайте дисциплину, используя форму ниже:</p>
+  <form class="register_discipline" method="post">
+    {{ discipline_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Создать дисциплину"></p>
+  </form>
+{% endblock %}

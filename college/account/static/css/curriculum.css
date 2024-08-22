@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+}
+
+.curriculum_group_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.curriculum_group_input__wrapper {
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  gap: 100px;
+}
+
+.group_list__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+  width: 250px;
+}
+
+.discipline_list__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top;
+}
+
+.group_list {
+  display: flex;
+  flex-direction: column;
+  /* gap: 32px; */
+  /*justify-content: top;*/
+  width: 250px;
+  /* justify-content: center; */
+}
+
+.discipline_list {
+  display: flex;
+  flex-direction: column;
+  /* gap: 32px; */
+  /*justify-content: top;*/
+  width: 250px;
+  /* justify-content: center; */
+}
+
+.list_item {
+  display: flex;
+  gap: 30px;
+}
+
+/* .group_list_add_button {
+  margin: 15px;
+} */
+
+.del_icon {
+  height: 15px;
+  width: 15px;
+}
+
+.add_icon {
+  height: 15px;
+  width: 15px;
+}
+
+.curriculum_group_form_submit {
+  margin: 0;
+  cursor: pointer;
+}
+
+.curriculum_group_form_submit:hover {
+  background-color: #109950;
+}
+
+.highlight {
+  background-color: #12c064;
+}
+
+/* option:checked option:hover {
+  background-color: #12c064;
+  /* color: #fff; 
+} */
+/* .group_list__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+} */
+
+#id_group_semester_id {
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+#id_discipline_id {
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+#group_list_del_button {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  align-self: top;
+}
+
+#group_list_add_button {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  align-self: center;
+}
+
+#discipline_list_del_button {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  align-self: top;
+}
+
+#discipline_list_add_button {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  border-radius: 3px;
+  align-self: center;
+}

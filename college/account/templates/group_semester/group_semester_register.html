@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block page_scripts %}
+ {% load static %}
+  <script src="{% static 'js/group_semester_form.js' %}"></script>
+{% endblock %}
+
+{% block title %}Add new semester{% endblock %}
+
+{% block content %}
+  <h1>Добавить новый семестр</h1>
+  <p>Добавьте семестр, используя форму ниже:</p>
+  <form class="register_group_semester" method="post" data-max-semester="{% url 'ajax_load_max_semester' %}">
+    {{ group_semester_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Создать семестр"></p>
+  </form>
+{% endblock %}

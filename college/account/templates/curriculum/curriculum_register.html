@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block page_scripts %}
+{% load static %}
+<script src="{% static 'js/curriculum_form.js' %}"></script>
+<link href="{% static 'css/curriculum.css' %}" rel="stylesheet">
+<script src="https://malsup.github.io/jquery.form.js"></script>
+{% endblock %}
+
+{% block title %}Create curriculum{% endblock %}
+
+{% block content %}
+<h1>Добавление дисциплины группе</h1>
+<p>Добавьте дисциплины, используя форму ниже:</p>
+<form class="curriculum_group_form" method="post" data-url-img="{% static 'images' %}" novalidate>
+    <div class="curriculum_group_input__wrapper">
+        <div class="group_list__wrapper">
+            <div class="group_list">
+                {{ curriculum_form.group_semester_id.label_tag }}
+                {% if curriculum_form.errors %}
+                {% for field, errors in curriculum_form.errors.items %}
+                {% if field == "group_semester_id" %}
+                <ul class="errorlist">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {{ curriculum_form.group_semester_id }}
+            </div>
+            <button id="group_list_add_button">
+                <img class="add_icon" src="{% static 'images/plus.png' %}" alt="Добавление группы">
+            </button>
+        </div>
+        <div class="discipline_list__wrapper">
+            <div class="discipline_list">
+                {{ curriculum_form.discipline_id.label_tag }}
+                {% if curriculum_form.errors %}
+                {% for field, errors in curriculum_form.errors.items %}
+                {% if field == "discipline_id" %}
+                <ul class="errorlist">
+                    {% for error in errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {{ curriculum_form.discipline_id }}
+            </div>
+            <button id="discipline_list_add_button">
+                <img class="add_icon" src="{% static 'images/plus.png' %}" alt="Добавление дисциплины">
+            </button>
+        </div>
+        {% csrf_token %}
+    </div>
+    {% if curriculum_form.errors %}
+    {{ curriculum_form.non_field_errors }}
+    {% endif %}
+    <input class="curriculum_group_form_submit" type="submit" value="Добавить">
+</form>
+{% endblock %}

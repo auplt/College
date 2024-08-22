@@ -1,12 +1,25 @@
 {% extends "base.html" %}
 
+{% block page_scripts %}
+ {% load static %}
+  <script src="{% static 'js/user_form.js' %}"></script>
+{% endblock %}
+
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
   <h1>Создание аккаунта</h1>
   <p>Создайте аккаунт, используя форму ниже:</p>
-  <form method="post">
+  <form class="register_user" method="post">
     {{ user_form.as_p }}
+      <div class="register_user__student">
+          <h2>Дополнительная информация о студенте</h2>
+      {{ student_form.as_p }}
+      </div>
+      <div class="register_user__tutor">
+          <h2>Дополнительная информация о преподавателе</h2>
+      {{ tutor_form.as_p }}
+      </div>
     {% csrf_token %}
     <p><input type="submit" value="Создать аккаунт"></p>
   </form>

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Create group member{% endblock %}
+
+{% block content %}
+  <h1>Добавление в группу</h1>
+  <p>Добавьте в группу, используя форму ниже:</p>
+  <form class="register_group" method="post">
+    {{ group_member_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Добавить"></p>
+  </form>
+{% endblock %}
