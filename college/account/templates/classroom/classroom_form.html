@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Classroom form{% endblock %}
+
+{% block content %}
+  <a href="{% url 'account:classroom_list' %}">Вернуться к списку</a>
+  <h1>{% if action == 'C' %}Добавление
+    {% elif action == 'E' %}Изменение
+    {% else %}Форма
+    {% endif %} аудитории
+  </h1>
+  <p>{% if action == 'C' %}Добавьте аудиторию, используя форму ниже:
+    {% elif action == 'E' %}Измените аудиторию, используя форму ниже:
+    {% else %}Используйте форму ниже:
+    {% endif %}
+  </p>
+  <form class="register_classroom" method="post">
+    {{ classroom_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+  </form>
+{% endblock %}

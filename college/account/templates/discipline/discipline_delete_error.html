@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Discipline delete error{% endblock %}
+
+{% block content %}
+    <h1>Ошибка удаления</h1>
+    <h2>Невозможно удалить {{ discipline.name }}</h2>
+    <p>Описание: {{discipline.description}}</p>
+    <p class="error_msg">Имеются объекты, ссылающиеся на этот</p>
+    <a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
+{% endblock %}

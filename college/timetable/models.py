@@ -67,6 +67,14 @@ class Discipline(models.Model):
     class Meta:
         db_table = 'disciplines'
 
+    def get_absolute_url(self):
+        return reverse('account:discipline_edit',
+                       args=[self.discipline_id])
+
+    def get_delete_url(self):
+        return reverse('account:discipline_delete',
+                       args=[self.discipline_id])
+
 
 class Tutor(models.Model):
     def validate_date(self: models.DateField()):
@@ -294,7 +302,6 @@ class LessonTime(models.Model):
     def __str__(self):
         return f'{self.name} {self.start_time} {self.end_time}'
 
-
     class Meta:
         db_table = 'lessons_time'
         constraints = [
@@ -313,7 +320,6 @@ class LessonTime(models.Model):
                        args=[self.lesson_id])
 
 
-
 class Classroom(models.Model):
     classroom_id = models.AutoField(primary_key=True)
     number = models.CharField(max_length=8, unique=True)
@@ -322,9 +328,16 @@ class Classroom(models.Model):
     def __str__(self):
         return f'{self.number}'
 
-
     class Meta:
         db_table = 'classroom'
+
+    def get_absolute_url(self):
+        return reverse('account:classroom_edit',
+                       args=[self.classroom_id])
+
+    def get_delete_url(self):
+        return reverse('account:classroom_delete',
+                       args=[self.classroom_id])
 
 
 class TTLesson(models.Model):

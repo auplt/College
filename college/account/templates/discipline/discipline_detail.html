@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Discipline detail{% endblock %}
+
+{% block content %}
+  <h1>{% if action == 'C' %}Добавлена дисциплина
+    {% elif action == 'E' %}Изменена дисциплина
+    {% elif action == 'D' %}Удалена дисциплина
+    {% else %}Дисциплина
+    {% endif %}
+  </h1>
+  <h2>
+      {{ discipline.name }}
+  </h2>
+  <p>Описание: {{ discipline.description }}</p>
+  <a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
+{% endblock %}

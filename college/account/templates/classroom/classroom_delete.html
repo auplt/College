@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Classroom delete{% endblock %}
+
+{% block content %}
+    <h1>Удаление аудитории</h1>
+    <h2>
+        {{ classroom.number }}
+    </h2>
+    <p>Описание: {{ classroom.description }}</p>
+    <form method="POST">
+        <p>Вы точно хотите удалить эту аудиторию?</p>
+        <input type="submit" value="Да">
+        <a href="{% url 'account:classroom_list' %}">Отмена</a>
+        {% csrf_token %}
+    </form>
+    <a href="{% url 'account:classroom_list' %}">Вернуться к списку</a>
+{% endblock %}

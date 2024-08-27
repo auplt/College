@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Lesson time registered{% endblock %}
+{% block title %}Lesson time detail{% endblock %}
 
 {% block content %}
-  <h1>{% if action == 'C' %}Создано время
+  <h1>{% if action == 'C' %}Добавлено время
     {% elif action == 'E' %}Изменено время
     {% elif action == 'D' %}Удалено время
     {% else %}Время

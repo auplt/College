@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Classroom delete error{% endblock %}
+
+{% block content %}
+    <h1>Ошибка удаления</h1>
+    <h2>Невозможно удалить {{ classroom.number }}</h2>
+    <p>Описание: {{classroom.description}}</p>
+    <p class="error_msg">Имеются объекты, ссылающиеся на этот</p>
+    <a href="{% url 'account:classroom_list' %}">Вернуться к списку</a>
+{% endblock %}

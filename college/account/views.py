@@ -6,7 +6,7 @@ import django.db.transaction
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Max, ProtectedError
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import UpdateView
@@ -14,7 +14,7 @@ from django.views.generic import UpdateView
 from .forms import LoginForm, UserRegistrationForm, StudentAdditionalForm, TutorAdditionalForm, GroupRegisterForm, \
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
-from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime
+from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom
 
 
 def user_login(request):
@@ -107,33 +107,125 @@ def register_group(request):
         group_form = GroupRegisterForm()
     return render(request, 'group/group_register.html', {'group_form': group_form})
 
+# DISCIPLINE BLOCK
 
-def register_discipline(request):
+
+def discipline_list(request):
+    disciplines = Discipline.objects.all()
+    return render(request, 'discipline/discipline_list.html', {'disciplines': disciplines})
+
+
+def discipline_details(request, discipline_id):
+    context = {'discipline': Discipline.objects.get(discipline_id=discipline_id)}
+    print(context)
+    return render(request, 'discipline/discipline_detail.html', context)
+
+
+def discipline_register(request):
     if request.method == 'POST':
         discipline_form = DisciplineRegisterForm(request.POST)
         if discipline_form.is_valid():
             new_discipline = discipline_form.save(commit=False)
             new_discipline.save()
             print(new_discipline)
-            return render(request, 'discipline/discipline_register_done.html', {'discipline_form': discipline_form})
-
+            return render(request, 'discipline/discipline_detail.html',
+                          {'discipline': new_discipline, 'action': 'C'})
     else:
         discipline_form = DisciplineRegisterForm()
-    return render(request, 'discipline/discipline_register.html', {'discipline_form': discipline_form})
+    return render(request, 'discipline/discipline_form.html',
+                  {'discipline_form': discipline_form, 'action': 'C'})
 
 
-def register_classroom(request):
+def discipline_edit(request, discipline_id):
+    obj = get_object_or_404(Discipline, discipline_id=discipline_id)
+    print(obj)
+    discipline_form = DisciplineRegisterForm(request.POST or None, instance=obj)
+    if discipline_form.is_valid():
+        discipline_form.save()
+        print({'discipline': discipline_form,
+               'action': 'E'})
+        return render(request, 'discipline/discipline_detail.html',
+                      {'discipline': obj,
+                       'action': 'E'})
+    return render(request, 'discipline/discipline_form.html',
+                  {'discipline_form': discipline_form,
+                   'action': 'E'})
+
+
+def discipline_delete(request, discipline_id):
+    obj = get_object_or_404(Discipline, discipline_id=discipline_id)
+    discipline = Discipline.objects.get(discipline_id=discipline_id)
+    if request.method == 'POST':
+        try:
+            obj.delete()
+            return render(request, 'discipline/discipline_detail.html',
+                          {'discipline': discipline,
+                           'action': 'D'})
+        except ProtectedError:
+            return render(request, 'discipline/discipline_delete_error.html',
+                          {'discipline': discipline}, status=423)
+    return render(request, 'discipline/discipline_delete.html', {'discipline': discipline})
+
+# CLASSROOM BLOCK
+
+
+def classroom_list(request):
+    classrooms = Classroom.objects.all()
+    return render(request, 'classroom/classroom_list.html', {'classrooms': classrooms})
+
+
+def classroom_details(request, classroom_id):
+    context = {'classroom': Classroom.objects.get(classroom_id=classroom_id)}
+    print(context)
+    return render(request, 'classroom/classroom_detail.html', context)
+
+
+def classroom_register(request):
     if request.method == 'POST':
         classroom_form = ClassroomRegisterForm(request.POST)
         if classroom_form.is_valid():
             new_classroom = classroom_form.save(commit=False)
             new_classroom.save()
             print(new_classroom)
-            return render(request, 'classroom/classroom_register_done.html', {'classroom_form': classroom_form})
-
+            return render(request, 'classroom/classroom_detail.html',
+                          {'classroom': new_classroom,
+                           'action': 'C'})
     else:
         classroom_form = ClassroomRegisterForm()
-    return render(request, 'classroom/classroom_register.html', {'classroom_form': classroom_form})
+    return render(request, 'classroom/classroom_form.html',
+                  {'classroom_form': classroom_form,
+                   'action': 'C'})
+
+
+def classroom_edit(request, classroom_id):
+    obj = get_object_or_404(Classroom, classroom_id=classroom_id)
+    print(obj)
+    classroom_form = ClassroomRegisterForm(request.POST or None, instance=obj)
+    if classroom_form.is_valid():
+        classroom_form.save()
+        print({'classroom': classroom_form,
+               'action': 'E'})
+        return render(request, 'classroom/classroom_detail.html',
+                      {'classroom': obj,
+                       'action': 'E'})
+    return render(request, 'classroom/classroom_form.html',
+                  {'classroom_form': classroom_form,
+                   'action': 'E'})
+
+
+def classroom_delete(request, classroom_id):
+    obj = get_object_or_404(Classroom, classroom_id=classroom_id)
+    classroom = Classroom.objects.get(classroom_id=classroom_id)
+    if request.method == 'POST':
+        try:
+            obj.delete()
+            return render(request, 'classroom/classroom_detail.html',
+                          {'classroom': classroom,
+                           'action': 'D'})
+        except ProtectedError:
+            return render(request, 'classroom/classroom_delete_error.html',
+                          {'classroom': classroom}, status=423)
+    return render(request, 'classroom/classroom_delete.html', {'classroom': classroom})
 
 
 def lesson_time_list(request):
@@ -183,11 +275,15 @@ def lesson_time_delete(request, lesson_id):
     obj = get_object_or_404(LessonTime, lesson_id=lesson_id)
     lesson_time = LessonTime.objects.get(lesson_id=lesson_id)
     if request.method == 'POST':
-        obj.delete()
-        return render(request, 'lesson_time/lesson_time_detail.html',
-                      {'lesson_time': lesson_time,
-                       'action': 'D'})
-    return render(request, 'lesson_time/lesson_time_delete.html', {'lesson_time': lesson_time})
+        try:
+            obj.delete()
+            return render(request, 'lesson_time/lesson_time_detail.html',
+                          {'lesson_time': lesson_time,
+                           'action': 'D'})
+        except ProtectedError:
+            return render(request, 'lesson_time/lesson_time_delete_error.html',
+                          {'lesson_time': lesson_time}, status=423)
+    return render(request, 'lesson_time/classroom_delete.html', {'lesson_time': lesson_time})
 
 
 def load_max_semester(request):
@@ -226,8 +322,10 @@ def register_group_member(request):
 
 
 @transaction.atomic
-def register_curriculum(request):
+def curriculum_register(request, discipline_id=None):
+    new_curriculum = None
     if request.method == 'POST':
+
         curriculum_form = CurriculumRegisterForm(request.POST)
 
         if curriculum_form.is_valid():
@@ -250,8 +348,12 @@ def register_curriculum(request):
             # errors = curriculum_form.errors
             # return HttpResponse(simplejson.dumps(errors), status=422)
     else:
-        curriculum_form = CurriculumRegisterForm()
-    return render(request, 'curriculum/curriculum_register.html', {'curriculum_form': curriculum_form})
+        if discipline_id is not None:
+            obj = get_object_or_404(Discipline, discipline_id=discipline_id)
+            curriculum_form = CurriculumRegisterForm(initial={'discipline_id': obj})
+        else:
+            curriculum_form = CurriculumRegisterForm()
+    return render(request, 'curriculum/curriculum_from.html', {'curriculum_form': curriculum_form})
 
 
 def register_curriculum_lesson(request):

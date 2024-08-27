@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Discipline form{% endblock %}
+
+{% block content %}
+  <h1>{% if action == 'C' %}Добавление
+    {% elif action == 'E' %}Изменение
+    {% else %}Форма
+    {% endif %} дисциплины
+  </h1>
+  <p>{% if action == 'C' %}Добавьте дисциплину, используя форму ниже:
+    {% elif action == 'E' %}Измените дисциплину, используя форму ниже:
+    {% else %}Используйте форму ниже:
+    {% endif %}
+  </p>
+  <form class="register_discipline" method="post">
+    {{ discipline_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+  </form>
+{% endblock %}

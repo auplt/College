@@ -5,20 +5,24 @@
 <script src="{% static 'js/time_form.js' %}"></script>
 {% endblock %}
 
-{% block title %}Create lesson time{% endblock %}
+{% block title %}Lesson time form{% endblock %}
 
 {% block content %}
-<a href="{% url 'account:lesson_time_list' %}">Вернуться к списку</a>
-<h1>{% if action == 'C' %}Создание
-    {% elif action == 'E' %}Изменение
-    {% else %}Форма
-    {% endif %}
-    времени занятия</h1>
-<p>Создайте время занятия, используя форму ниже:</p>
-<form class="register_group" method="post">
-    {{ lesson_time_form.as_p }}
-    {% csrf_token %}
-    <p><input type="submit"
-              value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
-</form>
+    <a href="{% url 'account:lesson_time_list' %}">Вернуться к списку</a>
+    <h1>{% if action == 'C' %}Добавление
+        {% elif action == 'E' %}Изменение
+        {% else %}Форма
+        {% endif %}
+        времени занятия</h1>
+    <p>{% if action == 'C' %}Добавьте время занятия, используя форму ниже:
+        {% elif action == 'E' %}Измените время занятия, используя форму ниже:
+        {% else %}Используйте форму ниже:
+        {% endif %}
+    </p>
+    <form class="register_group" method="post">
+        {{ lesson_time_form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit"
+                  value="{% if action == 'C' %}Добавить{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+    </form>
 {% endblock %}
