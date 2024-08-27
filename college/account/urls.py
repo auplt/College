@@ -6,6 +6,8 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from . import views
 
+app_name = 'account'
+
 urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     # path('login/', auth_views.LoginView.as_view(), name='login'),
@@ -17,7 +19,13 @@ urlpatterns = [
     path('register_group', views.register_group, name='register_group'),
     path('discipline/register', views.register_discipline, name='register_discipline'),
     path('classroom/register', views.register_classroom, name='register_classroom'),
-    path('lesson_time/register', views.register_lesson_time, name='register_lesson_time'),
+
+    path('lesson_time/', views.lesson_time_list, name='lesson_time_list'),
+    path('lesson_time/register', views.lesson_time_register, name='lesson_time_register'),
+    path('lesson_time/details/<int:lesson_id>', views.lesson_time_details, name='lesson_time_details'),
+    path('lesson_time/edit/<int:lesson_id>', views.lesson_time_edit, name='lesson_time_edit'),
+    path('lesson_time/delete/<int:lesson_id>', views.lesson_time_delete, name='lesson_time_delete'),
+
     path('group_semester/register', views.register_group_semester, name='register_group_semester'),
     path('group_member/register', views.register_group_member, name='register_group_member'),
     path('curriculum/register/', views.register_curriculum, name='register_curriculum'),

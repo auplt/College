@@ -7,12 +7,14 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import Max
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import UpdateView
+
 from .forms import LoginForm, UserRegistrationForm, StudentAdditionalForm, TutorAdditionalForm, GroupRegisterForm, \
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
-from timetable.models import GroupSemester, Curriculum, Discipline, Tutor
+from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime
 
 
 def user_login(request):
@@ -134,18 +136,58 @@ def register_classroom(request):
     return render(request, 'classroom/classroom_register.html', {'classroom_form': classroom_form})
 
 
-def register_lesson_time(request):
+def lesson_time_list(request):
+    lesson_times = LessonTime.objects.all()
+    return render(request, 'lesson_time/lesson_time_list.html', {'lesson_times': lesson_times})
+
+
+def lesson_time_register(request):
     if request.method == 'POST':
         lesson_time_form = LessonTimeRegisterForm(request.POST)
         if lesson_time_form.is_valid():
             new_lesson_time = lesson_time_form.save(commit=False)
             new_lesson_time.save()
             print(new_lesson_time)
-            return render(request, 'lesson_time/lesson_time_register_done.html', {'lesson_time_form': lesson_time_form})
-
+            return render(request, 'lesson_time/lesson_time_detail.html',
+                          {'lesson_time': new_lesson_time,
+                           'action': 'C'})
     else:
         lesson_time_form = LessonTimeRegisterForm()
-    return render(request, 'lesson_time/lesson_time_register.html', {'lesson_time_form': lesson_time_form})
+    return render(request, 'lesson_time/lesson_time_form.html',
+                  {'lesson_time_form': lesson_time_form,
+                   'action': 'C'})
+
+
+def lesson_time_details(request, lesson_id):
+    context = {'lesson_time': LessonTime.objects.get(lesson_id=lesson_id)}
+    print(context)
+    return render(request, 'lesson_time/lesson_time_detail.html', context)
+
+
+def lesson_time_edit(request, lesson_id):
+    obj = get_object_or_404(LessonTime, lesson_id=lesson_id)
+    lesson_time_form = LessonTimeRegisterForm(request.POST or None, instance=obj)
+    if lesson_time_form.is_valid():
+        lesson_time_form.save()
+        print({'lesson_time': lesson_time_form,
+               'action': 'E'})
+        return render(request, 'lesson_time/lesson_time_detail.html',
+                      {'lesson_time': obj,
+                       'action': 'E'})
+    return render(request, 'lesson_time/lesson_time_form.html',
+                  {'lesson_time_form': lesson_time_form,
+                   'action': 'E'})
+
+
+def lesson_time_delete(request, lesson_id):
+    obj = get_object_or_404(LessonTime, lesson_id=lesson_id)
+    lesson_time = LessonTime.objects.get(lesson_id=lesson_id)
+    if request.method == 'POST':
+        obj.delete()
+        return render(request, 'lesson_time/lesson_time_detail.html',
+                      {'lesson_time': lesson_time,
+                       'action': 'D'})
+    return render(request, 'lesson_time/lesson_time_delete.html', {'lesson_time': lesson_time})
 
 
 def load_max_semester(request):
@@ -200,9 +242,9 @@ def register_curriculum(request):
                     new_curriculum.set_group_semester(GroupSemester.objects.get(group_semester_id=group_semester_id))
                     new_curriculum.save()
             return render(request, 'curriculum/curriculum_register_done.html',
-                                      {'curriculum_form': new_curriculum})
+                          {'curriculum_form': new_curriculum})
         else:
-            err=curriculum_form.errors
+            err = curriculum_form.errors
             print(err)
             # else:
             # errors = curriculum_form.errors
@@ -222,7 +264,8 @@ def register_curriculum_lesson(request):
                           {'curriculum_lesson_form': new_curriculum_lesson})
     else:
         curriculum_lesson_form = CurriculumLessonRegisterForm()
-    return render(request, 'curriculum_lesson/curriculum_lesson_register.html', {'curriculum_lesson_form': curriculum_lesson_form})
+    return render(request, 'curriculum_lesson/curriculum_lesson_register.html',
+                  {'curriculum_lesson_form': curriculum_lesson_form})
 
 
 def register_tt_lesson(request):
@@ -236,4 +279,3 @@ def register_tt_lesson(request):
     else:
         tt_lesson_form = TTLessonRegisterForm()
     return render(request, 'tt_lesson/tt_lesson_register.html', {'tt_lesson_form': tt_lesson_form})
-

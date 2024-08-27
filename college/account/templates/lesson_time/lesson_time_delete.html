@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Lesson time registered{% endblock %}
+
+{% block content %}
+<h1>Удаление времени занятия</h1>
+<h2>
+    {{ lesson_time.name }}
+</h2>
+<p>Начало в {{ lesson_time.start_time }} окончание в {{ lesson_time.end_time }}</p>
+<form method="POST">
+    <p>Вы точно хотите удалить это время занятия?</p>
+    <input type="submit" value="Да">
+    <a href="{% url 'account:lesson_time_list' %}">Отмена</a>
+    {% csrf_token %}
+</form>
+<a href="{% url 'account:lesson_time_list' %}">Вернуться к списку</a>
+{% endblock %}

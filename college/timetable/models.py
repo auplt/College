@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from computed_property import ComputedTextField, ComputedIntegerField, ComputedCharField
+from django.urls import reverse
 
 
 class CustomUser(AbstractUser):
@@ -302,6 +303,15 @@ class LessonTime(models.Model):
                 name='check_start_time',
             ),
         ]
+
+    def get_absolute_url(self):
+        return reverse('account:lesson_time_edit',
+                       args=[self.lesson_id])
+
+    def get_delete_url(self):
+        return reverse('account:lesson_time_delete',
+                       args=[self.lesson_id])
+
 
 
 class Classroom(models.Model):

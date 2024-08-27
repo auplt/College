@@ -166,3 +166,5 @@ college/timetable/migrations/*
 college/.pylintrc
 college/.pylintrc1
 
+# JQuery code
+college/account/static/jquery-ui-1.13.3

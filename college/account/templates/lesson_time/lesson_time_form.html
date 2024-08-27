@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block page_scripts %}
+{% load static %}
+<script src="{% static 'js/time_form.js' %}"></script>
+{% endblock %}
+
+{% block title %}Create lesson time{% endblock %}
+
+{% block content %}
+<a href="{% url 'account:lesson_time_list' %}">Вернуться к списку</a>
+<h1>{% if action == 'C' %}Создание
+    {% elif action == 'E' %}Изменение
+    {% else %}Форма
+    {% endif %}
+    времени занятия</h1>
+<p>Создайте время занятия, используя форму ниже:</p>
+<form class="register_group" method="post">
+    {{ lesson_time_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit"
+              value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+</form>
+{% endblock %}

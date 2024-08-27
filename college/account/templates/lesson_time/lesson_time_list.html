@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Lesson time list{% endblock %}
+
+{% block content %}
+    <h1>Список времени занятий</h1>
+    <a href="{% url 'account:lesson_time_register' %}">Добавить</a>
+    {% for lesson_time in lesson_times %}
+        <h2>{{lesson_time.name}}</h2>
+        <p>Начало в {{lesson_time.start_time}} окончание в {{lesson_time.end_time}}</p>
+        <a href="{{ lesson_time.get_absolute_url }}">Редактировать</a>
+        <a href="{{ lesson_time.get_delete_url }}">Удалить</a>
+    {% endfor %}
+{% endblock %}
