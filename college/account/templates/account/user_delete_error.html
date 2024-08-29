@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}User delete error{% endblock %}
+
+{% block content %}
+    <h1>Ошибка удаления</h1>
+    <h2>Невозможно удалить пользователя {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
+    <p class="error_msg">Имеются объекты, ссылающиеся на этот</p>
+    <a href="{% url 'account:user_list' %}">Вернуться к списку</a>
+{% endblock %}

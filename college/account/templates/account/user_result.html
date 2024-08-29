@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}User detail{% endblock %}
+
+{% block content %}
+  <h1>{% if action == 'C' %}Добавлен пользователь
+    {% elif action == 'E' %}Изменен пользователь
+    {% elif action == 'D' %}Удален пользователь
+    {% else %}Пользователь
+    {% endif %}
+  </h1>
+  <h2>
+      {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}
+  </h2>
+  <a href="{% url 'account:user_list' %}">Вернуться к списку</a>
+{% endblock %}

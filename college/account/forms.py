@@ -253,7 +253,7 @@ class CurriculumRegisterForm(forms.ModelForm):
 
 
 class CurriculumLessonRegisterForm(forms.ModelForm):
-    lesson_type = forms.ChoiceField(label="Тип урока", choices=TypesOfLesson)
+    lesson_type = forms.ChoiceField(label="Тип урока", choices=TypesOfLesson.choices)
     duration = forms.IntegerField(label="Продолжительность")
     curriculum_id = forms.ModelChoiceField(Curriculum.objects.all(), empty_label='-----', label='План занятий')
     # tutors = Tutor.objects.all()

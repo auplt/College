@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}User delete{% endblock %}
+
+{% block content %}
+    <h1>Удаление пользователя</h1>
+      <h2>
+          {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}
+      </h2>
+    <form method="POST">
+        <p>Вы точно хотите удалить этого пользователя?</p>
+        <input type="submit" value="Да">
+        <a href="{% url 'account:user_list' %}">Отмена</a>
+        {% csrf_token %}
+    </form>
+    <a href="{% url 'account:user_list' %}">Вернуться к списку</a>
+{% endblock %}

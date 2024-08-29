@@ -13,7 +13,13 @@ urlpatterns = [
 
 
     path('', views.dashboard, name='dashboard'),
-    path('register/', views.register, name='register'),
+
+    path('user/', views.user_list, name='user_list'),
+    path('user/register/', views.user_register, name='user_register'),
+    path('user/details/<int:id>', views.user_details, name='user_details'),
+    path('user/edit/<int:id>', views.user_edit, name='user_edit'),
+    path('user/delete/<int:id>', views.user_delete, name='user_delete'),
+
     # path('lgout/', LogoutView.as_view(template_name='registration/logged_out.html'), name='user_logout'),
     path('register_group', views.register_group, name='register_group'),
 
@@ -36,13 +42,16 @@ urlpatterns = [
     path('lesson_time/delete/<int:lesson_id>', views.lesson_time_delete, name='lesson_time_delete'),
 
     path('group_semester/register', views.register_group_semester, name='register_group_semester'),
-    path('group_member/register', views.register_group_member, name='register_group_member'),
+
+    path(r'group_member/register/?(?P<student_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
+    path('group_member/register', views.group_member_register, name='group_member_register'),
 
     # path(r'^curriculum/register/?(', views.curriculum_register, name='curriculum_register'),
     path(r'curriculum/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_register, name='curriculum_register'),
     path('curriculum/register/', views.curriculum_register, name='curriculum_register'),
 
-    path('curriculum_lesson/register/', views.register_curriculum_lesson, name='curriculum_lesson'),
+    path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
+    path('curriculum_lesson/register/', views.curriculum_lesson_register, name='curriculum_lesson_register'),
     path('tt_lesson/register/', views.register_tt_lesson, name='tt_lesson'),
 
     path('group_semester/ajax/load_max_semester', views.load_max_semester, name='ajax_load_max_semester')

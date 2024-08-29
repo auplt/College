@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}User detail{% endblock %}
+
+{% block content %}
+<h1>Пользователь {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h1>
+
+<div class="user_info_wrapper">
+    <div class="user_info_detail">
+        {% if student %}
+        Дата рождения: {{ student.date_of_birth }}
+        <h2> Учебные группы </h2>
+         <a href="{% url 'account:group_member_register' student.student_id %}">Добавить в группу</a>
+        <div class="user_info_groups">
+            {% if groups %}
+            {% for group in groups %}
+            Семестр: {{group.group_semesters__semester_num}}
+            Группа: {{group.group_semesters__group_id__name}}
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="user_info_detail">
+        {% if tutor %}
+        Дата рождения: {{ tutor.date_of_birth }}
+        <h2> Дисциплины </h2>
+        <a href="{% url 'account:curriculum_lesson_register' tutor.tutor_id %}">Добавить дисциплину</a>
+        <div class="user_info_disciplines">
+            {% if disciplines %}
+            {% for discipline in disciplines %}
+            <a href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">{{discipline.curriculum_id__discipline_id__name}}</a>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endif %}
+
+
+    </div>
+</div>
+<!--  <p>Описание: {{classroom.description}}</p>-->
+<a href="{{ user.get_edit_url }}">Редактировать</a>
+<a href="{% url 'account:user_list' %}">Вернуться к списку</a>
+{% endblock %}

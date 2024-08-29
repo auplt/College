@@ -20,6 +20,18 @@ class CustomUser(AbstractUser):
     #     return super().__str__
     # #     return f'{self.last_name} {self.first_name} {self.second_name}'
 
+    def get_absolute_url(self):
+        return reverse('account:user_details',
+                       args=[self.id])
+
+    def get_edit_url(self):
+        return reverse('account:user_edit',
+                       args=[self.id])
+
+    def get_delete_url(self):
+        return reverse('account:user_delete',
+                       args=[self.id])
+
 
 class Student(models.Model):
     def validate_date(self: models.DateField()):
@@ -43,6 +55,8 @@ class Student(models.Model):
 
     class Meta:
         db_table = 'students'
+
+
 
 
 class Group(models.Model):
@@ -133,6 +147,9 @@ class GroupMember(models.Model):
 
     class Meta:
         db_table = 'group_members'
+
+    # def __str__(self):
+    #     return f'{self.group_semesters} {self.student_id}'
 
 
 class Curriculum(models.Model):

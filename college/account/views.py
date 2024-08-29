@@ -6,7 +6,7 @@ import django.db.transaction
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
-from django.db.models import Max, ProtectedError
+from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import UpdateView
@@ -14,7 +14,8 @@ from django.views.generic import UpdateView
 from .forms import LoginForm, UserRegistrationForm, StudentAdditionalForm, TutorAdditionalForm, GroupRegisterForm, \
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
-from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom
+from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
+    GroupMember, CurriculumLesson
 
 
 def user_login(request):
@@ -53,7 +54,90 @@ def dashboard(request):
                   {'section': 'dashboard'})
 
 
-def register(request):
+def user_list(request):
+    users = CustomUser.objects.filter(is_superuser=False, is_staff=False)
+    print(users)
+    return render(request, 'account/user_list.html', {'users': users})
+
+
+def user_details(request, id):
+    user = get_object_or_404(CustomUser.objects, id=id)
+    student = Student.objects.filter(user_id__id=id).first()
+    tutor = Tutor.objects.filter(user_id__id=id).first()
+    # users = CustomUser.objects.filter(id=id).annotate(student_id, date_of_birth_student=Subquery(subquery_student),
+    #                                                   date_of_birth_tutor=Subquery(subquery_tutor))
+
+    # users = CustomUser.objects.filter(id=id).prefetch_related(
+    #     Prefetch('student_id',
+    #                     queryset=subquery_student,
+    #                     to_attr='student_records'
+    #                     )
+    #
+    # ).prefetch_related(
+    #     Prefetch('tutor_id',
+    #                     queryset=subquery_tutor,
+    #                     to_attr='tutor_records'
+    #                     ))
+
+
+
+
+    # groups =(GroupMember.objects
+    #           .prefetch_related(
+    #     Prefetch('student_id__user_id', queryset=CustomUser.objects.filter(id=id)))
+    #           .prefetch_related('group_semesters'))
+    # .select_related(
+    #     'group_semesters')
+    # groups = GroupMember.objects.prefetch_related(Prefetch('student_id',
+    #     queryset=Student.objects.prefetch_related(Prefetch('user_id',
+    #         queryset=CustomUser.objects.filter(id=id))),
+    #     )).select_related('group_semesters__group_id')
+
+
+    # groups = GroupMember.objects.prefetch_related(
+    #     Prefetch('student_id__user_id', queryset=CustomUser.objects.filter(id=id)
+    #
+    #     )).select_related('group_semesters__group_id')
+
+
+    # print(CustomUser.objects.filter(id=id))
+    # print(groups.query)
+    # print(groups)
+    # print(groups.__dict__)
+    # for group in groups:
+    #
+    #     print(group.__dict__)
+    #     try:
+    #         print(group.__dict__)
+    #         print(group.student_id.__dict__)
+    #         print(group.student_id.user_id.__dict__)
+    #
+    #         # print(group.student_id.test)
+    #         # print(type(group.student_id.user_id.test))
+    #     except Exception:
+    #         pass
+    # print(groups.get(student_id=5).student_id.user_id)
+    # print(groups.get(student_id=5).group_semesters.group_id)
+    # print(groups.filter(user_id=5).query)
+    # GroupMember.objects.filter(student_id=)
+
+    groups = GroupMember.objects.select_related('student_id__user_id', 'group_semesters__group_id')\
+        .values('group_semesters__group_id__name', 'group_semesters__semester_num', 'group_semesters__group_id__group_id')\
+        .filter(student_id__user_id__id=id).all()
+
+    disciplines = CurriculumLesson.objects.select_related('tutor_id__user_id', 'curriculum_id__discipline_id')\
+        .values('curriculum_id__discipline_id__name', 'curriculum_id__discipline_id__discipline_id')\
+        .filter(tutor_id__user_id__id=id).all()
+    # print(groups.query)
+
+
+
+    context = {'user': user, 'student': student, 'tutor': tutor, 'groups': groups, 'disciplines': disciplines}
+    print(context)
+    return render(request, 'account/user_detail.html', context)
+
+
+def user_register(request):
     """
     View for registering user.
     :param request: user's request
@@ -85,9 +169,79 @@ def register(request):
         user_form = UserRegistrationForm()
         student_form = StudentAdditionalForm(prefix='std')
         tutor_form = TutorAdditionalForm(prefix='tut')
-    return render(request, 'account/register.html', {'user_form': user_form,
-                                                     'student_form': student_form,
-                                                     'tutor_form': tutor_form})
+    return render(request, 'account/user_register.html', {'user_form': user_form,
+                                                             'student_form': student_form,
+                                                             'tutor_form': tutor_form})
+
+@transaction.atomic
+def user_edit(request, id):
+    # if request.method == 'POST':
+
+    user_obj = get_object_or_404(CustomUser, id=id)
+    student_obj = Student.objects.filter(user_id=user_obj.id).first()
+    tutor_obj = Tutor.objects.filter(user_id=user_obj.id).first()
+    user_form = UserRegistrationForm(request.POST or None, instance=user_obj)
+    student_form = StudentAdditionalForm(request.POST or None, instance=student_obj, prefix='std')
+    tutor_form = TutorAdditionalForm(request.POST or None, instance=tutor_obj, prefix='tut')
+    if user_form.is_valid() and \
+            ((user_form.cleaned_data['is_student'] and student_form.is_valid()) or not user_form.cleaned_data[
+                'is_student']) \
+            and ((user_form.cleaned_data['is_tutor'] and tutor_form.is_valid()) or not user_form.cleaned_data[
+        'is_tutor']):
+        new_user = user_form.save(commit=False)
+        new_user.set_password(user_form.cleaned_data['password'])
+        new_user.save()
+        if user_form.cleaned_data['is_student']:
+            new_student = student_form.save(commit=False)
+            new_student.set_user_id(new_user)
+            new_student.save()
+        if user_form.cleaned_data['is_tutor']:
+            new_tutor = tutor_form.save(commit=False)
+            new_tutor.set_user_id(new_user)
+            new_tutor.save()
+        # return render(request, 'account/register_done.html', {'new_user': new_user})
+        return render(request, 'account/user_result.html',
+               {'user': new_user,
+                'action': 'E'})
+    # else:
+    #     user_form = UserRegistrationForm()
+    #     student_form = StudentAdditionalForm(prefix='std')
+    #     tutor_form = TutorAdditionalForm(prefix='tut')
+    # # return render(request, 'account/user_register.html', {'user_form': user_form,
+    # #                                                          'student_form': student_form,
+    # #                                                          'tutor_form': tutor_form})
+    return render(request, 'account/user_register.html',
+                  {'user_form': user_form,
+                   'student_form': student_form,
+                   'tutor_form': tutor_form,
+                   'action': 'E'})
+
+
+
+
+
+
+
+def user_delete(request, id):
+    user_obj = get_object_or_404(CustomUser, id=id)
+    student_obj = Student.objects.filter(user_id=user_obj.id).first()
+    tutor_obj = Tutor.objects.filter(user_id=user_obj.id).first()
+    user = CustomUser.objects.get(id=id)
+
+    if request.method == 'POST':
+        try:
+            if student_obj:
+                student_obj.delete()
+            if tutor_obj:
+                tutor_obj.delete()
+            user_obj.delete()
+            return render(request, 'account/user_result.html',
+                          {'user': user,
+                           'action': 'D'})
+        except ProtectedError:
+            return render(request, 'account/user_delete_error.html',
+                          {'user': user}, status=423)
+    return render(request, 'account/user_delete.html', {'user': user})
 
 
 @transaction.atomic
@@ -106,6 +260,7 @@ def register_group(request):
     else:
         group_form = GroupRegisterForm()
     return render(request, 'group/group_register.html', {'group_form': group_form})
+
 
 # DISCIPLINE BLOCK
 
@@ -165,6 +320,7 @@ def discipline_delete(request, discipline_id):
             return render(request, 'discipline/discipline_delete_error.html',
                           {'discipline': discipline}, status=423)
     return render(request, 'discipline/discipline_delete.html', {'discipline': discipline})
+
 
 # CLASSROOM BLOCK
 
@@ -308,7 +464,7 @@ def register_group_semester(request):
     return render(request, 'group_semester/group_semester_register.html', {'group_semester_form': group_semester_form})
 
 
-def register_group_member(request):
+def group_member_register(request, student_id=None):
     if request.method == 'POST':
         group_member_form = GroupMemberRegisterForm(request.POST)
         if group_member_form.is_valid():
@@ -317,7 +473,11 @@ def register_group_member(request):
             return render(request, 'group_member/group_member_register_done.html',
                           {'group_member_form': new_group_member})
     else:
-        group_member_form = GroupMemberRegisterForm()
+        if student_id is not None:
+            obj = get_object_or_404(Student, student_id=student_id)
+            group_member_form = GroupMemberRegisterForm(initial={'student_id': obj})
+        else:
+            group_member_form = GroupMemberRegisterForm()
     return render(request, 'group_member/group_member_register.html', {'group_member_form': group_member_form})
 
 
@@ -356,7 +516,7 @@ def curriculum_register(request, discipline_id=None):
     return render(request, 'curriculum/curriculum_from.html', {'curriculum_form': curriculum_form})
 
 
-def register_curriculum_lesson(request):
+def curriculum_lesson_register(request, tutor_id=None):
     if request.method == 'POST':
         curriculum_lesson_form = CurriculumLessonRegisterForm(request.POST)
         if curriculum_lesson_form.is_valid():
@@ -365,7 +525,11 @@ def register_curriculum_lesson(request):
             return render(request, 'curriculum_lesson/curriculum_lesson_register_done.html',
                           {'curriculum_lesson_form': new_curriculum_lesson})
     else:
-        curriculum_lesson_form = CurriculumLessonRegisterForm()
+        if tutor_id is not None:
+            obj = get_object_or_404(Tutor, tutor_id=tutor_id)
+            curriculum_lesson_form = CurriculumLessonRegisterForm(initial={'tutor_id': obj})
+        else:
+            curriculum_lesson_form = CurriculumLessonRegisterForm()
     return render(request, 'curriculum_lesson/curriculum_lesson_register.html',
                   {'curriculum_lesson_form': curriculum_lesson_form})
 
