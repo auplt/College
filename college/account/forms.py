@@ -43,15 +43,22 @@ class StudentAdditionalForm(forms.ModelForm):
         model = Student
         fields = ['date_of_birth']
 
+    def __init__(self, required, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'] = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
+                                    widget=forms.TextInput(attrs={
+                                        'class': 'datepicker'
+                                    }))
+
 
 class TutorAdditionalForm(forms.ModelForm):
     """
     Form for additional tutor information.
     """
-    date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=False,
-                                    widget=forms.TextInput(attrs={
-                                        'class': 'datepicker'
-                                    }))
+    # date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=False,
+    #                                 widget=forms.TextInput(attrs={
+    #                                     'class': 'datepicker'
+    #                                 }))
 
     class Meta:
         """
@@ -59,6 +66,20 @@ class TutorAdditionalForm(forms.ModelForm):
         """
         model = Tutor
         fields = ['date_of_birth']
+
+    def __init__(self, required, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'] = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
+                                    widget=forms.TextInput(attrs={
+                                        'class': 'datepicker'
+                                    }))
+
+
+    # def change_required(self, required):
+    #     self.date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
+    #                                 widget=forms.TextInput(attrs={
+    #                                     'class': 'datepicker'
+    #                                 }))
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -95,6 +116,44 @@ class UserRegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Введенные пароли не совпадают')
         return cd['password2']
+
+    # def clean(self):
+    #     print("Hey")
+    #     cleaned_data = super().clean()
+    #     self._errors = ErrorDict()
+    #     print(self.data.getlist('std-date_of_birth', None))
+    #
+    #     if self.data['is_student']:
+    #         if self.data.getlist('std-date_of_birth', None)[0] == '':
+    #             self.add_error('std-date_of_birth', ["Поле должно быть заполнено.", ])
+    #
+    #     return cleaned_data
+
+
+class UserEditForm(forms.ModelForm):
+    """
+    Form for user data to edit.
+    """
+    last_name = forms.CharField(label='Фамилия')
+    first_name = forms.CharField(label='Имя')
+    second_name = forms.CharField(label='Отчество')
+    username = forms.CharField(label='Логин', required=True, help_text='1112')
+
+    class Meta:
+        """
+        Metaclass for user edit form.
+        """
+        model = User
+        fields = ['last_name', 'first_name', 'second_name', 'username', 'first_name', 'email']
+
+    class Media:
+        js = ('js/user_edit_form.js',)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        print(cleaned_data)
+        return cleaned_data
+
 
 
 class GroupRegisterForm(forms.ModelForm):

@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
 {% block page_scripts %}
- {% load static %}
-  <script src="{% static 'js/user_form.js' %}"></script>
+{% load static %}
+<script src="{% static 'js/user_edit_form.js' %}"></script>
 {% endblock %}
 
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-  <h1>Создание аккаунта</h1>
-  <p>Создайте аккаунт, используя форму ниже:</p>
-  <form class="register_user" method="post" novalidate>
+<h1>Изменение информации о пользователе</h1>
+<p>Измените информацию, используя форму ниже:</p>
+<form class="edit_user" method="post">
     {{ user_form.as_p }}
-      <div class="register_user__student">
+          <div class="register_user__student">
           <h2>Дополнительная информация о студенте</h2>
       {{ student_form.as_p }}
       </div>
@@ -21,6 +21,6 @@
       {{ tutor_form.as_p }}
       </div>
     {% csrf_token %}
-    <p><input type="submit" value="Создать аккаунт"></p>
-  </form>
+    <p><input type="submit" value="Изменить"></p>
+</form>
 {% endblock %}

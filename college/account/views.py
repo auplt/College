@@ -11,7 +11,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import UpdateView
 
-from .forms import LoginForm, UserRegistrationForm, StudentAdditionalForm, TutorAdditionalForm, GroupRegisterForm, \
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, GroupRegisterForm, \
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
 from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
@@ -146,8 +146,32 @@ def user_register(request):
     if request.method == 'POST':
         with (django.db.transaction.atomic()):
             user_form = UserRegistrationForm(request.POST)
-            student_form = StudentAdditionalForm(request.POST, prefix='std')
-            tutor_form = TutorAdditionalForm(request.POST, prefix='tut')
+            # student_form = StudentAdditionalForm(request.POST, prefix='std')
+            # tutor_form = TutorAdditionalForm(False, request.POST, prefix='tut')
+            # print(tutor_form.data)
+            user_form.is_valid()
+            print(user_form.is_valid())
+            # print(user_form.cleaned_data['is_student'])
+            # print(user_form.cleaned_data['is_tutor'])
+            if user_form.cleaned_data['is_student']:
+                # student_form.change_required(required=True)
+                student_form = StudentAdditionalForm(True, request.POST, prefix='std')
+                print("S-T")
+            else:
+                student_form = StudentAdditionalForm(False, request.POST, prefix='std')
+                # student_form.change_required(required=False)
+                print("S-F")
+            if user_form.cleaned_data['is_tutor']:
+                tutor_form = TutorAdditionalForm(True, request.POST, prefix='tut')
+                # tutor_form.change_required(required=True)
+                print("T-T")
+            else:
+                # tutor_form.change_required(required=False)
+                tutor_form = TutorAdditionalForm(False, request.POST, prefix='tut')
+                print("T-F")
+            # student_form = StudentAdditionalForm(request.POST, prefix='std')
+            # tutor_form = TutorAdditionalForm(True, request.POST, prefix='tut')
+            # user_form.is_valid()
             if user_form.is_valid() and \
                     ((user_form.cleaned_data['is_student'] and student_form.is_valid()) or not user_form.cleaned_data[
                         'is_student']) \
@@ -157,6 +181,7 @@ def user_register(request):
                 new_user.set_password(user_form.cleaned_data['password'])
                 new_user.save()
                 if user_form.cleaned_data['is_student']:
+
                     new_student = student_form.save(commit=False)
                     new_student.set_user_id(new_user)
                     new_student.save()
@@ -164,57 +189,152 @@ def user_register(request):
                     new_tutor = tutor_form.save(commit=False)
                     new_tutor.set_user_id(new_user)
                     new_tutor.save()
-                return render(request, 'account/register_done.html', {'new_user': new_user})
+                # return render(request, 'account/register_done.html', {'new_user': new_user})
+                return render(request, 'account/user_result.html',
+                              {'user': new_user,
+                               'action': 'C'})
     else:
         user_form = UserRegistrationForm()
-        student_form = StudentAdditionalForm(prefix='std')
-        tutor_form = TutorAdditionalForm(prefix='tut')
+        student_form = StudentAdditionalForm(False, prefix='std')
+        tutor_form = TutorAdditionalForm(False, prefix='tut')
     return render(request, 'account/user_register.html', {'user_form': user_form,
                                                              'student_form': student_form,
                                                              'tutor_form': tutor_form})
 
-@transaction.atomic
-def user_edit(request, id):
-    # if request.method == 'POST':
 
-    user_obj = get_object_or_404(CustomUser, id=id)
-    student_obj = Student.objects.filter(user_id=user_obj.id).first()
-    tutor_obj = Tutor.objects.filter(user_id=user_obj.id).first()
-    user_form = UserRegistrationForm(request.POST or None, instance=user_obj)
-    student_form = StudentAdditionalForm(request.POST or None, instance=student_obj, prefix='std')
-    tutor_form = TutorAdditionalForm(request.POST or None, instance=tutor_obj, prefix='tut')
-    if user_form.is_valid() and \
-            ((user_form.cleaned_data['is_student'] and student_form.is_valid()) or not user_form.cleaned_data[
-                'is_student']) \
-            and ((user_form.cleaned_data['is_tutor'] and tutor_form.is_valid()) or not user_form.cleaned_data[
-        'is_tutor']):
-        new_user = user_form.save(commit=False)
-        new_user.set_password(user_form.cleaned_data['password'])
-        new_user.save()
-        if user_form.cleaned_data['is_student']:
-            new_student = student_form.save(commit=False)
-            new_student.set_user_id(new_user)
-            new_student.save()
-        if user_form.cleaned_data['is_tutor']:
-            new_tutor = tutor_form.save(commit=False)
-            new_tutor.set_user_id(new_user)
-            new_tutor.save()
-        # return render(request, 'account/register_done.html', {'new_user': new_user})
-        return render(request, 'account/user_result.html',
-               {'user': new_user,
-                'action': 'E'})
+def user_edit(request, id):
+    """
+    View for registering user.
+    :param request: user's request
+    :return: http response HTML page with register form
+    """
+    # if request.method == 'POST':
+    with (django.db.transaction.atomic()):
+        user_obj = get_object_or_404(CustomUser, id=id)
+        student_obj = Student.objects.filter(user_id=user_obj.id).first()
+        tutor_obj = Tutor.objects.filter(user_id=user_obj.id).first()
+        user_form = UserEditForm(request.POST or None, instance=user_obj)
+        if student_obj:
+            student_obj.date_of_birth = student_obj.date_of_birth.strftime("%d.%m.%Y")
+            student_form = StudentAdditionalForm(True, request.POST or None, instance=student_obj, prefix='std')
+        else:
+            student_form = StudentAdditionalForm(False, request.POST or None, instance=student_obj, prefix='std')
+        if tutor_obj:
+            tutor_obj.date_of_birth = tutor_obj.date_of_birth.strftime("%d.%m.%Y")
+            tutor_form = TutorAdditionalForm(True, request.POST or None, instance=tutor_obj, prefix='tut')
+        else:
+            tutor_form = TutorAdditionalForm(False, request.POST or None, instance=tutor_obj, prefix='tut')
+
+
+
+
+        # user_form = UserRegistrationForm(request.POST)
+        # student_form = StudentAdditionalForm(request.POST, prefix='std')
+        # tutor_form = TutorAdditionalForm(False, request.POST, prefix='tut')
+        # print(tutor_form.data)
+        # user_form.is_valid()
+        print(user_form.is_valid())
+        user_form.is_valid()
+        print(student_form.data.getlist('std-date_of_birth', None))
+        print(tutor_form.data.getlist('tut-date_of_birth', None))
+
+        # print(user_form.cleaned_data['is_student'])
+        # print(user_form.cleaned_data['is_tutor'])
+
+        if True:
+            if request.POST:
+                std_date_of_birth = student_form.data.getlist('std-date_of_birth', None)[0]
+                tut_date_of_birth = tutor_form.data.getlist('tut-date_of_birth', None)[0]
+                if std_date_of_birth:
+                    # student_form.change_required(required=True)
+                    student_form = StudentAdditionalForm(True, request.POST or None, instance=student_obj, prefix='std')
+                    print("S-T")
+                else:
+                    student_form = StudentAdditionalForm(False, request.POST or None, instance=student_obj, prefix='std')
+                    # student_form.change_required(required=False)
+                    print("S-F")
+                if tut_date_of_birth:
+                    tutor_form = TutorAdditionalForm(True, request.POST or None, instance=tutor_obj, prefix='tut')
+                    # tutor_form.change_required(required=True)
+                    print("T-T")
+                else:
+                    # tutor_form.change_required(required=False)
+                    tutor_form = TutorAdditionalForm(False, request.POST or None, instance=tutor_obj, prefix='tut')
+                    print("T-F")
+        # student_form = StudentAdditionalForm(request.POST, prefix='std')
+        # tutor_form = TutorAdditionalForm(True, request.POST, prefix='tut')
+        # user_form.is_valid()
+                print(user_form.is_valid())
+                print(std_date_of_birth and student_form.is_valid())
+                print(not std_date_of_birth)
+                print(tut_date_of_birth and tutor_form.is_valid())
+                print(not tut_date_of_birth)
+                print(user_form.errors)
+                if user_form.is_valid() and \
+                        ((std_date_of_birth and student_form.is_valid()) or not std_date_of_birth) \
+                        and ((tut_date_of_birth and tutor_form.is_valid()) or not tut_date_of_birth):
+                    new_user = user_form.save(commit=False)
+                    new_user.save()
+                    print(std_date_of_birth)
+                    if std_date_of_birth:
+                        print('std_date_of_birth')
+                        new_student = student_form.save(commit=False)
+                        new_student.set_user_id(user_obj)
+                        new_student.save()
+                    print(tut_date_of_birth)
+                    if tut_date_of_birth:
+                        print('tut_date_of_birth')
+                        new_tutor = tutor_form.save(commit=False)
+                        new_tutor.set_user_id(user_obj)
+                        new_tutor.save()
+                # return render(request, 'account/register_done.html', {'new_user': new_user})
+                    return render(request, 'account/user_result.html',
+                                  {'user': new_user,
+                                   'action': 'E'})
     # else:
     #     user_form = UserRegistrationForm()
-    #     student_form = StudentAdditionalForm(prefix='std')
-    #     tutor_form = TutorAdditionalForm(prefix='tut')
-    # # return render(request, 'account/user_register.html', {'user_form': user_form,
-    # #                                                          'student_form': student_form,
-    # #                                                          'tutor_form': tutor_form})
-    return render(request, 'account/user_register.html',
+    #     student_form = StudentAdditionalForm(False, prefix='std')
+    #     tutor_form = TutorAdditionalForm(False, prefix='tut')
+    # return render(request, 'account/user_register.html', {'user_form': user_form,
+    #                                                          'student_form': student_form,
+    #                                                          'tutor_form': tutor_form})
+    return render(request, 'account/user_edit.html',
                   {'user_form': user_form,
-                   'student_form': student_form,
-                   'tutor_form': tutor_form,
+                         'student_form': student_form,
+                         'tutor_form': tutor_form,
                    'action': 'E'})
+
+
+
+    #
+    # user_obj = get_object_or_404(CustomUser, id=id)
+    # user_form = UserEditForm(request.POST or None, instance=user_obj)
+    # # if request.method == 'POST':
+    # #     user_form = UserEditForm(request.POST)
+    # if user_form.is_valid():
+    #     print(1)
+    #     new_user = user_form.save(commit=False)
+    #     new_user.save()
+    #     return render(request, 'account/user_result.html',
+    #            {'user': new_user,
+    #             'action': 'E'})
+    # # else:
+    # #     user_obj = get_object_or_404(CustomUser, id=id)
+    # #     student_obj = Student.objects.filter(user_id=user_obj.id).first()
+    # #     tutor_obj = Tutor.objects.filter(user_id=user_obj.id).first()
+    # #     if student_obj:
+    # #         student_obj.date_of_birth = student_obj.date_of_birth.strftime("%d.%m.%Y")
+    # #     if tutor_obj:
+    # #         tutor_obj.date_of_birth = tutor_obj.date_of_birth.strftime("%d.%m.%Y")
+    # #     user_form = UserEditForm(instance=user_obj)
+    # #     student_form = StudentAdditionalForm(instance=student_obj, prefix='std')
+    # #     tutor_form = TutorAdditionalForm(instance=tutor_obj, prefix='tut')
+    # # # return render(request, 'account/user_register.html', {'user_form': user_form,
+    # # #                                                          'student_form': student_form,
+    # # #                                                          'tutor_form': tutor_form})
+    # return render(request, 'account/user_edit.html',
+    #               {'user_form': user_form,
+    #                'action': 'E'})
 
 
 
