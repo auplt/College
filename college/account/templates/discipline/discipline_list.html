@@ -6,10 +6,10 @@
     <h1>Список дисциплин</h1>
     <a href="{% url 'account:discipline_register' %}">Добавить</a>
     {% for discipline in disciplines %}
-        <h2>Дисциплина {{ discipline.name }}</h2>
+        <h2>{{ discipline.name }}</h2>
         <p>Описание: {{ discipline.description }}</p>
-        <a href="{{ discipline.get_absolute_url }}">Редактировать</a>
+        <a href="{{ discipline.get_absolute_url }}">Подробнее</a>
+        <a href="{{ discipline.get_edit_url }}">Редактировать</a>
         <a href="{{ discipline.get_delete_url }}">Удалить</a>
-        <a href="{% url 'account:curriculum_register' discipline.discipline_id %}">Добавить группу</a>
     {% endfor %}
 {% endblock %}

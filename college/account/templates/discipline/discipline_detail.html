@@ -3,16 +3,39 @@
 {% block title %}Discipline detail{% endblock %}
 
 {% block content %}
-  <h1>{% if action == 'C' %}Добавлена дисциплина
-    {% elif action == 'E' %}Изменена дисциплина
-    {% elif action == 'D' %}Удалена дисциплина
-    {% else %}Дисциплина
+<h1>Дисциплина {{ discipline.name }}</h1>
+<p>Описание: {{ discipline.description }}</p>
+<div class="discipline_groups">
+    <h2>Список групп</h2>
+    <a href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Добавить группу</a>
+    {% if groups %}
+    <ul class="groups_list">
+        {% for group in groups %}
+        <li>
+            <a href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}">
+                Семестр: {{group.group_semester_id__semester_num}}
+                Группа: {{group.group_semester_id__group_id__name}}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
     {% endif %}
-  </h1>
-  <h2>
-      {{ discipline.name }}
-  </h2>
-  <p>Описание: {{ discipline.description }}</p>
-  <a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
-  <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+</div>
+<div class="discipline_tutors">
+    <h2>Список преподавателей</h2>
+    <a href="{% url 'account:curriculum_lesson_register'  %}?discipline_id={{discipline.discipline_id}}">Добавить преподавателя</a>
+    {% if tutors %}
+    <ul class="groups_list">
+        {% for tutor in tutors %}
+        <li>
+            <a href="{% url 'account:user_details' tutor.tutor_id__user_id__id %}">
+                {{tutor.tutor_id__user_id__last_name}} {{tutor.tutor_id__user_id__first_name}} {{tutor.tutor_id__user_id__second_name}}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+<a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
+<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
 {% endblock %}

@@ -1,5 +1,5 @@
 /*
- * Веделение расхождений в датах рождения
+ * Выделение расхождений в датах рождения
  */
 $(document).ready(function () {
   $("#id_tut-date_of_birth")
@@ -11,14 +11,14 @@ $(document).ready(function () {
     })
     .on("input change", (event) => {
       if (
-        $("#id_tut-date_of_birth").val() &&
+        $("#id_std-date_of_birth").val() &&
         $("#id_tut-date_of_birth").val() != $("#id_std-date_of_birth").val()
       ) {
         console.log("1");
         $("#id_std-date_of_birth").css("color", "red");
         $("#id_tut-date_of_birth").css("color", "red");
       } else if (
-        $("#id_tut-date_of_birth").val() == $("#id_std-date_of_birth").val()
+        $("#id_std-date_of_birth").val() == $("#id_std-date_of_birth").val()
       ) {
         $("#id_std-date_of_birth").css("color", "");
         $("#id_tut-date_of_birth").css("color", "");
@@ -26,7 +26,7 @@ $(document).ready(function () {
     });
 });
 /*
- * Веделение расхождений в датах рождения
+ * Выделение расхождений в датах рождения
  */
 $(document).ready(function () {
   $("#id_std-date_of_birth")

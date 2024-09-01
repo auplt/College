@@ -61,4 +61,5 @@
     {% endif %}
     <input class="curriculum_group_form_submit" type="submit" value="Добавить">
 </form>
+<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
 {% endblock %}

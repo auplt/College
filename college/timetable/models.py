@@ -82,6 +82,10 @@ class Discipline(models.Model):
         db_table = 'disciplines'
 
     def get_absolute_url(self):
+        return reverse('account:discipline_details',
+                       args=[self.discipline_id])
+
+    def get_edit_url(self):
         return reverse('account:discipline_edit',
                        args=[self.discipline_id])
 

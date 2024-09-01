@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}User detail{% endblock %}
+
+{% block content %}
+  <h1>{% if action == 'C' %}Добавлена информация о преподавателе
+      {% elif action == 'E' %}Изменена информация о преподавателе
+      {% elif action == 'D' %}Удалена информация о преподавателе
+      {% else %}Преподаватель
+      {% endif %}
+  </h1>
+  <h2>
+      {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}
+  </h2>
+  <a href="{% url 'account:user_edit' user.id %}">Вернуться к редактированию</a>
+{% endblock %}

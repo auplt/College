@@ -14,10 +14,12 @@
     {{ user_form.as_p }}
           <div class="register_user__student">
           <h2>Дополнительная информация о студенте</h2>
+          <a href="{% url 'account:user_delete_student' user.id %}">Удалить студента</a>
       {{ student_form.as_p }}
       </div>
       <div class="register_user__tutor">
           <h2>Дополнительная информация о преподавателе</h2>
+          <a href="{% url 'account:user_delete_tutor' user.id %}">Удалить преподавателя</a>
       {{ tutor_form.as_p }}
       </div>
     {% csrf_token %}

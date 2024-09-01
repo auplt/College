@@ -19,8 +19,11 @@ urlpatterns = [
     path('user/details/<int:id>', views.user_details, name='user_details'),
     path('user/edit/<int:id>', views.user_edit, name='user_edit'),
     path('user/delete/<int:id>', views.user_delete, name='user_delete'),
+    path('user/delete/<int:id>/tutor', views.user_delete_tutor, name='user_delete_tutor'),
+    path('user/delete/<int:id>/student', views.user_delete_student, name='user_delete_student'),
 
     # path('lgout/', LogoutView.as_view(template_name='registration/logged_out.html'), name='user_logout'),
+    path('group/details/<int:group_id>', views.group_details, name='group_details'),
     path('register_group', views.register_group, name='register_group'),
 
     path('discipline/', views.discipline_list, name='discipline_list'),
@@ -51,6 +54,7 @@ urlpatterns = [
     path('curriculum/register/', views.curriculum_register, name='curriculum_register'),
 
     path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
+    path(r'curriculum_lesson/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
     path('curriculum_lesson/register/', views.curriculum_lesson_register, name='curriculum_lesson_register'),
     path('tt_lesson/register/', views.register_tt_lesson, name='tt_lesson'),
 

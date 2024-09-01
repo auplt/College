@@ -324,6 +324,9 @@ class CurriculumLessonRegisterForm(forms.ModelForm):
         self.fields['curriculum_id'].widget.attrs['class'] = 'choice_input'
         self.fields['tutor_id'].widget.attrs['class'] = 'choice_input'
 
+    def set_initial_curriculum_ids(self, objects):
+        self.fields['curriculum_id'].queryset = objects
+
     class Meta:
         model = CurriculumLesson
         fields = ['lesson_type', 'duration', 'curriculum_id', 'tutor_id' ]

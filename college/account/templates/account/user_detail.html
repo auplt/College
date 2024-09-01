@@ -10,13 +10,19 @@
         {% if student %}
         Дата рождения: {{ student.date_of_birth }}
         <h2> Учебные группы </h2>
-         <a href="{% url 'account:group_member_register' student.student_id %}">Добавить в группу</a>
+        <a href="{% url 'account:group_member_register' %}?student_id={{student.student_id}}">Добавить в группу</a>
         <div class="user_info_groups">
             {% if groups %}
-            {% for group in groups %}
-            Семестр: {{group.group_semesters__semester_num}}
-            Группа: {{group.group_semesters__group_id__name}}
-            {% endfor %}
+            <ul class="user_info_groups_list">
+                {% for group in groups %}
+                <li>
+                    <a href="{% url 'account:group_details' group.group_semesters__group_id__group_id %}">
+                        Семестр: {{group.group_semesters__semester_num}}
+                        Группа: {{group.group_semesters__group_id__name}}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
             {% endif %}
         </div>
         {% endif %}
@@ -25,12 +31,16 @@
         {% if tutor %}
         Дата рождения: {{ tutor.date_of_birth }}
         <h2> Дисциплины </h2>
-        <a href="{% url 'account:curriculum_lesson_register' tutor.tutor_id %}">Добавить дисциплину</a>
+        <a href="{% url 'account:curriculum_lesson_register' %}?tutor_id={{tutor.tutor_id}}">Добавить дисциплину</a>
         <div class="user_info_disciplines">
             {% if disciplines %}
-            {% for discipline in disciplines %}
-            <a href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">{{discipline.curriculum_id__discipline_id__name}}</a>
-            {% endfor %}
+            <ul class="user_info_disciplines_list">
+                {% for discipline in disciplines %}
+                <li>
+                    <a href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">{{discipline.curriculum_id__discipline_id__name}}</a>
+                </li>
+                {% endfor %}
+            </ul>
             {% endif %}
         </div>
         {% endif %}

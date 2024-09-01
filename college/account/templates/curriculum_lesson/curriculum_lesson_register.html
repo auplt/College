@@ -10,4 +10,7 @@
     {% csrf_token %}
     <p><input type="submit" value="Добавить"></p>
   </form>
+  {% if discipline %}
+  <a href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Нужной группы нет в списке</a>
+  {% endif %}
 {% endblock %}
