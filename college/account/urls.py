@@ -49,7 +49,9 @@ urlpatterns = [
 
     re_path(r'group_semester/register/?(?P<group_id>\d+)?/?$', views.group_semester_register, name='group_semester_register'),
     path('group_semester/register', views.group_semester_register, name='group_semester_register'),
+    re_path(r'group_semester/delete/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?', views.group_semester_delete, name='group_semester_delete'),
 
+    re_path(r'group_member/register/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?$', views.group_member_register, name='group_member_register'),
     re_path(r'group_member/register/?(?P<student_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
     re_path(r'group_member/register/?(?P<group_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
     path('group_member/register', views.group_member_register, name='group_member_register'),

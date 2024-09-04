@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Group semester delete error{% endblock %}
+
+{% block content %}
+    <h1>Ошибка удаления</h1>
+    <h2>Невозможно удалить {{ group.name }}</h2>
+    <p>Семестр {{group_semester.semester_num}}</p>
+    <p class="error_msg">Имеются объекты, ссылающиеся на этот</p>
+    <a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+    <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+{% endblock %}

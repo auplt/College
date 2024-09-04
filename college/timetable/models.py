@@ -162,8 +162,8 @@ class GroupMember(models.Model):
     class Meta:
         db_table = 'group_members'
 
-    # def __str__(self):
-    #     return f'{self.group_semester_id} {self.student_id}'
+    def __str__(self):
+        return f'{self.group_member_id}'
 
 
 class Curriculum(models.Model):

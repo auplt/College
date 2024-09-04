@@ -7,21 +7,33 @@
 {% block content %}
 <h1>Группа {{ group.name }}</h1>
 <a href="{% url 'account:group_edit' group.group_id}">Редактировать</a>
+
 <div class="group_members">
     <h2>Список студентов</h2>
+    {% if group_members %}
     <a href="{% url 'account:group_member_register' %}?group_id={{group.group_id}}">Добавить студента</a>
+    {% endif %}
+    <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Добавить семестр</a>
     {% if group_members %}
         <ul class="group_members_list">
-        {% with -1 as prev_semester_id_std %}
+
+        {% with prev_semester_num_std=-1 prev_sem_id=None %}
             {% for group_member in group_members %}
-                {% if prev_semester_id_std != group_member.group_semester_id__group_semester_id %}
-                    {% if prev_semester_id_std != -1 %}
+                {% if prev_semester_num_std != group_member.group_semester_id__semester_num %}
+                    {% if prev_semester_num_std != -1 %}
+                        {% if prev_sem_id %}
                             </ul>
+                        {% endif %}
                         </li>
                     {% endif %}
             <li>Семестр {{group_member.group_semester_id__semester_num}}
+                <a href="{% url 'account:group_semester_delete' %}?group_id={{group.group_id}}&semester_num={{group_member.group_semester_id__semester_num}}">Удалить семестр</a>
+                <a href="{% url 'account:group_member_register' %}?group_id={{group.group_id}}&semester_num={{group_member.group_semester_id__semester_num}}">Добавить студента</a>
+                    {% if group_member.group_semester_id %}
                 <ul>
+                    {% endif %}
                 {% endif %}
+                    {% if group_member.student_id__user_id__id %}
                     <li>
                         <a href="{% url 'account:user_details' group_member.student_id__user_id__id %}">
                             {{group_member.student_id__user_id__last_name}}
@@ -29,10 +41,14 @@
                             {{group_member.student_id__user_id__second_name}}
                         </a>
                     </li>
-                {% update_variable group_member.group_semester_id__group_semester_id as prev_semester_id_std %}
+                    {% endif %}
+                {% update_variable group_member.group_semester_id__semester_num as prev_semester_num_std %}
+                {% update_variable group_member.group_semester_id as prev_sem_id %}
             {% endfor %}
         {% endwith %}
+                    {% if group_member.group_semester_id %}
                 </ul>
+                {% endif %}
             </li>
         </ul>
     {% endif %}
@@ -40,38 +56,50 @@
 
 <div class="group_lessons">
     <h2>Список занятий</h2>
-    <a href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Добавить занятие</a>
     {% if group_lessons %}
-        {% with prev_discipline_id=-1 prev_semester_id=-1 %}
+    <a href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Добавить занятие</a>
+    {% endif %}
+    <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Добавить семестр</a>
+    {% if group_lessons %}
         <ul class="group_lessons_list">
+        {% with prev_semester_num=-1 prev_sem_id=None prev_dis_id=None prev_discipline_name='' %}
             {% for group_lesson in group_lessons %}
-                {% if prev_discipline_id != group_lesson.curriculum_id__discipline_id__discipline_id %}
-                    {% if prev_discipline_id != -1 %}
-                        </ul>
-                    </li>
-                    {% endif %}
-                    {% if prev_semester_id != group_lesson.curriculum_id__group_semester_id__group_semester_id %}
-                        {% if prev_semester_id != -1 %}
-
-                </ul>
-            </li>
+                {% if prev_discipline_name != group_lesson.curriculum_id__discipline_id__name or prev_discipline_name is None %}
+                    {% if prev_discipline_name != '' %}
+                        {% if prev_dis_id %}
+                            </ul>
                         {% endif %}
-            <li>Семестр {{group_lesson.curriculum_id__group_semester_id__semester_num}}
-                <ul>
+                        </li>
                     {% endif %}
+                    {% if prev_semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
+                        {% if prev_semester_num != -1 %}
+                            {% if prev_sem_id %}
+                                </ul>
+                            {% endif %}
+                            </li>
+                        {% endif %}
+
+
+
+            <li>Семестр {{group_lesson.curriculum_id__group_semester_id__semester_num}}
+                <a href="{% url 'account:group_semester_delete' %}?group_id={{group.group_id}}&semester_num={{group_lesson.curriculum_id__group_semester_id__semester_num}}">Удалить семестр</a>
+                    {% update_variable -1 as prev_dis_id %}
+                    {% update_variable '' as prev_discipline_name %}
+                        {% if group_lesson.curriculum_id__group_semester_id__group_semester_id %}
+                <ul>
+                        {% endif %}
+                    {% endif %}
+                    {% if group_lesson.curriculum_id__discipline_id__name %}
                     <li>
                         <a href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}">
                             {{group_lesson.curriculum_id__discipline_id__name}}
                         </a>
+                        {% if group_lesson.curriculum_id__discipline_id__discipline_id %}
                         <ul>
-                            <li>
-                                <a href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}">
-                                    {{group_lesson.tutor_id__user_id__last_name}}
-                                    {{group_lesson.tutor_id__user_id__first_name}}
-                                    {{group_lesson.tutor_id__user_id__second_name}}
-                                </a>
-                            </li>
-                {% else %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                {% if group_lesson.tutor_id__user_id__id %}
                             <li>
                                 <a href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}">
                                     {{group_lesson.tutor_id__user_id__last_name}}
@@ -80,13 +108,20 @@
                                 </a>
                             </li>
                 {% endif %}
-                {% update_variable group_lesson.curriculum_id__discipline_id__discipline_id as prev_discipline_id %}
-                {% update_variable group_lesson.curriculum_id__group_semester_id__group_semester_id as prev_semester_id %}
+
+                {% update_variable group_lesson.curriculum_id__group_semester_id__semester_num as prev_semester_num %}
+                {% update_variable group_lesson.curriculum_id__discipline_id__discipline_id as prev_dis_id %}
+                {% update_variable group_lesson.curriculum_id__discipline_id__name as prev_discipline_name %}
+                {% update_variable group_lesson.curriculum_id__group_semester_id__group_semester_id as prev_sem_id %}
             {% endfor %}
         {% endwith %}
+        {% if group_lesson.curriculum_id__discipline_id__discipline_id %}
                         </ul>
+        {% endif %}
+        {% if group_lesson.curriculum_id__group_semester_id__group_semester_id %}
                     </li>
                 </ul>
+        {% endif %}
             </li>
         </ul>
     {% endif %}

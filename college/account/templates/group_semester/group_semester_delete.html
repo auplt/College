@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Group semester delete{% endblock %}
+
+{% block content %}
+<h1>Удаление семестра группы</h1>
+<h2>{{ group.name }}</h2>
+<p>Семестр {{ group_semester.semester_num }}</p>
+<form method="POST">
+    <p>Вы точно хотите удалить этот семестр для группы {{ group.name }}?</p>
+    <input type="submit" value="Да">
+    <a href="{% url 'account:group_details' group.group_id %}">Отмена</a>
+    {% csrf_token %}
+</form>
+<a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+
+{% endblock %}
