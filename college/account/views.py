@@ -17,7 +17,7 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditio
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
 from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
-    GroupMember, CurriculumLesson
+    GroupMember, CurriculumLesson, Group
 
 
 def user_login(request):
@@ -85,18 +85,18 @@ def user_details(request, id):
     # groups =(GroupMember.objects
     #           .prefetch_related(
     #     Prefetch('student_id__user_id', queryset=CustomUser.objects.filter(id=id)))
-    #           .prefetch_related('group_semesters'))
+    #           .prefetch_related('group_semester_id'))
     # .select_related(
-    #     'group_semesters')
+    #     'group_semester_id')
     # groups = GroupMember.objects.prefetch_related(Prefetch('student_id',
     #     queryset=Student.objects.prefetch_related(Prefetch('user_id',
     #         queryset=CustomUser.objects.filter(id=id))),
-    #     )).select_related('group_semesters__group_id')
+    #     )).select_related('group_semester_id__group_id')
 
     # groups = GroupMember.objects.prefetch_related(
     #     Prefetch('student_id__user_id', queryset=CustomUser.objects.filter(id=id)
     #
-    #     )).select_related('group_semesters__group_id')
+    #     )).select_related('group_semester_id__group_id')
 
     # print(CustomUser.objects.filter(id=id))
     # print(groups.query)
@@ -115,13 +115,13 @@ def user_details(request, id):
     #     except Exception:
     #         pass
     # print(groups.get(student_id=5).student_id.user_id)
-    # print(groups.get(student_id=5).group_semesters.group_id)
+    # print(groups.get(student_id=5).group_semester_id.group_id)
     # print(groups.filter(user_id=5).query)
     # GroupMember.objects.filter(student_id=)
 
-    groups = GroupMember.objects.select_related('student_id__user_id', 'group_semesters__group_id') \
-        .values('group_semesters__group_id__name', 'group_semesters__semester_num',
-                'group_semesters__group_id__group_id') \
+    groups = GroupMember.objects.select_related('student_id__user_id', 'group_semester_id__group_id') \
+        .values('group_semester_id__group_id__name', 'group_semester_id__semester_num',
+                'group_semester_id__group_id__group_id') \
         .filter(student_id__user_id__id=id).all()
 
     disciplines = CurriculumLesson.objects.select_related('tutor_id__user_id', 'curriculum_id__discipline_id') \
@@ -382,12 +382,61 @@ def user_delete_student(request, id):
     return render(request, 'account/student_delete.html', {'user': user_obj})
 
 
+# GROUP BLOCK
+
+
+def group_list(request):
+    groups = Group.objects.all()
+    return render(request, 'group/group_list.html', {'groups': groups})
+
+
 def group_details(request, group_id):
-    pass
+    group_obj = get_object_or_404(Group.objects, group_id=group_id)
+    group_members_obj = (GroupMember.objects.select_related('group_semester_id__group_id', 'student_id__user_id')
+                         .values('group_semester_id__group_semester_id',
+                                 'group_semester_id__semester_num',
+                                 'student_id__user_id__id',
+                                 'student_id__user_id__last_name',
+                                 'student_id__user_id__first_name', 'student_id__user_id__second_name')
+                         .filter(group_semester_id__group_id__group_id=group_id).all())
+    group_lessons_obj = (CurriculumLesson.objects.select_related('curriculum_id__discipline_id',
+                                                                 'tutor_id__user_id',
+                                                                 'curriculum_id__group_semester_id'
+                                                                 )
+                         .values('curriculum_id__discipline_id__name',
+                                 'curriculum_id__discipline_id__discipline_id',
+                                 'curriculum_id__group_semester_id__group_semester_id',
+                                 'curriculum_id__group_semester_id__semester_num',
+                                 'tutor_id__user_id__id',
+                                 'tutor_id__user_id__last_name',
+                                 'tutor_id__user_id__first_name',
+                                 'tutor_id__user_id__second_name'
+                                 )
+                         .filter(curriculum_id__group_semester_id__group_id__group_id=group_id).all())
+    # print(group_lessons_obj.query)
+    # print(group_lessons_obj.query)
+    # groups_obj = (Curriculum.objects.select_related('group_semester_id__group_id')
+    #               .values('group_semester_id__semester_num', 'group_semester_id__group_id__name',
+    #                       'group_semester_id__group_id__group_id')
+    #               .filter(discipline_id__discipline_id=discipline_id).all())
+    # tutors_obj = (CurriculumLesson.objects.select_related('tutor_id__user_id')
+    #               .values('tutor_id__user_id__id', 'tutor_id__user_id__last_name', 'tutor_id__user_id__first_name',
+    #                       'tutor_id__user_id__second_name')
+    #               .distinct()
+    #               .filter(curriculum_id__discipline_id__discipline_id=discipline_id).all())
+
+    # print(groups_obj.__dict__)
+
+    context = {'group': group_obj,
+               'group_members': group_members_obj,
+               'group_lessons': group_lessons_obj
+               }
+    # print(context)
+    return render(request, 'group/group_detail.html', context)
 
 
 @transaction.atomic
-def register_group(request):
+def group_register(request):
     if request.method == 'POST':
         group_form = GroupRegisterForm(request.POST)
         if group_form.is_valid():
@@ -398,10 +447,17 @@ def register_group(request):
             new_group_semester.set_group_id(new_group)
             new_group_semester.save()
             return render(request, 'group/group_register_done.html', {'group_form': group_form})
-
     else:
         group_form = GroupRegisterForm()
     return render(request, 'group/group_register.html', {'group_form': group_form})
+
+
+def group_edit(request):
+    pass
+
+
+def group_delete(request):
+    pass
 
 
 # DISCIPLINE BLOCK
@@ -609,7 +665,8 @@ def load_max_semester(request):
         return JsonResponse(max_sem_num)
 
 
-def register_group_semester(request):
+def group_semester_register(request):
+    group_obj = None
     if request.method == 'POST':
         group_semester_form = GroupSemesterRegisterForm(request.POST)
         if group_semester_form.is_valid():
@@ -618,11 +675,19 @@ def register_group_semester(request):
             return render(request, 'group_semester/group_semester_register_done.html',
                           {'group_semester_form': new_group_semester})
     else:
-        group_semester_form = GroupSemesterRegisterForm()
-    return render(request, 'group_semester/group_semester_register.html', {'group_semester_form': group_semester_form})
+        if 'group_id' in request.GET.dict():
+            group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
+            group_semester_form = GroupSemesterRegisterForm(initial={'group_id': group_obj})
+        else:
+            group_semester_form = GroupSemesterRegisterForm()
+    context = {'group_semester_form': group_semester_form,
+               'group': group_obj
+               }
+    return render(request, 'group_semester/group_semester_register.html', context)
 
 
 def group_member_register(request):
+    group_obj = None
     if request.method == 'POST':
         group_member_form = GroupMemberRegisterForm(request.POST)
         if group_member_form.is_valid():
@@ -634,14 +699,25 @@ def group_member_register(request):
         if 'student_id' in request.GET.dict():
             obj = get_object_or_404(Student, student_id=request.GET.get('student_id'))
             group_member_form = GroupMemberRegisterForm(initial={'student_id': obj})
+        if 'group_id' in request.GET.dict():
+            group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
+            objects = GroupSemester.objects.filter(group_id=request.GET.get('group_id')).order_by('-semester_num')
+            if objects is not None:
+                group_member_form = GroupMemberRegisterForm(initial={'group_semester_id': objects.first().pk})
+            else:
+                group_member_form = GroupMemberRegisterForm()
+            group_member_form.set_initial_group_semester_ids(objects.all())
         else:
             group_member_form = GroupMemberRegisterForm()
-    return render(request, 'group_member/group_member_register.html', {'group_member_form': group_member_form})
+    context = {'group_member_form': group_member_form,
+            'group': group_obj
+        }
+    return render(request, 'group_member/group_member_register.html', context)
 
 
 @transaction.atomic
 def curriculum_register(request):
-    new_curriculum = None
+    new_curriculum, group_obj = None, None
     if request.method == 'POST':
 
         curriculum_form = CurriculumRegisterForm(request.POST)
@@ -669,13 +745,20 @@ def curriculum_register(request):
         if 'discipline_id' in request.GET.dict():
             obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
             curriculum_form = CurriculumRegisterForm(initial={'discipline_id': obj})
+        elif 'group_id' in request.GET.dict():
+            group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
+            group_semesters_obj = (GroupSemester.objects
+                               .filter(group_id=request.GET.get('group_id')).order_by('-semester_num'))
+            curriculum_form = CurriculumRegisterForm(initial={'group_semester_id': group_semesters_obj.first()})
+            curriculum_form.set_initial_group_semester_ids(group_semesters_obj.all())
         else:
             curriculum_form = CurriculumRegisterForm()
-    return render(request, 'curriculum/curriculum_from.html', {'curriculum_form': curriculum_form})
+    return render(request, 'curriculum/curriculum_from.html', {'curriculum_form': curriculum_form,
+                                                               'group': group_obj})
 
 
 def curriculum_lesson_register(request):
-    discipline_obj = None
+    discipline_obj, group_obj = None, None
     if request.method == 'POST':
         curriculum_lesson_form = CurriculumLessonRegisterForm(request.POST)
         if curriculum_lesson_form.is_valid():
@@ -690,13 +773,21 @@ def curriculum_lesson_register(request):
         if 'discipline_id' in request.GET.dict():
             discipline_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
             curriculums_obj = Curriculum.objects.filter(discipline_id=request.GET.get('discipline_id')).all()
-            curriculum_lesson_form = CurriculumLessonRegisterForm(initial={'discipline_id': discipline_obj})
+            curriculum_lesson_form = CurriculumLessonRegisterForm()
+            curriculum_lesson_form.set_initial_curriculum_ids(curriculums_obj)
+        if 'group_id' in request.GET.dict():
+            group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
+            curriculums_obj = (Curriculum.objects
+                               .select_related('group_semester_id')
+                               .filter(group_semester_id__group_id=request.GET.get('group_id')).all())
+            curriculum_lesson_form = CurriculumLessonRegisterForm()
             curriculum_lesson_form.set_initial_curriculum_ids(curriculums_obj)
         else:
             curriculum_lesson_form = CurriculumLessonRegisterForm()
     return render(request, 'curriculum_lesson/curriculum_lesson_register.html',
                   {'curriculum_lesson_form': curriculum_lesson_form,
-                   'discipline': discipline_obj})
+                   'discipline': discipline_obj,
+                   'group': group_obj})
 
 
 def register_tt_lesson(request):

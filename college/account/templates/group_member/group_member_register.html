@@ -10,4 +10,9 @@
     {% csrf_token %}
     <p><input type="submit" value="Добавить"></p>
   </form>
+{{group_member_form.group_id}}
+  {% if group %}
+  <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Группы с нужным номером семестра нет в списке</a>
+  {% endif %}
+  <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
 {% endblock %}

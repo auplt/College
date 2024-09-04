@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Groups list{% endblock %}
+
+{% block content %}
+    <h1>Список групп</h1>
+    <a href="{% url 'account:group_register' %}">Добавить</a>
+    {% for group in groups %}
+        <h2>{{ group.name }}</h2>
+        <a href="{{ group.get_absolute_url }}">Подробнее</a>
+        <a href="{{ group.get_edit_url }}">Редактировать</a>
+        <a href="{{ group.get_delete_url }}">Удалить</a>
+    {% endfor %}
+{% endblock %}

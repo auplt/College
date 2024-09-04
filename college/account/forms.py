@@ -235,6 +235,7 @@ class GroupSemesterRegisterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['group_id'].widget.attrs['class'] = 'choice_input'
         self.fields['semester_num'].queryset = GroupSemester.objects.none()
 
     class Media:
@@ -242,17 +243,21 @@ class GroupSemesterRegisterForm(forms.ModelForm):
 
 
 class GroupMemberRegisterForm(forms.ModelForm):
-    group_semesters = forms.ModelChoiceField(GroupSemester.objects.all(), empty_label='-----', label='Группа')
+    group_semester_id = forms.ModelChoiceField(GroupSemester.objects.all(), empty_label='-----', label='Группа')
     student_id = forms.ModelChoiceField(Student.objects.all(), empty_label='-----', label='Студент')
 
     def __init__(self, *args, **kwargs):
         super(GroupMemberRegisterForm, self).__init__(*args, **kwargs)
-        self.fields['group_semesters'].widget.attrs['class'] = 'choice_input'
+        self.fields['group_semester_id'].widget.attrs['class'] = 'choice_input'
         self.fields['student_id'].widget.attrs['class'] = 'choice_input'
+
+    def set_initial_group_semester_ids(self, objects):
+        self.fields['group_semester_id'].queryset = objects
+
 
     class Meta:
         model = GroupMember
-        fields = ['student_id', 'group_semesters']
+        fields = ['student_id', 'group_semester_id']
 
 
 class CurriculumRegisterForm(forms.ModelForm):
@@ -263,6 +268,9 @@ class CurriculumRegisterForm(forms.ModelForm):
         super(CurriculumRegisterForm, self).__init__(*args, **kwargs)
         self.fields['discipline_id'].widget.attrs['class'] = 'choice_input'
         self.fields['group_semester_id'].widget.attrs['class'] = 'choice_input'
+
+    def set_initial_group_semester_ids(self, objects):
+        self.fields['group_semester_id'].queryset = objects
 
     def clean(self):
         cleaned_data = super().clean()
@@ -286,18 +294,18 @@ class CurriculumRegisterForm(forms.ModelForm):
                                    ["Выберите корректный вариант. Вашего варианта нет среди допустимых значений.", ])
                     break
 
-        group_semesters = self.data.getlist('group_semester_id', None)
-        if group_semesters is not None:
-            group_semesters_without_blank = list(filter(lambda x: x != '', group_semesters))
-            print(group_semesters_without_blank)
-            if len(group_semesters_without_blank) != len(set(group_semesters_without_blank)):
+        group_semester_id = self.data.getlist('group_semester_id', None)
+        if group_semester_id is not None:
+            group_semester_id_without_blank = list(filter(lambda x: x != '', group_semester_id))
+            print(group_semester_id_without_blank)
+            if len(group_semester_id_without_blank) != len(set(group_semester_id_without_blank)):
                 self.add_error('group_semester_id', ["Поле не должно содержать повторяющихся значений.", ])
-            for grsem in group_semesters:
+            for grsem in group_semester_id:
                 print("***")
                 if grsem == '':
                     self.add_error('group_semester_id', ["Обязательное поле.", ])
                     break
-            for grsem in group_semesters:
+            for grsem in group_semester_id:
                 print("*****")
                 if grsem != '' and not GroupSemester.objects.filter(group_semester_id=grsem).exists():
                     self.add_error('group_semester_id',

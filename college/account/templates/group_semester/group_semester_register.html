@@ -10,9 +10,13 @@
 {% block content %}
   <h1>Добавить новый семестр</h1>
   <p>Добавьте семестр, используя форму ниже:</p>
-  <form class="register_group_semester" method="post" data-max-semester="{% url 'ajax_load_max_semester' %}">
+  <form class="register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}">
     {{ group_semester_form.as_p }}
     {% csrf_token %}
     <p><input type="submit" value="Создать семестр"></p>
   </form>
+  {% if group %}
+  <a href="{% url 'account:group_register' %}">Нужной группы нет в списке</a>
+  {% endif %}
+  <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
 {% endblock %}

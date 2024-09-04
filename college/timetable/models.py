@@ -57,8 +57,6 @@ class Student(models.Model):
         db_table = 'students'
 
 
-
-
 class Group(models.Model):
     group_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=16, unique=True)
@@ -68,6 +66,18 @@ class Group(models.Model):
 
     class Meta:
         db_table = 'groups'
+
+    def get_absolute_url(self):
+        return reverse('account:group_details',
+                       args=[self.group_id])
+
+    def get_edit_url(self):
+        return reverse('account:group_edit',
+                       args=[self.group_id])
+
+    def get_delete_url(self):
+        return reverse('account:group_delete',
+                       args=[self.group_id])
 
 
 class Discipline(models.Model):
@@ -146,14 +156,14 @@ class GroupSemester(models.Model):
 
 class GroupMember(models.Model):
     group_member_id = models.AutoField(primary_key=True)
-    group_semesters = models.ForeignKey(GroupSemester, on_delete=models.PROTECT, db_column='group_semester_id')
+    group_semester_id = models.ForeignKey(GroupSemester, on_delete=models.PROTECT, db_column='group_semester_id')
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
     class Meta:
         db_table = 'group_members'
 
     # def __str__(self):
-    #     return f'{self.group_semesters} {self.student_id}'
+    #     return f'{self.group_semester_id} {self.student_id}'
 
 
 class Curriculum(models.Model):

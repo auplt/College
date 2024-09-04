@@ -16,9 +16,9 @@
             <ul class="user_info_groups_list">
                 {% for group in groups %}
                 <li>
-                    <a href="{% url 'account:group_details' group.group_semesters__group_id__group_id %}">
-                        Семестр: {{group.group_semesters__semester_num}}
-                        Группа: {{group.group_semesters__group_id__name}}
+                    <a href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}">
+                        Семестр: {{group.group_semester_id__semester_num}}
+                        Группа: {{group.group_semester_id__group_id__name}}
                     </a>
                 </li>
                 {% endfor %}

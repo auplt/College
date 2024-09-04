@@ -56,10 +56,13 @@
         </div>
         {% csrf_token %}
     </div>
+    <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">
+        Нужной группы нет в списке
+    </a>
+    <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
     {% if curriculum_form.errors %}
     {{ curriculum_form.non_field_errors }}
     {% endif %}
     <input class="curriculum_group_form_submit" type="submit" value="Добавить">
 </form>
-<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
 {% endblock %}

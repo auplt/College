@@ -2,7 +2,7 @@
 URL configuration for account app.
 """
 from django.contrib.auth.views import LogoutView
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_views
 from . import views
 
@@ -15,16 +15,19 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
 
     path('user/', views.user_list, name='user_list'),
-    path('user/register/', views.user_register, name='user_register'),
     path('user/details/<int:id>', views.user_details, name='user_details'),
+    path('user/register/', views.user_register, name='user_register'),
     path('user/edit/<int:id>', views.user_edit, name='user_edit'),
     path('user/delete/<int:id>', views.user_delete, name='user_delete'),
     path('user/delete/<int:id>/tutor', views.user_delete_tutor, name='user_delete_tutor'),
     path('user/delete/<int:id>/student', views.user_delete_student, name='user_delete_student'),
 
     # path('lgout/', LogoutView.as_view(template_name='registration/logged_out.html'), name='user_logout'),
+    path('group/', views.group_list, name='group_list'),
     path('group/details/<int:group_id>', views.group_details, name='group_details'),
-    path('register_group', views.register_group, name='register_group'),
+    path('group/register', views.group_register, name='group_register'),
+    path('group/edit/<int:group_id>', views.group_edit, name='group_edit'),
+    path('group/delete/<int:group_id>', views.group_delete, name='group_delete'),
 
     path('discipline/', views.discipline_list, name='discipline_list'),
     path('discipline/register', views.discipline_register, name='discipline_register'),
@@ -44,20 +47,24 @@ urlpatterns = [
     path('lesson_time/edit/<int:lesson_id>', views.lesson_time_edit, name='lesson_time_edit'),
     path('lesson_time/delete/<int:lesson_id>', views.lesson_time_delete, name='lesson_time_delete'),
 
-    path('group_semester/register', views.register_group_semester, name='register_group_semester'),
+    re_path(r'group_semester/register/?(?P<group_id>\d+)?/?$', views.group_semester_register, name='group_semester_register'),
+    path('group_semester/register', views.group_semester_register, name='group_semester_register'),
 
-    path(r'group_member/register/?(?P<student_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
+    re_path(r'group_member/register/?(?P<student_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
+    re_path(r'group_member/register/?(?P<group_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
     path('group_member/register', views.group_member_register, name='group_member_register'),
 
     # path(r'^curriculum/register/?(', views.curriculum_register, name='curriculum_register'),
-    path(r'curriculum/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_register, name='curriculum_register'),
+    re_path(r'curriculum/register/?(?P<group_id>\d+)?/?$', views.curriculum_register, name='curriculum_register'),
+    re_path(r'curriculum/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_register, name='curriculum_register'),
     path('curriculum/register/', views.curriculum_register, name='curriculum_register'),
 
-    path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
-    path(r'curriculum_lesson/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
+    re_path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
+    re_path(r'curriculum_lesson/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
     path('curriculum_lesson/register/', views.curriculum_lesson_register, name='curriculum_lesson_register'),
     path('tt_lesson/register/', views.register_tt_lesson, name='tt_lesson'),
 
+    # path(r'group_semester/ajax/load_max_semester/?(?P<group_id>\d+)?/?$', views.load_max_semester, name='ajax_load_max_semester'),
     path('group_semester/ajax/load_max_semester', views.load_max_semester, name='ajax_load_max_semester')
 
                ]
