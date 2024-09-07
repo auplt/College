@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Discipline detail{% endblock %}
+
+{% block content %}
+<h1>
+    {% if action == 'C' %}Занятие добавлено
+    {% elif action == 'E' %}Занятие изменено
+    {% elif action == 'D' %}Занятие удалено
+    {% else %}Занятие
+    {% endif %}
+</h1>
+<p>
+    Занятие {{ curriculum_lesson.curriculum_id__discipline_id__name }}
+    из плана занятий группы {{curriculum_lesson.curriculum_id__group_semester_id__group_id__name}}
+    на {{curriculum_lesson.curriculum_id__group_semester_id__semester_num}} семестр,
+    которую преподает {{curriculum_lesson.tutor_id__user_id__last_name}}
+    {{curriculum_lesson.tutor_id__user_id__first_name}}
+    {{curriculum_lesson.tutor_id__user_id__second_name}}
+</p>
+<a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+{% if curriculum_lesson.curriculum_id__group_semester_id__group_id %}
+<a href="{% url 'account:group_details' curriculum_lesson.curriculum_id__group_semester_id__group_id %}">Go back</a>
+{% endif %}
+{% endblock %}

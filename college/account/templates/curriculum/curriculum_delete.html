@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Curriculum delete{% endblock %}
+
+{% block content %}
+<h1>Удаление плана занятий</h1>
+<h2>Удаление занятия {{ discipline.name }} из плана занятий {{group_semester.group_id__name}} на {{group_semester.semester_num}} семестр</h2>
+<form method="POST">
+    <p>Вы действительно хотите {{ discipline.name }} из плана занятий {{group_semester.group_id__name}} на {{group_semester.semester_num}} семестр?</p>
+    <input type="submit" value="Да">
+    <a href="{% url 'account:group_details' group_semester.group_id %}">Отмена</a>
+    {% csrf_token %}
+</form>
+<a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+
+{% endblock %}

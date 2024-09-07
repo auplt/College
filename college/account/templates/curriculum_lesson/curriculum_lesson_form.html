@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Create curriculum lesson{% endblock %}
+
+{% block content %}
+  <h1>
+      {% if action == 'C' %}Добавление занятия в план
+      {% elif action == 'E' %}Изменение занятия
+      {% elif action == 'D' %}Удаление занятия
+      {% else %}Занятие
+      {% endif %}
+  </h1>
+  <p>{% if action == 'C' %}Добавьте занятие в план, используя форму ниже:
+    {% elif action == 'E' %}Измените занятие в плане, используя форму ниже:
+    {% else %}Используйте форму ниже:
+    {% endif %}
+  </p>
+  <form class="register_curriculum_lesson" method="post">
+    {{ curriculum_lesson_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+  </form>
+  {% if discipline %}
+  <a href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Нужной группы нет в списке</a>
+  {% endif %}
+  {% if group %}
+  <a href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Нужной группы нет в списке</a>
+  {% endif %}
+{% endblock %}

@@ -14,7 +14,6 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import UpdateView
 from django.db import connection
 
-
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, \
     GroupRegisterForm, \
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
@@ -395,17 +394,18 @@ def group_list(request):
 
 def group_details(request, group_id):
     group_obj = get_object_or_404(Group.objects, group_id=group_id)
-    group_members_obj = (GroupMember.objects.select_related('group_semester_id__group_id', 'student_id__user_id', 'group_semester_id')
-                         .values(
-        'group_semester_id__group_semester_id',
-                                'group_semester_id',
-                                 'group_semester_id__semester_num',
-                                 'student_id__user_id__id',
-                                 'student_id__user_id__last_name',
-                                 'student_id__user_id__first_name', 'student_id__user_id__second_name')
-                         .filter(group_semester_id__group_id__group_id=group_id).order_by('-group_semester_id__semester_num').all()
-                         )
-
+    group_members_obj = (
+        GroupMember.objects.select_related('group_semester_id__group_id', 'student_id__user_id', 'group_semester_id')
+        .values(
+            'group_semester_id__group_semester_id',
+            'group_semester_id',
+            'group_semester_id__semester_num',
+            'group_member_id',
+            'student_id__user_id__id',
+            'student_id__user_id__last_name',
+            'student_id__user_id__first_name', 'student_id__user_id__second_name')
+        .filter(group_semester_id__group_id__group_id=group_id).order_by('-group_semester_id__semester_num').all()
+    )
 
     group_members_obj.query.alias_map['group_members'].join_type = "FULL OUTER JOIN"
     group_members_obj.query.alias_map['group_semesters'].join_type = "FULL OUTER JOIN"
@@ -415,14 +415,13 @@ def group_details(request, group_id):
     print(group_members_obj)
     print(group_members_obj.query)
 
-#     with connection.cursor() as cursor:
-#         cursor.execute("SELECT * FROM group_members gm \
-# 	FULL JOIN group_semesters gs ON gm.group_semester_id = gs.group_semester_id \
-# 	FULL JOIN students s ON gm.student_id = s.student_id \
-# WHERE gs.group_id = 5;")
-#         rows = cursor.fetchall()
-#     print(rows)
-
+    #     with connection.cursor() as cursor:
+    #         cursor.execute("SELECT * FROM group_members gm \
+    # 	FULL JOIN group_semesters gs ON gm.group_semester_id = gs.group_semester_id \
+    # 	FULL JOIN students s ON gm.student_id = s.student_id \
+    # WHERE gs.group_id = 5;")
+    #         rows = cursor.fetchall()
+    #     print(rows)
 
     # filter(Table2__field='value')
 
@@ -430,15 +429,19 @@ def group_details(request, group_id):
                                                                  'tutor_id__user_id',
                                                                  'curriculum_id__group_semester_id'
                                                                  )
-                         .values('curriculum_id__discipline_id__name',
-                                 'curriculum_id__discipline_id__discipline_id',
-                                 'curriculum_id__group_semester_id__group_semester_id',
-                                 'curriculum_id__group_semester_id__semester_num',
-                                 'tutor_id__user_id__id',
-                                 'tutor_id__user_id__last_name',
-                                 'tutor_id__user_id__first_name',
-                                 'tutor_id__user_id__second_name'
-                                 )
+                         .values(
+        'curriculum_lesson_id',
+        'lesson_type',
+        'curriculum_id',
+        'curriculum_id__discipline_id__name',
+        'curriculum_id__discipline_id__discipline_id',
+        'curriculum_id__group_semester_id__group_semester_id',
+        'curriculum_id__group_semester_id__semester_num',
+        'tutor_id__user_id__id',
+        'tutor_id__user_id__last_name',
+        'tutor_id__user_id__first_name',
+        'tutor_id__user_id__second_name'
+    )
                          .filter(curriculum_id__group_semester_id__group_id__group_id=group_id)
                          .order_by('-curriculum_id__group_semester_id__semester_num').all())
 
@@ -490,6 +493,26 @@ def group_register(request):
     else:
         group_form = GroupRegisterForm()
     return render(request, 'group/group_form.html', {'group_form': group_form})
+
+
+def group_member_delete(request, group_member_id):
+    group_member_obj = get_object_or_404(
+        GroupMember.objects.select_related('group_semester_id__group_id', 'student_id__user_id').values(
+            'student_id__user_id__last_name', 'student_id__user_id__first_name', 'student_id__user_id__second_name',
+            'group_semester_id__group_id__name', 'group_semester_id__semester_num', 'group_semester_id__group_id'),
+        group_member_id=group_member_id)
+    obj = GroupMember.objects.get(group_member_id=group_member_id)
+    print(group_member_obj)
+    if request.method == 'POST':
+        try:
+            obj.delete()
+            return render(request, 'group_member/group_member_result.html',
+                          {'group_member': group_member_obj,
+                           'action': 'D'})
+        except ProtectedError:
+            return render(request, 'group_member/group_member_delete_error.html',
+                          {'group_member': group_member_obj}, status=423)
+    return render(request, 'group_member/group_member_delete.html', {'group_member': group_member_obj})
 
 
 def group_edit(request, group_id):
@@ -751,7 +774,8 @@ def group_semester_register(request):
 
 def group_semester_delete(request):
     if 'group_id' and 'semester_num' in request.GET.dict():
-        group_semester_obj = get_object_or_404(GroupSemester, group_id=request.GET.get('group_id'), semester_num=request.GET.get('semester_num'))
+        group_semester_obj = get_object_or_404(GroupSemester, group_id=request.GET.get('group_id'),
+                                               semester_num=request.GET.get('semester_num'))
         group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
         if request.method == 'POST':
             try:
@@ -765,7 +789,7 @@ def group_semester_delete(request):
                               {'group_semester': group_semester_obj,
                                'group': group_obj}, status=423)
         return render(request, 'group_semester/group_semester_delete.html', {'group_semester': group_semester_obj,
-                               'group': group_obj})
+                                                                             'group': group_obj})
 
 
 def group_member_register(request):
@@ -796,9 +820,12 @@ def group_member_register(request):
         else:
             group_member_form = GroupMemberRegisterForm()
     context = {'group_member_form': group_member_form,
-            'group': group_obj
-        }
+               'group': group_obj
+               }
     return render(request, 'group_member/group_member_register.html', context)
+
+
+# CURRICULUM BLOCK
 
 
 @transaction.atomic
@@ -831,16 +858,104 @@ def curriculum_register(request):
         if 'discipline_id' in request.GET.dict():
             obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
             curriculum_form = CurriculumRegisterForm(initial={'discipline_id': obj})
+        elif 'group_id' in request.GET.dict() and 'semester_num' in request.GET.dict():
+            group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
+            group_semester_obj = get_object_or_404(GroupSemester, group_id=request.GET.get('group_id'),
+                                                   semester_num=request.GET.get('semester_num'))
+            group_semesters_obj = (GroupSemester.objects
+                                   .filter(group_id=request.GET.get('group_id')).order_by('-semester_num'))
+            curriculum_form = CurriculumRegisterForm(initial={'group_semester_id': group_semester_obj})
+            curriculum_form.set_initial_group_semester_ids(group_semesters_obj.all())
         elif 'group_id' in request.GET.dict():
             group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
             group_semesters_obj = (GroupSemester.objects
-                               .filter(group_id=request.GET.get('group_id')).order_by('-semester_num'))
+                                   .filter(group_id=request.GET.get('group_id')).order_by('-semester_num'))
             curriculum_form = CurriculumRegisterForm(initial={'group_semester_id': group_semesters_obj.first()})
             curriculum_form.set_initial_group_semester_ids(group_semesters_obj.all())
         else:
             curriculum_form = CurriculumRegisterForm()
     return render(request, 'curriculum/curriculum_from.html', {'curriculum_form': curriculum_form,
                                                                'group': group_obj})
+
+
+def curriculum_delete(request):
+    if 'discipline_id' and 'group_semester_id' in request.GET.dict():
+        curriculum_obj = get_object_or_404(Curriculum, discipline_id=request.GET.get('discipline_id'),
+                                           group_semester_id=request.GET.get('group_semester_id'))
+        group_semester_obj = get_object_or_404(
+            GroupSemester.objects.select_related('group_id').values('group_id', 'group_id__name', 'semester_num'),
+            group_semester_id=request.GET.get('group_semester_id'))
+        discipline_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
+        if request.method == 'POST':
+            try:
+                curriculum_obj.delete()
+                return render(request, 'curriculum/curriculum_result.html',
+                              {'discipline': discipline_obj,
+                               'group_semester': group_semester_obj,
+                               'action': 'D'})
+            except ProtectedError:
+                return render(request, 'curriculum/curriculum_delete_error.html',
+                              {'discipline': discipline_obj,
+                               'group_semester': group_semester_obj}, status=423)
+        return render(request, 'curriculum/curriculum_delete.html', {'discipline': discipline_obj,
+                                                                     'group_semester': group_semester_obj})
+
+
+# CURRICULUM LESSON BLOCK
+
+
+def curriculum_lesson_group_detail(request, group_id):
+    group_obj = get_object_or_404(Group, group_id=group_id)
+    group_lessons_obj = (CurriculumLesson.objects.select_related('curriculum_id__discipline_id',
+                                                                 'tutor_id__user_id',
+                                                                 'curriculum_id__group_semester_id'
+                                                                 )
+                         .values(
+        'curriculum_lesson_id',
+        'lesson_type',
+        'duration',
+        'curriculum_id',
+        'curriculum_id__discipline_id__name',
+        'curriculum_id__discipline_id__discipline_id',
+        'curriculum_id__group_semester_id__group_semester_id',
+        'curriculum_id__group_semester_id__semester_num',
+        'tutor_id__user_id__id',
+        'tutor_id__user_id__last_name',
+        'tutor_id__user_id__first_name',
+        'tutor_id__user_id__second_name'
+    )
+                         .filter(curriculum_id__group_semester_id__group_id__group_id=group_id)
+                         .order_by('-curriculum_id__group_semester_id__semester_num').all())
+
+    # print(group_lessons_obj.query)
+    # print(group_lessons_obj.query.alias_map.keys())
+
+    group_lessons_obj.query.alias_map['curriculum_lessons'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['curriculums'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['disciplines'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['group_semesters'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['tutors'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['timetable_customuser'].join_type = "FULL OUTER JOIN"
+
+    print(group_lessons_obj.query)
+    print(group_lessons_obj)
+    # groups_obj = (Curriculum.objects.select_related('group_semester_id__group_id')
+    #               .values('group_semester_id__semester_num', 'group_semester_id__group_id__name',
+    #                       'group_semester_id__group_id__group_id')
+    #               .filter(discipline_id__discipline_id=discipline_id).all())
+    # tutors_obj = (CurriculumLesson.objects.select_related('tutor_id__user_id')
+    #               .values('tutor_id__user_id__id', 'tutor_id__user_id__last_name', 'tutor_id__user_id__first_name',
+    #                       'tutor_id__user_id__second_name')
+    #               .distinct()
+    #               .filter(curriculum_id__discipline_id__discipline_id=discipline_id).all())
+
+    # print(groups_obj.__dict__)
+
+    context = {'group': group_obj,
+               'group_lessons': group_lessons_obj
+               }
+    # print(context)
+    return render(request, 'curriculum_lesson/curriculum_lesson_group detail.html', context)
 
 
 def curriculum_lesson_register(request):
@@ -850,18 +965,29 @@ def curriculum_lesson_register(request):
         if curriculum_lesson_form.is_valid():
             new_curriculum_lesson = curriculum_lesson_form.save(commit=False)
             new_curriculum_lesson.save()
-            return render(request, 'curriculum_lesson/curriculum_lesson_register_done.html',
-                          {'curriculum_lesson_form': new_curriculum_lesson})
+            return render(request, 'curriculum_lesson/curriculum_lesson_result.html',
+                          {'curriculum_lesson': new_curriculum_lesson, 'action': 'C'})
     else:
-        if 'tutor_id' in request.GET.dict():
+        if 'group_id' in request.GET.dict() and 'group_semester_id' in request.GET.dict() and 'discipline_id' in request.GET.dict():
+            group_semester_obj = get_object_or_404(
+                GroupSemester.objects.select_related('group_id').values('group_id', 'group_id__name', 'semester_num'),
+                group_id=request.GET.get('group_id'),
+                group_semester_id=request.GET.get('group_semester_id'))
+            print(group_semester_obj)
+            curriculum_obj = get_object_or_404(Curriculum, group_semester_id=request.GET.get('group_semester_id'),
+                                               discipline_id=request.GET.get('discipline_id'))
+            discipline_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
+
+            curriculum_lesson_form = CurriculumLessonRegisterForm(initial={'curriculum_id': curriculum_obj})
+        elif 'tutor_id' in request.GET.dict():
             obj = get_object_or_404(Tutor, tutor_id=request.GET.get('tutor_id'))
             curriculum_lesson_form = CurriculumLessonRegisterForm(initial={'tutor_id': obj})
-        if 'discipline_id' in request.GET.dict():
+        elif 'discipline_id' in request.GET.dict():
             discipline_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
             curriculums_obj = Curriculum.objects.filter(discipline_id=request.GET.get('discipline_id')).all()
             curriculum_lesson_form = CurriculumLessonRegisterForm()
             curriculum_lesson_form.set_initial_curriculum_ids(curriculums_obj)
-        if 'group_id' in request.GET.dict():
+        elif 'group_id' in request.GET.dict():
             group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
             curriculums_obj = (Curriculum.objects
                                .select_related('group_semester_id')
@@ -870,10 +996,64 @@ def curriculum_lesson_register(request):
             curriculum_lesson_form.set_initial_curriculum_ids(curriculums_obj)
         else:
             curriculum_lesson_form = CurriculumLessonRegisterForm()
-    return render(request, 'curriculum_lesson/curriculum_lesson_register.html',
+    return render(request, 'curriculum_lesson/curriculum_lesson_form.html',
                   {'curriculum_lesson_form': curriculum_lesson_form,
                    'discipline': discipline_obj,
                    'group': group_obj})
+
+
+def curriculum_lesson_edit(request, curriculum_lesson_id):
+    curriculum_lesson_obj = get_object_or_404(CurriculumLesson, curriculum_lesson_id=curriculum_lesson_id)
+    curriculum_lesson = (CurriculumLesson.objects
+                         .select_related('curriculum_id__discipline_id',
+                                         'curriculum_id__discipline_id__group_semester_id__group_id',
+                                         'tutor_id__user_id')
+                         .values('curriculum_id__discipline_id',
+                                 'curriculum_id__discipline_id__name',
+                                 'curriculum_id__group_semester_id',
+                                 'curriculum_id__group_semester_id__group_id',
+                                 'curriculum_id__group_semester_id__semester_num',
+                                 'curriculum_id__group_semester_id__group_id__name',
+                                 'tutor_id__user_id__last_name',
+                                 'tutor_id__user_id__first_name',
+                                 'tutor_id__user_id__second_name').get(curriculum_lesson_id=curriculum_lesson_id))
+    curriculum_lesson_form = CurriculumLessonRegisterForm(request.POST or None, instance=curriculum_lesson_obj)
+    if curriculum_lesson_form.is_valid():
+        curriculum_lesson_form.save()
+
+        return render(request, 'curriculum_lesson/curriculum_lesson_result.html',
+                      {'curriculum_lesson': curriculum_lesson,
+                       'action': 'E'})
+    return render(request, 'curriculum_lesson/curriculum_lesson_form.html',
+                  {'curriculum_lesson_form': curriculum_lesson_form,
+                   'action': 'E'})
+
+
+def curriculum_lesson_delete(request, curriculum_lesson_id):
+    curriculum_lesson_obj = get_object_or_404(CurriculumLesson, curriculum_lesson_id=curriculum_lesson_id)
+    curriculum_lesson = (CurriculumLesson.objects
+                         .select_related('curriculum_id__discipline_id',
+                                         'curriculum_id__discipline_id__group_semester_id__group_id',
+                                         'tutor_id__user_id')
+                         .values('curriculum_id__discipline_id',
+                                 'curriculum_id__discipline_id__name',
+                                 'curriculum_id__group_semester_id',
+                                 'curriculum_id__group_semester_id__group_id',
+                                 'curriculum_id__group_semester_id__semester_num',
+                                 'curriculum_id__group_semester_id__group_id__name',
+                                 'tutor_id__user_id__last_name',
+                                 'tutor_id__user_id__first_name',
+                                 'tutor_id__user_id__second_name').get(curriculum_lesson_id=curriculum_lesson_id))
+    if request.method == 'POST':
+        try:
+            curriculum_lesson_obj.delete()
+            return render(request, 'curriculum_lesson/curriculum_lesson_result.html',
+                          {'curriculum_lesson': curriculum_lesson,
+                           'action': 'D'})
+        except ProtectedError:
+            return render(request, 'curriculum_lesson/curriculum_lesson_delete_error.html',
+                          {'curriculum_lesson': curriculum_lesson}, status=423)
+    return render(request, 'curriculum_lesson/curriculum_lesson_delete.html', {'curriculum_lesson': curriculum_lesson})
 
 
 def register_tt_lesson(request):

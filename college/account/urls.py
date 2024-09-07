@@ -11,7 +11,6 @@ urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     # path('login/', auth_views.LoginView.as_view(), name='login'),
 
-
     path('', views.dashboard, name='dashboard'),
 
     path('user/', views.user_list, name='user_list'),
@@ -47,27 +46,45 @@ urlpatterns = [
     path('lesson_time/edit/<int:lesson_id>', views.lesson_time_edit, name='lesson_time_edit'),
     path('lesson_time/delete/<int:lesson_id>', views.lesson_time_delete, name='lesson_time_delete'),
 
-    re_path(r'group_semester/register/?(?P<group_id>\d+)?/?$', views.group_semester_register, name='group_semester_register'),
+    re_path(r'group_semester/register/?(?P<group_id>\d+)?/?$', views.group_semester_register,
+            name='group_semester_register'),
     path('group_semester/register', views.group_semester_register, name='group_semester_register'),
-    re_path(r'group_semester/delete/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?', views.group_semester_delete, name='group_semester_delete'),
+    re_path(r'group_semester/delete/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?', views.group_semester_delete,
+            name='group_semester_delete'),
 
-    re_path(r'group_member/register/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?$', views.group_member_register, name='group_member_register'),
-    re_path(r'group_member/register/?(?P<student_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
+    re_path(r'group_member/register/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?$', views.group_member_register,
+            name='group_member_register'),
+    re_path(r'group_member/register/?(?P<student_id>\d+)?/?$', views.group_member_register,
+            name='group_member_register'),
     re_path(r'group_member/register/?(?P<group_id>\d+)?/?$', views.group_member_register, name='group_member_register'),
     path('group_member/register', views.group_member_register, name='group_member_register'),
+    path('group_member/delete/<int:group_member_id>', views.group_member_delete, name='group_member_delete'),
 
     # path(r'^curriculum/register/?(', views.curriculum_register, name='curriculum_register'),
+    re_path(r'curriculum/register/?(?P<group_id>\d+)?&?(?P<semester_num>\d+)?/?', views.curriculum_register,
+            name='curriculum_register'),
     re_path(r'curriculum/register/?(?P<group_id>\d+)?/?$', views.curriculum_register, name='curriculum_register'),
     re_path(r'curriculum/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_register, name='curriculum_register'),
     path('curriculum/register/', views.curriculum_register, name='curriculum_register'),
+    re_path(r'curriculum/delete/?(?P<discipline_id>\d+)?&?(?P<group_semester_id>\d+)?/?', views.curriculum_delete,
+            name='curriculum_delete'),
 
-    re_path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
-    re_path(r'curriculum_lesson/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_lesson_register, name='curriculum_lesson_register'),
+    path('curriculum_lesson/details/groups/<int:group_id>', views.curriculum_lesson_group_detail, name='curriculum_lesson_group_detail'),
+    re_path(r'curriculum_lesson/register/?(?P<group_id>\d+)?&?(?P<group_semester_id>\d+)?&?(?P<discipline_id>\d+)?/?',
+            views.curriculum_lesson_register,
+            name='curriculum_register'),
+    re_path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register,
+            name='curriculum_lesson_register'),
+    re_path(r'curriculum_lesson/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_lesson_register,
+            name='curriculum_lesson_register'),
     path('curriculum_lesson/register/', views.curriculum_lesson_register, name='curriculum_lesson_register'),
+    path('curriculum_lesson/edit/<int:curriculum_lesson_id>', views.curriculum_lesson_edit, name='curriculum_lesson_edit'),
+    path('curriculum_lesson/delete/<int:curriculum_lesson_id>', views.curriculum_lesson_delete, name='curriculum_lesson_delete'),
+
+
     path('tt_lesson/register/', views.register_tt_lesson, name='tt_lesson'),
 
     # path(r'group_semester/ajax/load_max_semester/?(?P<group_id>\d+)?/?$', views.load_max_semester, name='ajax_load_max_semester'),
     path('group_semester/ajax/load_max_semester', views.load_max_semester, name='ajax_load_max_semester')
 
-               ]
-
+]

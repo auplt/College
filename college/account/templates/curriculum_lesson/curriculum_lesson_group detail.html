@@ -1,65 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Group details{% endblock %}
+{% block title %}Curriculum lesson group details{% endblock %}
 
 {% load group_extras %}
 
 {% block content %}
 <h1>Группа {{ group.name }}</h1>
-<a href="{% url 'account:group_edit' group.group_id}">Редактировать</a>
-
-<div class="group_members">
-    <h2>Список студентов</h2>
-    {% if group_members %}
-    <a href="{% url 'account:group_member_register' %}?group_id={{group.group_id}}">Добавить студента</a>
-    {% endif %}
-    <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Добавить семестр</a>
-    {% if group_members %}
-        <ul class="group_members_list">
-
-        {% with prev_semester_num_std=-1 prev_sem_id=None %}
-            {% for group_member in group_members %}
-                {% if prev_semester_num_std != group_member.group_semester_id__semester_num %}
-                    {% if prev_semester_num_std != -1 %}
-                        {% if prev_sem_id %}
-                            </ul>
-                        {% endif %}
-                        </li>
-                    {% endif %}
-            <li>Семестр {{group_member.group_semester_id__semester_num}}
-                <a href="{% url 'account:group_semester_delete' %}?group_id={{group.group_id}}&semester_num={{group_member.group_semester_id__semester_num}}">Удалить семестр</a>
-                <a href="{% url 'account:group_member_register' %}?group_id={{group.group_id}}&semester_num={{group_member.group_semester_id__semester_num}}">Добавить студента</a>
-                    {% if group_member.group_semester_id %}
-                <ul>
-                    {% endif %}
-                {% endif %}
-                    {% if group_member.student_id__user_id__id %}
-                    <li>
-                        <a href="{% url 'account:user_details' group_member.student_id__user_id__id %}">
-                            {{group_member.student_id__user_id__last_name}}
-                            {{group_member.student_id__user_id__first_name}}
-                            {{group_member.student_id__user_id__second_name}}
-                        </a>
-                        <a href="{% url 'account:group_member_delete' group_member.group_member_id %}">
-                            Удалить студента
-                        </a>
-                    </li>
-                    {% endif %}
-                {% update_variable group_member.group_semester_id__semester_num as prev_semester_num_std %}
-                {% update_variable group_member.group_semester_id as prev_sem_id %}
-            {% endfor %}
-        {% endwith %}
-                    {% if group_member.group_semester_id %}
-                </ul>
-                {% endif %}
-            </li>
-        </ul>
-    {% endif %}
-</div>
 
 <div class="group_lessons">
     <h2>План занятий</h2>
-    <a href="{% url 'account:curriculum_lesson_group_detail' group.group_id %}">Подробнее</a>
+    {% if group_lessons %}
+    <a href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Добавить занятие</a>
+    {% endif %}
+    <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Добавить семестр</a>
     {% if group_lessons %}
         <ul class="group_lessons_list">
         {% with prev_semester_num=-1 prev_sem_id=None prev_dis_id=None prev_tutor_id='' prev_dis_name='' %}
@@ -83,6 +36,9 @@
 
 
             <li>Семестр {{group_lesson.curriculum_id__group_semester_id__semester_num}}
+                <a href="{% url 'account:group_semester_delete' %}?group_id={{group.group_id}}&semester_num={{group_lesson.curriculum_id__group_semester_id__semester_num}}">Удалить семестр</a>
+                <a href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}&semester_num={{group_lesson.curriculum_id__group_semester_id__semester_num}}">Добавить занятие</a>
+
                     {% update_variable -1 as prev_dis_id %}
                 {% update_variable '' as prev_dis_name %}
 
@@ -98,6 +54,12 @@
                         <a href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}">
                             {{group_lesson.curriculum_id__discipline_id__name}}
                         </a>
+                        <a href="{% url 'account:curriculum_delete' %}?discipline_id={{group_lesson.curriculum_id__discipline_id__discipline_id}}&group_semester_id={{group_lesson.curriculum_id__group_semester_id__group_semester_id}}">
+                            Удалить дисциплину из плана
+                        </a>
+                        <a href="{% url 'account:curriculum_lesson_register' %}?group_id={{group.group_id}}&group_semester_id={{group_lesson.curriculum_id__group_semester_id__group_semester_id}}&discipline_id={{group_lesson.curriculum_id__discipline_id__discipline_id}}">
+                            Добавить преподавателя
+                        </a>
                         {% if group_lesson.tutor_id__user_id__id %}
                         <ul>
 
@@ -107,11 +69,17 @@
                 {% if group_lesson.tutor_id__user_id__id %}
                             {% update_variable '' as prev_tutor_id %}
                             <li>
-                                {{group_lesson.lesson_type}}
+                                {{group_lesson.lesson_type}} {{group_lesson.duration}}
                                 <a href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}">
                                     {{group_lesson.tutor_id__user_id__last_name}}
                                     {{group_lesson.tutor_id__user_id__first_name}}
                                     {{group_lesson.tutor_id__user_id__second_name}}
+                                </a>
+                                <a href="{% url 'account:curriculum_lesson_delete' group_lesson.curriculum_lesson_id %}">
+                                    Удалить преподавателя (занятие)
+                                </a>
+                                <a href="{% url 'account:curriculum_lesson_edit' group_lesson.curriculum_lesson_id %}">
+                                    Редактировать занятие
                                 </a>
                             </li>
                 {% endif %}

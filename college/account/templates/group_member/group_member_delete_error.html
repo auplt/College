@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Group member delete error{% endblock %}
+
+{% block content %}
+    <h1>Ошибка удаления</h1>
+    <h2>
+        Невозможно удалить студента
+        {{group_member.student_id__user_id__last_name}}
+        {{group_member.student_id__user_id__first_name}}
+        {{group_member.student_id__user_id__second_name}}
+        из состава группы {{group_member.group_semester_id__group_id__name}}
+        за семестр{{group_member.group_semester_id__semester_num}}
+    </h2>
+    <p class="error_msg">Имеются объекты, ссылающиеся на этот</p>
+    <a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+    <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+{% endblock %}
