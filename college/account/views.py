@@ -6,13 +6,16 @@ from django import forms
 # import simplejson
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import transaction, IntegrityError
 from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch
 from django.db.models.expressions import Col, F
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.db.models.functions import Coalesce
 from django.views.generic import UpdateView
 from django.db import connection
+from psycopg2.errors import UniqueViolation
 
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, \
     GroupRegisterForm, \
@@ -59,8 +62,19 @@ def dashboard(request):
 
 
 def user_list(request):
-    users = CustomUser.objects.filter(is_superuser=False, is_staff=False)
+    users_list = (CustomUser.objects
+                  .filter(is_superuser=False, is_staff=False, is_active=True)
+                  .order_by('last_name', 'first_name', 'second_name')
+                  .all())
     # print(request.user)
+    paginator = Paginator(users_list, 10)
+    page_number = request.GET.get('page', 1)
+    try:
+        users = paginator.page(page_number)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
     return render(request, 'account/user_list.html', {'users': users})
 
 
@@ -388,7 +402,19 @@ def user_delete_student(request, id):
 
 
 def group_list(request):
-    groups = Group.objects.all()
+    groups = (Group.objects
+              .annotate(max_sem=Coalesce(Subquery(GroupSemester.objects
+                                                  .filter(group_id=OuterRef('group_id'))
+                                                  .values('group_id')
+                                                  .annotate(max_sem=Max('semester_num'))
+                                                  .values('max_sem')
+                                                  ), 0
+                                         )
+                        )
+              .order_by('-max_sem', 'name')
+              )
+    print(groups.query)
+    print(groups)
     return render(request, 'group/group_list.html', {'groups': groups})
 
 
@@ -550,7 +576,15 @@ def group_delete(request, group_id):
 
 
 def discipline_list(request):
-    disciplines = Discipline.objects.all()
+    disciplines_list = Discipline.objects.order_by('name').all()
+    paginator = Paginator(disciplines_list, 10)
+    page_number = request.GET.get('page', 1)
+    try:
+        disciplines = paginator.page(page_number)
+    except PageNotAnInteger:
+        disciplines = paginator.page(1)
+    except EmptyPage:
+        disciplines = paginator.page(paginator.num_pages)
     return render(request, 'discipline/discipline_list.html', {'disciplines': disciplines})
 
 
@@ -626,7 +660,7 @@ def discipline_delete(request, discipline_id):
 
 
 def classroom_list(request):
-    classrooms = Classroom.objects.all()
+    classrooms = Classroom.objects.order_by('number').all()
     return render(request, 'classroom/classroom_list.html', {'classrooms': classrooms})
 
 
@@ -685,7 +719,7 @@ def classroom_delete(request, classroom_id):
 
 
 def lesson_time_list(request):
-    lesson_times = LessonTime.objects.all()
+    lesson_times = LessonTime.objects.order_by('start_time', 'end_time').all()
     return render(request, 'lesson_time/lesson_time_list.html', {'lesson_times': lesson_times})
 
 
@@ -1056,14 +1090,22 @@ def curriculum_lesson_delete(request, curriculum_lesson_id):
     return render(request, 'curriculum_lesson/curriculum_lesson_delete.html', {'curriculum_lesson': curriculum_lesson})
 
 
-def register_tt_lesson(request):
+def tt_lesson_register(request):
     if request.method == 'POST':
         tt_lesson_form = TTLessonRegisterForm(request.POST)
         if tt_lesson_form.is_valid():
             new_tt_lesson = tt_lesson_form.save(commit=False)
-            new_tt_lesson.save()
-            return render(request, 'tt_lesson/tt_lesson_register_done.html',
-                          {'tt_lesson_form': new_tt_lesson})
+            new_tt_lesson.set_day_name(tt_lesson_form.cleaned_data['date'])
+            new_tt_lesson.set_week_type(tt_lesson_form.cleaned_data['date'])
+            try:
+                new_tt_lesson.save()
+                return render(request, 'tt_lesson/tt_lesson_register_done.html', {'tt_lesson_form': new_tt_lesson})
+            except IntegrityError as ex:
+                if isinstance(ex.__cause__, UniqueViolation):
+                    if ex.__cause__.diag.constraint_name == 'tt_lesson_day_week_time_curriculum_les_unique':
+                        tt_lesson_form.add_error(None, "У группы уже есть занятие в это время")
+                else:
+                    tt_lesson_form.add_error(None, ex.__cause__)
     else:
         tt_lesson_form = TTLessonRegisterForm()
     return render(request, 'tt_lesson/tt_lesson_register.html', {'tt_lesson_form': tt_lesson_form})

@@ -345,20 +345,19 @@ class TTLessonRegisterForm(forms.ModelForm):
                       widget=forms.TextInput(attrs={
                           'class': 'datepicker'
                       }))
-    day_name = forms.ChoiceField(label="День недели", choices=TTLesson.DAY_OF_WEEK_CHOICES)
-    week_type = forms.ChoiceField(label="Тип недели", choices=TTLesson.TYPE_OF_WEEK_CHOICES)
+    # day_name = forms.ChoiceField(label="День недели", choices=TTLesson.DAY_OF_WEEK_CHOICES)
+    # week_type = forms.ChoiceField(label="Тип недели", choices=TTLesson.TYPE_OF_WEEK_CHOICES)
     lessons_time_id = forms.ModelChoiceField(LessonTime.objects.all(), empty_label='-----', label='Время занятия')
     classroom_id = forms.ModelChoiceField(Classroom.objects.all(), empty_label='-----', label='Аудитория')
     curriculum_lesson_id = forms.ModelChoiceField(CurriculumLesson.objects.all(), empty_label='-----', label='Предмет')
 
     def __init__(self, *args, **kwargs):
         super(TTLessonRegisterForm, self).__init__(*args, **kwargs)
-        self.fields['day_name'].widget.attrs['class'] = 'choice_input'
-        self.fields['week_type'].widget.attrs['class'] = 'choice_input'
+        # self.fields['week_type'].widget.attrs['class'] = 'choice_input'
         self.fields['lessons_time_id'].widget.attrs['class'] = 'choice_input'
         self.fields['classroom_id'].widget.attrs['class'] = 'choice_input'
         self.fields['curriculum_lesson_id'].widget.attrs['class'] = 'choice_input'
 
     class Meta:
         model = TTLesson
-        fields = ['date', 'day_name', 'week_type', 'lessons_time_id', 'classroom_id', 'curriculum_lesson_id']
+        fields = ['date', 'lessons_time_id', 'classroom_id', 'curriculum_lesson_id']

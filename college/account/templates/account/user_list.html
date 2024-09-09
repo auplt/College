@@ -7,9 +7,9 @@
     <a href="{% url 'account:user_register' %}">Добавить</a>
     {% for user in users %}
         <h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
-<!--        <p>Описание: {{classroom.description}}</p>-->
         <a href="{{ user.get_absolute_url }}">Подробнее</a>
         <a href="{{ user.get_edit_url }}">Редактировать</a>
         <a href="{{ user.get_delete_url }}">Удалить</a>
     {% endfor %}
+    {% include "pagination.html" with page=users %}
 {% endblock %}

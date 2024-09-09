@@ -6,7 +6,7 @@
     <h1>Список аудиторий</h1>
     <a href="{% url 'account:classroom_register' %}">Добавить</a>
     {% for classroom in classrooms %}
-        <h2>Аудитория {{classroom.number}}</h2>
+        <h2>{{classroom.number}}</h2>
         <p>Описание: {{classroom.description}}</p>
         <a href="{{ classroom.get_absolute_url }}">Редактировать</a>
         <a href="{{ classroom.get_delete_url }}">Удалить</a>

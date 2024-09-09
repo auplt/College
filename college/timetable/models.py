@@ -1,6 +1,8 @@
 """
 Models for account app.
 """
+import datetime
+from math import floor
 
 from datetime import date
 from django.db import models
@@ -48,7 +50,7 @@ class Student(models.Model):
 
     student_id = models.AutoField(primary_key=True)
     date_of_birth = models.DateField(validators=[validate_date])
-    user_id = models.ForeignKey(CustomUser, on_delete=models.PROTECT, db_column='user_id')
+    user_id = models.OneToOneField(CustomUser, on_delete=models.PROTECT, db_column='user_id')
 
     def __str__(self):
         return f'{self.user_id.last_name} {self.user_id.first_name} {self.user_id.second_name}'
@@ -119,8 +121,7 @@ class Tutor(models.Model):
 
     tutor_id = models.AutoField(primary_key=True)
     date_of_birth = models.DateField(validators=[validate_date])
-
-    user_id = models.ForeignKey(CustomUser, on_delete=models.PROTECT, db_column='user_id')
+    user_id = models.OneToOneField(CustomUser, on_delete=models.PROTECT, db_column='user_id')
 
     def __str__(self):
         return f'{self.user_id.last_name} {self.user_id.first_name} {self.user_id.second_name}'
@@ -161,6 +162,10 @@ class GroupMember(models.Model):
 
     class Meta:
         db_table = 'group_members'
+        constraints = [
+            models.UniqueConstraint(fields=['group_semester_id', 'student_id'],
+                                    name='group_members_group_semester_student_unique')
+        ]
 
     def __str__(self):
         return f'{self.group_member_id}'
@@ -180,7 +185,6 @@ class Curriculum(models.Model):
     def __str__(self):
         return f'{self.discipline_id.name} {self.group_semester_id.group_id.name}'
 
-
     # def clean_discipline_id(self):
     #     cd = self.cleaned_data.get('discipline_id')
     #     print(cd)
@@ -188,7 +192,6 @@ class Curriculum(models.Model):
     #
     # def clean(self):
     #     self.clean_discipline_id()
-
 
     # def validate_unique_curriculum(self):
     #     print(Curriculum.objects.filter(discipline_id_id=self.discipline_id, group_semester_id_id=self.group_semester_id))
@@ -320,7 +323,9 @@ class CurriculumLesson(models.Model):
             models.CheckConstraint(
                 check=models.Q(duration__gte=0),
                 name='%(app_label)s_%(class)s_duration_gte_0'
-            )
+            ),
+            models.UniqueConstraint(fields=['curriculum_id', 'tutor_id', 'lesson_type'],
+                                    name='curriculum_lessons_curriculum_tutor_les_type_unique')
         ]
 
 
@@ -334,12 +339,14 @@ class LessonTime(models.Model):
         return f'{self.name} {self.start_time} {self.end_time}'
 
     class Meta:
-        db_table = 'lessons_time'
+        db_table = 'lessons_times'
         constraints = [
             models.CheckConstraint(
                 check=models.Q(end_time__gt=models.F('start_time')),
                 name='check_start_time',
             ),
+            models.UniqueConstraint(fields=['start_time', 'end_time'],
+                                    name='lesson_time_start_time_end_time_unique')
         ]
 
     def get_absolute_url(self):
@@ -360,7 +367,7 @@ class Classroom(models.Model):
         return f'{self.number}'
 
     class Meta:
-        db_table = 'classroom'
+        db_table = 'classrooms'
 
     def get_absolute_url(self):
         return reverse('account:classroom_edit',
@@ -413,8 +420,51 @@ class TTLesson(models.Model):
     curriculum_lesson_id = models.ForeignKey(CurriculumLesson, on_delete=models.PROTECT,
                                              db_column='curriculum_lesson_id')
 
+    def set_day_name(self, lesson_date: datetime.date) -> None:
+        self.day_name = lesson_date.strftime("%a").upper()
+
+    def set_week_type(self, lesson_date: datetime.date) -> None:
+        if lesson_date.month in [1, 7, 8]:
+            self.week_type = 'EX'
+        elif lesson_date.month in [9, 10, 11, 12]:
+            start_date = datetime.date(lesson_date.year, 9, 1)
+            week_num = floor((lesson_date - start_date).days / 7.0) + 1
+            if start_date.weekday() == 6:
+                week_num -= 1
+                if lesson_date == start_date:
+                    self.week_type = 'EX'
+                    return
+                start_date += datetime.timedelta(days=1)
+            if lesson_date >= start_date + datetime.timedelta(days=16 * 7):
+                self.week_type = 'CW'
+            elif week_num % 2 == 0:
+                self.week_type = 'EV'
+            else:
+                self.week_type = 'NE'
+        elif lesson_date.month in [2, 3, 4, 5, 6]:
+            start_date = datetime.date(lesson_date.year, 2, 1) + datetime.timedelta(days=7)
+            if start_date.weekday() == 6 or start_date.weekday() == 5:
+                start_date += datetime.timedelta(days=7 - start_date.weekday())
+            week_num = floor((lesson_date - start_date).days / 7.0) + 1
+            if lesson_date < start_date:
+                self.week_type = 'EX'
+                return
+            if start_date + datetime.timedelta(days=15 * 7) <= lesson_date < start_date + datetime.timedelta(
+                    days=16 * 7):
+                self.week_type = 'CW'
+            elif lesson_date.month == 6:
+                self.week_type = 'EX'
+            elif week_num % 2 == 0:
+                self.week_type = 'EV'
+            else:
+                self.week_type = 'NE'
+
     class Meta:
-        db_table = 'tt_lesson'
+        db_table = 'tt_lessons'
+        constraints = [
+            models.UniqueConstraint(fields=['day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'],
+                                    name='tt_lesson_day_week_time_curriculum_les_unique')
+        ]
 
 
 class Homework(models.Model):
@@ -426,7 +476,7 @@ class Homework(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
     class Meta:
-        db_table = 'homework'
+        db_table = 'homeworks'
 
 
 class File(models.Model):
@@ -437,7 +487,7 @@ class File(models.Model):
     hw_id = models.ForeignKey(Homework, on_delete=models.PROTECT, db_column='hw_id')
 
     class Meta:
-        db_table = 'file'
+        db_table = 'files'
 
 
 class StudentAttendance(models.Model):
@@ -447,7 +497,7 @@ class StudentAttendance(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
     class Meta:
-        db_table = 'students_attendance'
+        db_table = 'students_attendances'
 
 
 class StudentProgress(models.Model):
@@ -456,7 +506,7 @@ class StudentProgress(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
     class Meta:
-        db_table = 'students_progress'
+        db_table = 'students_progresses'
 
 
 class Coefficient(models.Model):
@@ -465,7 +515,7 @@ class Coefficient(models.Model):
     description = models.CharField(max_length=64)
 
     class Meta:
-        db_table = 'coefficient'
+        db_table = 'coefficients'
 
 
 class Grade(models.Model):
@@ -480,4 +530,4 @@ class Grade(models.Model):
     progress_id = models.ForeignKey(StudentProgress, on_delete=models.PROTECT, db_column='progress_id')
 
     class Meta:
-        db_table = 'grade'
+        db_table = 'grades'

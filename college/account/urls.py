@@ -82,7 +82,7 @@ urlpatterns = [
     path('curriculum_lesson/delete/<int:curriculum_lesson_id>', views.curriculum_lesson_delete, name='curriculum_lesson_delete'),
 
 
-    path('tt_lesson/register/', views.register_tt_lesson, name='tt_lesson'),
+    path('tt_lesson/register/', views.tt_lesson_register, name='tt_lesson_register'),
 
     # path(r'group_semester/ajax/load_max_semester/?(?P<group_id>\d+)?/?$', views.load_max_semester, name='ajax_load_max_semester'),
     path('group_semester/ajax/load_max_semester', views.load_max_semester, name='ajax_load_max_semester')

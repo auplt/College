@@ -12,4 +12,5 @@
         <a href="{{ discipline.get_edit_url }}">Редактировать</a>
         <a href="{{ discipline.get_delete_url }}">Удалить</a>
     {% endfor %}
+    {% include "pagination.html" with page=disciplines %}
 {% endblock %}
