@@ -1,0 +1,32 @@
+{% load group_extras %}
+
+<div class="success_msg">
+    {% if obj_action %}
+        {% with obj_action as action %}
+            {% if action == "C" %}
+                {% update_variable "добавлен" as action %}
+            {% elif action == "U" %}
+                {% update_variable "изменен" as action %}
+            {% elif action == "D" %}
+                {% update_variable "удален" as action %}
+            {% else %}
+                {% update_variable None as action %}
+            {% endif %}
+            {% if action %}
+                {% if obj_status == "success" %}
+                    <div class="success_msg__success">
+                        Объект {{obj_name}} успешно {{action}}
+                    </div>
+                {% elif obj_status == "warning" %}
+                    <div class="success_msg__warning">
+                        Внимание! Объект {{obj_name}} {{action}} с ошибками
+                    </div>
+                {% elif obj_status == "error" %}
+                    <div class="success_msg__warning">
+                        Ошибка! Объект {{obj_name}} не {{action}}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+</div>

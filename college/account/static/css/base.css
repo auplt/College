@@ -355,6 +355,58 @@ img.user-detail {
   /* width: 150px; */
 }
 
+.delete_form_controllers {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controllers_confirm_cancel {
+  display: flex;
+  gap: 50px;
+}
+
+.form_controllers_confirm {
+  width: 100px;
+  border: none;
+}
+
+.form_controllers_cancel {
+  font-weight: bold;
+  text-align: center;
+  background: #c01512;
+  color: #fff;
+  width: 100px;
+  padding: 10px 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  margin: 0;
+  cursor: pointer;
+}
+
+.form_controllers_back {
+  font-weight: bold;
+  color: #808082;
+  display: flex;
+  align-items: center;
+}
+
+.form_controllers_back:hover {
+  /* color: #3a3a3b; */
+  filter: brightness(0) saturate(100%) invert(21%) sepia(8%) saturate(62%)
+    hue-rotate(202deg) brightness(93%) contrast(92%);
+}
+
+.form_controllers_back_img {
+  height: 32px;
+  width: 32px;
+}
+
+.form_controllers_cancel:hover {
+  color: #fff;
+  background: #a11210;
+}
+
 option {
   font-size: 14px;
 }

@@ -3,15 +3,13 @@
 {% block title %}Classroom detail{% endblock %}
 
 {% block content %}
-  <h1>{% if action == 'C' %}Добавлена аудитория
-    {% elif action == 'E' %}Изменена аудитория
-    {% elif action == 'D' %}Удалена аудитория
-    {% else %}Аудитория
-    {% endif %}
-  </h1>
+  <h1>Информация об аудитории</h1>
+  {% include "success_msg.html" %}
   <h2>
       {{ classroom.number }}
   </h2>
   <p>Описание: {{classroom.description}}</p>
+  <a href="{{ classroom.get_edit_url }}">Редактировать</a>
+  <a href="{{ classroom.get_delete_url }}">Удалить</a>
   <a href="{% url 'account:classroom_list' %}">Вернуться к списку</a>
 {% endblock %}

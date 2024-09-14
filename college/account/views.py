@@ -4,6 +4,8 @@ Views for account app.
 import django.db.transaction
 from django import forms
 # import simplejson
+from django.urls import reverse, resolve, Resolver404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -11,7 +13,7 @@ from django.db import transaction, IntegrityError
 from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch
 from django.db.models.expressions import Col, F
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models.functions import Coalesce
 from django.views.generic import UpdateView
 from django.db import connection
@@ -660,62 +662,127 @@ def discipline_delete(request, discipline_id):
 
 
 def classroom_list(request):
+    """
+    View for list of classrooms.
+    :param request: user's request
+    :return: http response HTML page with classrooms list
+    """
     classrooms = Classroom.objects.order_by('number').all()
-    return render(request, 'classroom/classroom_list.html', {'classrooms': classrooms})
+    obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
+    if obj_stats:
+        for obj_stat in obj_stats:
+            del request.session[obj_stat]
+    context = {'classrooms': classrooms}
+    context.update(obj_stats)
+    return render(request, 'classroom/classroom_list.html', context=context)
 
 
 def classroom_details(request, classroom_id):
+    """
+    View for classroom details.
+    :param request: user's request
+    :param classroom_id: classroom identifier
+    :return: http response HTML page with classroom details
+    """
     context = {'classroom': Classroom.objects.get(classroom_id=classroom_id)}
+
+    obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
+    if obj_stats:
+        for obj_stat in obj_stats:
+            del request.session[obj_stat]
+    context.update(obj_stats)
     print(context)
     return render(request, 'classroom/classroom_detail.html', context)
 
 
 def classroom_register(request):
+    """
+    View for classroom registration.
+    :param request: user's request
+    :return: http response HTML page with form to register classroom or redirect page
+    """
     if request.method == 'POST':
         classroom_form = ClassroomRegisterForm(request.POST)
         if classroom_form.is_valid():
             new_classroom = classroom_form.save(commit=False)
             new_classroom.save()
-            print(new_classroom)
-            return render(request, 'classroom/classroom_detail.html',
-                          {'classroom': new_classroom,
-                           'action': 'C'})
+            request.session["obj_status"] = 'success'
+            request.session["obj_name"] = 'аудитория'
+            request.session["obj_action"] = 'C'
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('account:classroom_list'))
     else:
         classroom_form = ClassroomRegisterForm()
-    return render(request, 'classroom/classroom_form.html',
-                  {'classroom_form': classroom_form,
-                   'action': 'C'})
+        context = {'classroom_form': classroom_form, 'action': 'C'}
+        if 'next' in request.GET.keys():
+            context['next_url'] = request.GET.get('next')
+        return render(request, 'classroom/classroom_form.html', context=context)
 
 
 def classroom_edit(request, classroom_id):
-    obj = get_object_or_404(Classroom, classroom_id=classroom_id)
-    print(obj)
-    classroom_form = ClassroomRegisterForm(request.POST or None, instance=obj)
+    """
+    View for editing classroom information.
+    :param request: user's request
+    :param classroom_id: classroom identifier
+    :return: http response HTML page with form to edit classroom information or redirect page
+    """
+    classroom_obj = get_object_or_404(Classroom, classroom_id=classroom_id)
+    print(classroom_obj)
+    classroom_form = ClassroomRegisterForm(request.POST or None, instance=classroom_obj)
     if classroom_form.is_valid():
         classroom_form.save()
-        print({'classroom': classroom_form,
-               'action': 'E'})
-        return render(request, 'classroom/classroom_detail.html',
-                      {'classroom': obj,
-                       'action': 'E'})
-    return render(request, 'classroom/classroom_form.html',
-                  {'classroom_form': classroom_form,
-                   'action': 'E'})
+        request.session["obj_status"] = 'success'
+        request.session["obj_name"] = 'аудитория'
+        request.session["obj_action"] = 'U'
+        try:
+            resolve_match = resolve(request.GET.get('next'))
+            return redirect(request.GET.get('next'))
+        except Resolver404 or KeyError:
+            return redirect(reverse('account:classroom_details', kwargs={'classroom_id': classroom_id}))
+    context = {'classroom_form': classroom_form, 'action': 'U'}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'classroom/classroom_form.html', context=context)
 
 
 def classroom_delete(request, classroom_id):
-    obj = get_object_or_404(Classroom, classroom_id=classroom_id)
+    """
+    View for deleting classroom information.
+    :param request: user's request
+    :param classroom_id: classroom identifier
+    :return: http response HTML page with form to delete classroom information or redirect page
+    """
+    classroom_obj = get_object_or_404(Classroom, classroom_id=classroom_id)
     classroom = Classroom.objects.get(classroom_id=classroom_id)
     if request.method == 'POST':
+        request.session["obj_name"] = 'аудитория'
+        request.session["obj_action"] = 'D'
         try:
-            obj.delete()
-            return render(request, 'classroom/classroom_detail.html',
-                          {'classroom': classroom,
-                           'action': 'D'})
+            classroom_obj.delete()
+            request.session["obj_status"] = 'success'
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('account:classroom_list'))
+
         except ProtectedError:
-            return render(request, 'classroom/classroom_delete_error.html',
-                          {'classroom': classroom}, status=423)
-    return render(request, 'classroom/classroom_delete.html', {'classroom': classroom})
+            request.session["obj_status"] = 'error'
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('account:classroom_details', kwargs={'classroom_id': classroom_id}))
+
+    else:
+        classroom_form = ClassroomRegisterForm()
+        context = {'classroom': classroom, 'action': 'C'}
+        if 'next' in request.GET.keys():
+            context['next_url'] = request.GET.get('next')
+        return render(request, 'classroom/classroom_delete.html', context=context)
 
 
 def lesson_time_list(request):

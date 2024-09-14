@@ -370,6 +370,10 @@ class Classroom(models.Model):
         db_table = 'classrooms'
 
     def get_absolute_url(self):
+        return reverse('account:classroom_details',
+                       args=[self.classroom_id])
+
+    def get_edit_url(self):
         return reverse('account:classroom_edit',
                        args=[self.classroom_id])
 
