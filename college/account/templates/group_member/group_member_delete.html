@@ -11,11 +11,8 @@
         {{group_member.student_id__user_id__second_name}}
         из состава группы {{group_member.group_semester_id__group_id__name}}
         за {{group_member.group_semester_id__semester_num}} семестр?</p>
-    <input type="submit" value="Да">
-    <a href="{% url 'account:group_details' group_member.group_semester_id__group_id %}">Отмена</a>
+        {% include "delete_from_controllers.html" with cancel_url="account:group_details" cancel_id=group_member.group_semester_id__group_id__group_id %}
     {% csrf_token %}
 </form>
 <a href="{% url 'account:group_list' %}">Вернуться к списку</a>
-<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
-
 {% endblock %}

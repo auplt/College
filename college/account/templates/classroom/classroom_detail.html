@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %}Classroom detail{% endblock %}
 
 {% block content %}
-  <h1>Информация об аудитории</h1>
-  {% include "success_msg.html" %}
-  <h2>
-      {{ classroom.number }}
-  </h2>
-  <p>Описание: {{classroom.description}}</p>
-  <a href="{{ classroom.get_edit_url }}">Редактировать</a>
-  <a href="{{ classroom.get_delete_url }}">Удалить</a>
-  <a href="{% url 'account:classroom_list' %}">Вернуться к списку</a>
+{% include "back_button.html" with back_url="account:classroom_list" %}
+<h1>Информация об аудитории</h1>
+{% include "success_msg.html" %}
+<h2>{{ classroom.number }}</h2>
+<p>Описание: {{classroom.description}}</p>
+<a href="{{ classroom.get_edit_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">Редактировать</a>
+<a href="{{ classroom.get_delete_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">Удалить</a>
 {% endblock %}

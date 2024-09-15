@@ -3,15 +3,11 @@
 {% block title %}Student delete{% endblock %}
 
 {% block content %}
-    <h1>Удаление дополнительной информации о студенте</h1>
-      <h2>
-          {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}
-      </h2>
-    <form method="POST">
-        <p>Вы точно хотите удалить информацию о студенте?</p>
-        <input type="submit" value="Да">
-        <a href="{% url 'account:user_edit' user.id %}">Отмена</a>
-        {% csrf_token %}
-    </form>
-    <a href="{% url 'account:user_edit' user.id %}">Вернуться к редактированию</a>
+<h1>Удаление дополнительной информации о студенте</h1>
+<h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
+<form method="POST">
+    <p>Вы точно хотите удалить информацию о студенте?</p>
+    {% include "delete_from_controllers.html" with cancel_url="account:user_edit" cancel_id=user.id %}
+    {% csrf_token %}
+</form>
 {% endblock %}

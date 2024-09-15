@@ -5,8 +5,9 @@
 {% load group_extras %}
 
 {% block content %}
+{% include "back_button.html" with back_url="account:group_details" back_id=group.group_id %}
 <h1>Группа {{ group.name }}</h1>
-
+{% include "success_msg.html" %}
 <div class="group_lessons">
     <h2>План занятий</h2>
     {% if group_lessons %}
@@ -69,7 +70,7 @@
                 {% if group_lesson.tutor_id__user_id__id %}
                             {% update_variable '' as prev_tutor_id %}
                             <li>
-                                {{group_lesson.lesson_type}} {{group_lesson.duration}}
+                                {% get_value lesson_types group_lesson.lesson_type %} {{group_lesson.duration}}
                                 <a href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}">
                                     {{group_lesson.tutor_id__user_id__last_name}}
                                     {{group_lesson.tutor_id__user_id__first_name}}

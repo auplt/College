@@ -3,20 +3,24 @@
 {% block title %}Create a group{% endblock %}
 
 {% block content %}
-
-  <h1>{% if action == 'C' %}Добавление
-    {% elif action == 'E' %}Изменение
+{% include "back_button.html" with back_url="account:group_list" %}
+<h1>
+    {% if action == 'C' %}Добавление
+    {% elif action == 'U' %}Изменение
     {% else %}Форма
     {% endif %} группы
-  </h1>
-  <p>{% if action == 'C' %}Добавьте группу, используя форму ниже:
-    {% elif action == 'E' %}Измените группу, используя форму ниже:
+</h1>
+{% include "form_success.html" with form=group_form %}
+<p>
+    {% if action == 'C' %}Добавьте группу, используя форму ниже:
+    {% elif action == 'U' %}Измените группу, используя форму ниже:
     {% else %}Используйте форму ниже:
     {% endif %}
-  </p>
-  <form class="register_group" method="post">
+</p>
+<form class="register_group" method="post">
     {{ group_form.as_p }}
     {% csrf_token %}
-    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
-  </form>
+    <p><input type="submit"
+              value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+</form>
 {% endblock %}

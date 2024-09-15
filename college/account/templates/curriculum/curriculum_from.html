@@ -10,7 +10,18 @@
 {% block title %}Create curriculum{% endblock %}
 
 {% block content %}
+{{group.get_type}}
+    {% if group %}
+        {% if group %}
+            {% include "back_button.html" with back_url="account:curriculum_lesson_group_details" back_id=group.group_id %}
+        {% elif group.student_id %}
+            {% include "back_button.html" with back_url="account:curriculum_lesson_group_details" back_id=group.student_id %}
+        {% endif %}
+    {% else %}
+        {% include "back_button.html" with back_url="account:group_list" %}
+    {% endif %}
 <h1>Добавление дисциплины группе</h1>
+{% include "form_success.html" with form=curriculum_form %}
 <p>Добавьте дисциплины, используя форму ниже:</p>
 <form class="curriculum_group_form" method="post" data-url-img="{% static 'images' %}" novalidate>
     <div class="curriculum_group_input__wrapper">

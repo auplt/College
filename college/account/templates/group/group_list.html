@@ -5,12 +5,14 @@
 {% load group_extras %}
 
 {% block content %}
+{% include "back_button.html" with back_url="account:group_list" %}
     <h1>Список групп</h1>
     <a href="{% url 'account:group_register' %}">Добавить</a>
+    {% include "success_msg.html" %}
     {% if groups %}
         {% with prev_max_sem=-1 %}
             {% for group in groups %}
-                {% if group.max_sem != 0 %}
+                {% if group.max_sem != -1 %}
                     {% if prev_max_sem != group.max_sem %}
                         {% if prev_max_sem != -1 %}
         </div>
@@ -20,8 +22,8 @@
                     {% endif %}
             <h2>{{ group.name }}</h2>
             <a href="{{ group.get_absolute_url }}">Подробнее</a>
-            <a href="{{ group.get_edit_url }}">Редактировать</a>
-            <a href="{{ group.get_delete_url }}">Удалить</a>
+            <a href="{{ group.get_edit_url }}?next={% url 'account:group_list' %}">Редактировать</a>
+            <a href="{{ group.get_delete_url }}?next={% url 'account:group_list' %}">Удалить</a>
                     {% update_variable group.max_sem as prev_max_sem %}
                 {% endif %}
             {% endfor %}

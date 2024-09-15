@@ -1,0 +1,16 @@
+{% load group_extras %}
+{% load static %}
+
+
+<div class="form_success_msg">
+    {% if form.errors %}
+        <div class="msg success_msg__error">
+            <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+            <div class="msg_heading">
+                <img class="msg_icon circle-xmark" src="{% static 'images/circle-xmark.svg' %}"/>
+                <p class="msg_title">Ошибка!</p>
+            </div>
+            <div class="msg_text">Исправьте ошибки в форме</div>
+        </div>
+    {% endif %}
+</div>

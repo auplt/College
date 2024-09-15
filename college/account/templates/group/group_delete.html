@@ -3,13 +3,11 @@
 {% block title %}Group delete{% endblock %}
 
 {% block content %}
-    <h1>Удаление группы</h1>
-    <h2>{{ group.name }}</h2>
-    <form method="POST">
-        <p>Вы точно хотите удалить эту группу?</p>
-        <input type="submit" value="Да">
-        <a href="{% url 'account:group_list' %}">Отмена</a>
-        {% csrf_token %}
-    </form>
-    <a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+<h1>Удаление группы</h1>
+<h2>{{ group.name }}</h2>
+<form method="POST">
+    <p>Вы точно хотите удалить эту группу?</p>
+    {% include "delete_from_controllers.html" with cancel_url="account:group_details" cancel_id=group.group_id %}
+    {% csrf_token %}
+</form>
 {% endblock %}

@@ -1,22 +1,29 @@
 {% extends "base.html" %}
 
 {% block page_scripts %}
- {% load static %}
-  <script src="{% static 'js/group_semester_form.js' %}"></script>
+{% load static %}
+<script src="{% static 'js/group_semester_form.js' %}"></script>
 {% endblock %}
 
 {% block title %}Add new semester{% endblock %}
 
 {% block content %}
-  <h1>Добавить новый семестр</h1>
-  <p>Добавьте семестр, используя форму ниже:</p>
-  <form class="register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}">
+    {% if group %}
+        {% if group.group_id %}
+            {% include "back_button.html" with back_url="account:group_details" back_id=group.group_id %}
+        {% endif %}
+    {% else %}
+        {% include "back_button.html" with back_url="account:group_list" %}
+    {% endif %}
+<h1>Добавить новый семестр</h1>
+{% include "form_success.html" with form=group_semester_form %}
+<p>Добавьте семестр, используя форму ниже:</p>
+<form class="register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}">
     {{ group_semester_form.as_p }}
     {% csrf_token %}
     <p><input type="submit" value="Создать семестр"></p>
-  </form>
-  {% if group %}
-  <a href="{% url 'account:group_register' %}">Нужной группы нет в списке</a>
-  {% endif %}
-  <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+</form>
+{% if group %}
+<a href="{% url 'account:group_register' %}">Нужной группы нет в списке</a>
+{% endif %}
 {% endblock %}

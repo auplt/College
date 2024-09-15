@@ -14,8 +14,7 @@
 </p>
 <form method="POST">
     <p>Вы действительно хотите данное занятие?</p>
-    <input type="submit" value="Да">
-    <a href="{% url 'account:group_details' curriculum_lesson.curriculum_id__group_semester_id__group_id %}">Отмена</a>
+    {% include "delete_from_controllers.html" with cancel_url="account:curriculum_lesson_group_details" cancel_id=curriculum_lesson.curriculum_id__group_semester_id__group_id__group_id %}
     {% csrf_token %}
 </form>
 <a href="{% url 'account:group_list' %}">Вернуться к списку</a>

@@ -7,8 +7,7 @@
 <h2>Удаление занятия {{ discipline.name }} из плана занятий {{group_semester.group_id__name}} на {{group_semester.semester_num}} семестр</h2>
 <form method="POST">
     <p>Вы действительно хотите {{ discipline.name }} из плана занятий {{group_semester.group_id__name}} на {{group_semester.semester_num}} семестр?</p>
-    <input type="submit" value="Да">
-    <a href="{% url 'account:group_details' group_semester.group_id %}">Отмена</a>
+    {% include "delete_from_controllers.html" with cancel_url="account:curriculum_lesson_group_details" cancel_id=group_semester.group_id__group_id %}
     {% csrf_token %}
 </form>
 <a href="{% url 'account:group_list' %}">Вернуться к списку</a>

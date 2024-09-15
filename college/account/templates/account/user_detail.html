@@ -3,8 +3,12 @@
 {% block title %}User detail{% endblock %}
 
 {% block content %}
-<h1>Пользователь {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h1>
-
+{% include "back_button.html" with back_url="account:user_list" %}
+<h1>Информация о пользователе</h1>
+{% include "success_msg.html" %}
+<h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
+<a href="{{ user.get_edit_url }}?next={% url 'account:user_details' user.id %}">Редактировать</a>
+<a href="{{ user.get_delete_url }}?next={% url 'account:user_details' user.id %}">Удалить</a>
 <div class="user_info_wrapper">
     <div class="user_info_detail">
         {% if student %}
@@ -48,7 +52,4 @@
 
     </div>
 </div>
-<!--  <p>Описание: {{classroom.description}}</p>-->
-<a href="{{ user.get_edit_url }}">Редактировать</a>
-<a href="{% url 'account:user_list' %}">Вернуться к списку</a>
 {% endblock %}

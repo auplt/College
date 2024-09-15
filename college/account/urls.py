@@ -69,10 +69,10 @@ urlpatterns = [
     re_path(r'curriculum/delete/?(?P<discipline_id>\d+)?&?(?P<group_semester_id>\d+)?/?', views.curriculum_delete,
             name='curriculum_delete'),
 
-    path('curriculum_lesson/details/groups/<int:group_id>', views.curriculum_lesson_group_detail, name='curriculum_lesson_group_detail'),
+    path('curriculum_lesson/details/groups/<int:group_id>', views.curriculum_lesson_group_details, name='curriculum_lesson_group_details'),
     re_path(r'curriculum_lesson/register/?(?P<group_id>\d+)?&?(?P<group_semester_id>\d+)?&?(?P<discipline_id>\d+)?/?',
             views.curriculum_lesson_register,
-            name='curriculum_register'),
+            name='curriculum_lesson_register'),
     re_path(r'curriculum_lesson/register/?(?P<tutor_id>\d+)?/?$', views.curriculum_lesson_register,
             name='curriculum_lesson_register'),
     re_path(r'curriculum_lesson/register/?(?P<discipline_id>\d+)?/?$', views.curriculum_lesson_register,

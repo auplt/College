@@ -1,5 +1,7 @@
 {% load group_extras %}
 
+{% load static %}
+
 <div class="success_msg">
     {% if obj_action %}
         {% with obj_action as action %}
@@ -14,19 +16,34 @@
             {% endif %}
             {% if action %}
                 {% if obj_status == "success" %}
-                    <div class="success_msg__success">
-                        Объект {{obj_name}} успешно {{action}}
+                    <div class="msg success_msg__success">
+                        <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+                        <div class="msg_heading">
+                            <img class="msg_icon circle-check" src="{% static 'images/circle-check.svg' %}"/>
+                        <p class="msg_title">Информация</p>
+                        </div>
+                        <div class="msg_text">Объект {{obj_name}} успешно {{action}}</div>
                     </div>
                 {% elif obj_status == "warning" %}
-                    <div class="success_msg__warning">
-                        Внимание! Объект {{obj_name}} {{action}} с ошибками
+                    <div class="msg success_msg__warning">
+                        <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+                        <div class="msg_heading">
+                            <img class="msg_icon triangle-exclamation" src="{% static 'images/triangle-exclamation.svg' %}"/>
+                            <p class="msg_title">Внимание!</p>
+                        </div>
+                        <div class="msg_text">Объект {{obj_name}} {{action}} с ошибками</div>
                     </div>
                 {% elif obj_status == "error" %}
-                    <div class="success_msg__warning">
-                        Ошибка! Объект {{obj_name}} не {{action}}
+                    <div class="msg success_msg__error">
+                        <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+                        <div class="msg_heading">
+                            <img class="msg_icon circle-xmark" src="{% static 'images/circle-xmark.svg' %}"/>
+                            <p class="msg_title">Ошибка!</p>
+                        </div>
+                        <div class="msg_text">Объект {{obj_name}} не {{action}}</div>
                     </div>
                 {% endif %}
             {% endif %}
         {% endwith %}
-    {% endif %}
+   {% endif %}
 </div>

@@ -1,19 +1,22 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %}Classroom list{% endblock %}
 
 {% block content %}
-    <h1>Список аудиторий</h1>
+{% include "back_button.html" with back_url="account:classroom_list" %}
+<h1>Список аудиторий</h1>
 <!--    <a href="{% url 'account:classroom_register' %}?next={{request.path}}">Добавить</a>-->
 <!--    <a href="{% url 'account:classroom_register' %}?next=/account/group/">Добавить</a>-->
 <!--    <a href="{% url 'account:classroom_register' %}?next=/account/groups/">Добавить</a>-->
-    <a href="{% url 'account:classroom_register' %}">Добавить</a>
-    {% include "success_msg.html" %}
-    {% for classroom in classrooms %}
-        <h2>{{classroom.number}}</h2>
-        <p>Описание: {{classroom.description}}</p>
-        <a href="{{ classroom.get_absolute_url }}">Подробнее</a>
-        <a href="{{ classroom.get_edit_url }}?next={% url 'account:classroom_list' %}">Редактировать</a>
-        <a href="{{ classroom.get_delete_url }}?next={% url 'account:classroom_list' %}">Удалить</a>
-    {% endfor %}
+<a href="{% url 'account:classroom_register' %}">Добавить</a>
+{% include "success_msg.html" %}
+{% for classroom in classrooms %}
+    <h2>{{classroom.number}}</h2>
+    <p>Описание: {{classroom.description}}</p>
+    <a href="{{ classroom.get_absolute_url }}">Подробнее</a>
+    <a href="{{ classroom.get_edit_url }}?next={% url 'account:classroom_list' %}">Редактировать</a>
+    <a href="{{ classroom.get_delete_url }}?next={% url 'account:classroom_list' %}">Удалить</a>
+{% endfor %}
 {% endblock %}

@@ -9,6 +9,7 @@
 
 {% block content %}
   <h1>Создание нового занятия</h1>
+{% include "form_success.html" with form=tt_lesson_form %}
   <p>Создайте занятие, используя форму ниже:</p>
   <form class="register_lesson" method="post">
     {{ tt_lesson_form.as_p }}

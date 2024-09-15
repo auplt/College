@@ -3,14 +3,14 @@
 {% block title %}Lesson time detail{% endblock %}
 
 {% block content %}
-  <h1>{% if action == 'C' %}Добавлено время
-    {% elif action == 'E' %}Изменено время
-    {% elif action == 'D' %}Удалено время
-    {% else %}Время
-    {% endif %}занятия</h1>
-  <h2>
-      {{ lesson_time.name }}
-  </h2>
-  <p>Начало в {{ lesson_time.start_time }} окончание в {{ lesson_time.end_time }}</p>
-  <a href="{% url 'account:lesson_time_list' %}">Вернуться к списку</a>
+{% include "back_button.html" with back_url="account:lesson_time_list" %}
+<h1>Информация о времени занятия</h1>
+{% include "success_msg.html" %}
+<h2>
+    {{ lesson_time.name }}
+</h2>
+<p>Начало в {{ lesson_time.start_time }} окончание в {{ lesson_time.end_time }}</p>
+<a href="{{ lesson_time.get_edit_url }}">Редактировать</a>
+<a href="{{ lesson_time.get_delete_url }}">Удалить</a>
+<a href="{% url 'account:lesson_time_list' %}">Вернуться к списку</a>
 {% endblock %}

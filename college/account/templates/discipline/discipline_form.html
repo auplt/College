@@ -3,19 +3,24 @@
 {% block title %}Discipline form{% endblock %}
 
 {% block content %}
-  <h1>{% if action == 'C' %}Добавление
-    {% elif action == 'E' %}Изменение
+{% include "back_button.html" with back_url="account:discipline_list" %}
+<h1>
+    {% if action == 'C' %}Добавление
+    {% elif action == 'U' %}Изменение
     {% else %}Форма
     {% endif %} дисциплины
-  </h1>
-  <p>{% if action == 'C' %}Добавьте дисциплину, используя форму ниже:
-    {% elif action == 'E' %}Измените дисциплину, используя форму ниже:
+</h1>
+{% include "form_success.html" with form=discipline_form %}
+<p>
+    {% if action == 'C' %}Добавьте дисциплину, используя форму ниже:
+    {% elif action == 'U' %}Измените дисциплину, используя форму ниже:
     {% else %}Используйте форму ниже:
     {% endif %}
-  </p>
-  <form class="register_discipline" method="post">
+</p>
+<form class="register_discipline" method="post">
     {{ discipline_form.as_p }}
     {% csrf_token %}
-    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
-  </form>
+    <p><input type="submit"
+              value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+</form>
 {% endblock %}

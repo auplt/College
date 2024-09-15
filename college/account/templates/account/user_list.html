@@ -3,13 +3,15 @@
 {% block title %}Users list{% endblock %}
 
 {% block content %}
-    <h1>Список пользователей</h1>
-    <a href="{% url 'account:user_register' %}">Добавить</a>
-    {% for user in users %}
-        <h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
-        <a href="{{ user.get_absolute_url }}">Подробнее</a>
-        <a href="{{ user.get_edit_url }}">Редактировать</a>
-        <a href="{{ user.get_delete_url }}">Удалить</a>
-    {% endfor %}
-    {% include "pagination.html" with page=users %}
+{% include "back_button.html" with back_url="account:user_list" %}
+<h1>Список пользователей</h1>
+<a href="{% url 'account:user_register' %}">Добавить</a>
+{% include "success_msg.html" %}
+{% for user in users %}
+    <h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
+    <a href="{{ user.get_absolute_url }}">Подробнее</a>
+    <a href="{{ user.get_edit_url }}?next={% url 'account:user_list' %}">Редактировать</a>
+    <a href="{{ user.get_delete_url }}?next={% url 'account:user_list' %}">Удалить</a>
+{% endfor %}
+{% include "pagination.html" with page=users %}
 {% endblock %}

@@ -3,8 +3,13 @@
 {% block title %}Discipline detail{% endblock %}
 
 {% block content %}
-<h1>Дисциплина {{ discipline.name }}</h1>
+{% include "back_button.html" with back_url="account:discipline_list" %}
+<h1>Информация о дисциплине</h1>
+<h2>{{ discipline.name }}</h2>
+{% include "success_msg.html" %}
 <p>Описание: {{ discipline.description }}</p>
+<a href="{{ discipline.get_edit_url }}?next={% url 'account:discipline_details' discipline.discipline_id %}">Редактировать</a>
+<a href="{{ discipline.get_delete_url }}?next={% url 'account:discipline_details' discipline.discipline_id %}">Удалить</a>
 <div class="discipline_groups">
     <h2>Список групп</h2>
     <a href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Добавить группу</a>

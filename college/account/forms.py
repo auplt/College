@@ -183,7 +183,7 @@ class ClassroomRegisterForm(forms.ModelForm):
 
 
 class LessonTimeRegisterForm(forms.ModelForm):
-    name = forms.CharField(label='Название урока')
+    name = forms.CharField(label='Название времени занятия')
     start_time = forms.TimeField(label='Начало занятия',
                                  widget=forms.TextInput(attrs={
                                      'class': 'timepicker'

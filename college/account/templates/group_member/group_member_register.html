@@ -1,9 +1,23 @@
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}Create group member{% endblock %}
 
 {% block content %}
+    {% if group %}
+        {% if group.get_type == 'Group' %}
+            {% include "back_button.html" with back_url="account:group_details" back_id=group.group_id %}
+        {% elif group.group_id %}
+            {% include "back_button.html" with back_url="account:group_details" back_id=group.group_id.group_id %}
+        {% elif group.student_id %}
+            {% include "back_button.html" with back_url="account:student_details" back_id=group.student_id %}
+        {% endif %}
+    {% else %}
+        {% include "back_button.html" with back_url="account:group_list" %}
+    {% endif %}
   <h1>Добавление в группу</h1>
+{% include "form_success.html" with form=group_member_form %}
   <p>Добавьте в группу, используя форму ниже:</p>
   <form class="register_group" method="post">
     {{ group_member_form.as_p }}
@@ -14,5 +28,4 @@
   {% if group %}
   <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Группы с нужным номером семестра нет в списке</a>
   {% endif %}
-  <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
 {% endblock %}

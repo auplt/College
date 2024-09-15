@@ -3,22 +3,30 @@
 {% block title %}Create curriculum lesson{% endblock %}
 
 {% block content %}
+{% if group %}
+{% include "back_button.html" with back_url="account:curriculum_lesson_group_details" back_id=group.group_id %}
+{% elif discipline %}
+{% include "back_button.html" with back_url="account:discipline_details" back_id=discipline.discipline_id %}
+{% elif tutor %}
+{% include "back_button.html" with back_url="account:user_details" back_id=tutor.user_id.id %}
+{% endif %}
   <h1>
       {% if action == 'C' %}Добавление занятия в план
-      {% elif action == 'E' %}Изменение занятия
+      {% elif action == 'U' %}Изменение занятия
       {% elif action == 'D' %}Удаление занятия
       {% else %}Занятие
       {% endif %}
   </h1>
+{% include "form_success.html" with form=curriculum_lesson_form %}
   <p>{% if action == 'C' %}Добавьте занятие в план, используя форму ниже:
-    {% elif action == 'E' %}Измените занятие в плане, используя форму ниже:
+    {% elif action == 'U' %}Измените занятие в плане, используя форму ниже:
     {% else %}Используйте форму ниже:
     {% endif %}
   </p>
   <form class="register_curriculum_lesson" method="post">
     {{ curriculum_lesson_form.as_p }}
     {% csrf_token %}
-    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'E' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
   </form>
   {% if discipline %}
   <a href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Нужной группы нет в списке</a>

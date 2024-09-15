@@ -1,0 +1,14 @@
+{% load static %}
+
+<div class="delete_form_controllers">
+    <div class="controllers_confirm_cancel">
+        <input class="form_controllers_confirm" type="submit" value="Да">
+        <a class="form_controllers_cancel"
+           href="{% if next_url %}{{next_url}}{% else %}{% url cancel_url cancel_id %}{% endif %}">Отмена</a>
+    </div>
+    <a class="form_controllers_back"
+       href="{% if next_url %}{{next_url}}{% else %}{% url cancel_url cancel_id %}{% endif %}"><img
+            class="form_controllers_back_img"
+            src="{% static 'images/back.svg' %}"/><span>Назад</span>
+    </a>
+</div>

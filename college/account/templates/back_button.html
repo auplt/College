@@ -1,0 +1,15 @@
+{% load static %}
+
+{% if back_id %}
+<a class="form_controllers_back"
+   href="{% if next_url %}{{next_url}}{% else %}{% url back_url back_id %}{% endif %}"><img
+        class="form_controllers_back_img"
+        src="{% static 'images/back.svg' %}"/><span>Назад</span>
+</a>
+{% else %}
+<a class="form_controllers_back"
+   href="{% if next_url %}{{next_url}}{% else %}{% url back_url %}{% endif %}"><img
+        class="form_controllers_back_img"
+        src="{% static 'images/back.svg' %}"/><span>Назад</span>
+</a>
+{% endif %}

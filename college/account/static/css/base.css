@@ -1,5 +1,20 @@
 @import url(//fonts.googleapis.com/css?family=Muli);
 
+:root {
+  --secondary-text-color: #808082;
+  --secondary-text-filter: brightness(0) saturate(100%) invert(21%) sepia(8%)
+    saturate(62%) hue-rotate(202deg) brightness(93%) contrast(92%);
+  --msg-success-bg-color: #dcfff1;
+  --msg-success-border-color: #22a06b;
+  --msg-warning-bg-color: #fff7d6;
+  --msg-warning-border-color: #e56910;
+  --msg-error-bg-color: #ffeceb;
+  --msg-error-border-color: #e2483d;
+  --msg-primary-text-color: #172b4d;
+
+  --primary-border-radius: 10px;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -386,15 +401,14 @@ img.user-detail {
 
 .form_controllers_back {
   font-weight: bold;
-  color: #808082;
+  color: var(--secondary-text-color);
   display: flex;
   align-items: center;
 }
 
 .form_controllers_back:hover {
   /* color: #3a3a3b; */
-  filter: brightness(0) saturate(100%) invert(21%) sepia(8%) saturate(62%)
-    hue-rotate(202deg) brightness(93%) contrast(92%);
+  filter: var(--secondary-text-filter);
 }
 
 .form_controllers_back_img {
@@ -420,4 +434,62 @@ select:checked,
 select:focus,
 select:hover {
   box-shadow: 0 0 10px 100px #12c064 inset;
+}
+
+.msg {
+  font-size: 14px;
+  color: var(--msg-primary-text-color);
+  border: 2px solid;
+  border-radius: var(--primary-border-radius);
+  padding: 10px 30px 10px 20px;
+  position: relative;
+}
+
+.msg_heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 5px 0;
+}
+
+.msg_title {
+  font-weight: 700;
+  line-height: 20px;
+  margin: 0;
+}
+
+.msg_text {
+  font-weight: 400;
+  padding-left: 26px;
+}
+
+.success_msg__success {
+  border-color: var(--msg-success-border-color);
+  background-color: var(--msg-success-bg-color);
+}
+
+.success_msg__warning {
+  border-color: var(--msg-warning-border-color);
+  background-color: var(--msg-warning-bg-color);
+}
+
+.success_msg__error {
+  border-color: var(--msg-error-border-color);
+  background-color: var(--msg-error-bg-color);
+}
+
+.msg_icon {
+  width: 16px;
+  height: 16px;
+}
+
+.msg_cross {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.msg_cross:hover {
+  filter: var(--secondary-text-filter);
+  cursor: pointer;
 }

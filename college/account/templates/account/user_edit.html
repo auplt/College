@@ -8,7 +8,9 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
+{% include "back_button.html" with back_url="account:user_list" %}
 <h1>Изменение информации о пользователе</h1>
+{% include "form_success.html" with form=user_form %}
 <p>Измените информацию, используя форму ниже:</p>
 <form class="edit_user" method="post">
     {{ user_form.as_p }}

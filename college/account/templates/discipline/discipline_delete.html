@@ -3,16 +3,13 @@
 {% block title %}Discipline delete{% endblock %}
 
 {% block content %}
-    <h1>Удаление дисциплины</h1>
-    <h2>
-        {{ discipline.name }}
-    </h2>
-    <p>Описание: {{ discipline.description }}</p>
-    <form method="POST">
-        <p>Вы точно хотите удалить эту дисциплину?</p>
-        <input type="submit" value="Да">
-        <a href="{% url 'account:discipline_list' %}">Отмена</a>
-        {% csrf_token %}
-    </form>
-    <a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
+<h1>Удаление дисциплины</h1>
+<h2>{{ discipline.name }}</h2>
+<p>Описание: {{ discipline.description }}</p>
+<form method="POST">
+    <p>Вы точно хотите удалить эту дисциплину?</p>
+    {% include "delete_from_controllers.html" with cancel_url="account:discipline_details" cancel_id=discipline.discipline_id %}
+    {% csrf_token %}
+</form>
+<a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
 {% endblock %}

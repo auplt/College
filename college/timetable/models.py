@@ -350,6 +350,10 @@ class LessonTime(models.Model):
         ]
 
     def get_absolute_url(self):
+        return reverse('account:lesson_time_details',
+                       args=[self.lesson_id])
+
+    def get_edit_url(self):
         return reverse('account:lesson_time_edit',
                        args=[self.lesson_id])
 

@@ -3,14 +3,16 @@
 {% block title %}Discipline list{% endblock %}
 
 {% block content %}
-    <h1>Список дисциплин</h1>
-    <a href="{% url 'account:discipline_register' %}">Добавить</a>
-    {% for discipline in disciplines %}
-        <h2>{{ discipline.name }}</h2>
-        <p>Описание: {{ discipline.description }}</p>
-        <a href="{{ discipline.get_absolute_url }}">Подробнее</a>
-        <a href="{{ discipline.get_edit_url }}">Редактировать</a>
-        <a href="{{ discipline.get_delete_url }}">Удалить</a>
-    {% endfor %}
-    {% include "pagination.html" with page=disciplines %}
+<h1>Список дисциплин</h1>
+{% include "back_button.html" with back_url="account:discipline_list" %}
+<a href="{% url 'account:discipline_register' %}">Добавить</a>
+{% include "success_msg.html" %}
+{% for discipline in disciplines %}
+    <h2>{{ discipline.name }}</h2>
+    <p>Описание: {{ discipline.description }}</p>
+    <a href="{{ discipline.get_absolute_url }}">Подробнее</a>
+    <a href="{{ discipline.get_edit_url }}?next={% url 'account:discipline_list' %}">Редактировать</a>
+    <a href="{{ discipline.get_delete_url }}?next={% url 'account:discipline_list' %}">Удалить</a>
+{% endfor %}
+{% include "pagination.html" with page=disciplines %}
 {% endblock %}
