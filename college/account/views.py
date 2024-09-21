@@ -1,22 +1,26 @@
 """
 Views for account app.
 """
+from datetime import datetime, timedelta
+
 import django.db.transaction
 from django import forms
 # import simplejson
+from itertools import groupby
 from django.urls import reverse, resolve, Resolver404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction, IntegrityError
-from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch
+from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch, Q
 from django.db.models.expressions import Col, F
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models.functions import Coalesce
 from django.views.generic import UpdateView
 from django.db import connection
+from django.contrib.postgres.aggregates import StringAgg
 from psycopg2.errors import UniqueViolation
 
 from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, \
@@ -24,7 +28,7 @@ from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditio
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
 from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
-    GroupMember, CurriculumLesson, Group, TypesOfLesson
+    GroupMember, CurriculumLesson, Group, TypesOfLesson, TTLesson
 
 
 def user_login(request):
@@ -128,7 +132,9 @@ def user_details(request, id):
     if obj_stats:
         for obj_stat in obj_stats:
             del request.session[obj_stat]
+
     context.update(obj_stats)
+    context.update(tt_lesson_details(request))
     print(context)
     return render(request, 'account/user_detail.html', context=context)
 
@@ -1583,7 +1589,164 @@ def curriculum_lesson_delete(request, curriculum_lesson_id):
     return render(request, 'curriculum_lesson/curriculum_lesson_delete.html', context=context)
 
 
-# TTLESSON BLOCK
+# TT_LESSON BLOCK
+
+
+def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
+    context = None
+    tt_lesson_objs = []
+    if 'date' in request.GET.keys():
+        start_dt = datetime.strptime(request.GET.get('date'), '%d.%m.%Y').date()
+        day_count = 1
+        # Case for classroom
+    elif 'start_date' in request.GET.keys() and 'end_date' in request.GET.keys():
+        start_dt = datetime.strptime(request.GET.get('start_date'), '%d.%m.%Y').date()
+        end_dt = datetime.strptime(request.GET.get('end_date'), '%d.%m.%Y').date()
+        day_count = (end_dt - start_dt).days + 1
+    else:
+        raise Http404
+
+    for dt in [d for d in (start_dt + timedelta(n) for n in range(day_count))]:
+        if classroom_id in request.GET.keys():
+            obj = TTLesson.objects.filter(date=dt, classroom_id=request.GET.get('classroom_id'))
+        # Case for group
+        elif 'group_id' in request.GET.keys():
+            # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) to get whole info about
+            # all groups, tutors, etc. involved in the lesson
+            tt_lessons = (TTLesson.objects
+                          .select_related('curriculum_lesson_id__curriculum_id__group_semester_id__group_id')
+                          .filter(date=dt,
+                                  curriculum_lesson_id__curriculum_id__group_semester_id__group_id=
+                                  request.GET.get('group_id'))
+                          .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
+
+            day_name_list = [tt_lesson_id['day_name'] for tt_lesson_id in tt_lessons]
+            week_type_list = [tt_lesson_id['week_type'] for tt_lesson_id in tt_lessons]
+            lessons_time_id_list = [tt_lesson_id['lessons_time_id'] for tt_lesson_id in tt_lessons]
+            obj = TTLesson.objects.filter(date=dt,
+                                          day_name__in=day_name_list,
+                                          week_type__in=week_type_list,
+                                          lessons_time_id__in=lessons_time_id_list)
+        # Case for users (tutors & students)
+        elif 'user_id' in request.GET.keys():
+            # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) related to tutor
+            # to get whole info about all groups, tutors, etc. involved in the lesson
+            tt_lesson_tutor = \
+                (TTLesson.objects
+                 .select_related('curriculum_lesson_id__tutor_id__user_id')
+                 .filter(date=dt,
+                         curriculum_lesson_id__tutor_id__user_id=request.GET.get('user_id'))
+                 .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
+
+            # Getting info about all student's group_semester_ids (about student's group history (group + semester num))
+            group_semester_ids = (GroupMember.objects.select_related('student_id__user_id')
+                                  .filter(student_id__user_id=request.GET.get('user_id'))
+                                  .values('group_semester_id')
+                                  .all())
+            # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) related to student
+            # to get whole info about all groups, tutors, etc. involved in the lesson
+            tt_lesson_student = \
+                (TTLesson.objects
+                 .select_related('curriculum_lesson_id__curriculum_id')
+                 .filter(date=dt,
+                         curriculum_lesson_id__curriculum_id__group_semester_id__in=group_semester_ids)
+                 .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
+
+            tt_lesson_ids = tt_lesson_tutor.union(tt_lesson_student)
+            day_name_list = [tt_lesson_id['day_name'] for tt_lesson_id in tt_lesson_ids]
+            week_type_list = [tt_lesson_id['week_type'] for tt_lesson_id in tt_lesson_ids]
+            lessons_time_id_list = [tt_lesson_id['lessons_time_id'] for tt_lesson_id in tt_lesson_ids]
+            obj = (TTLesson.objects
+                   .filter(date=dt,
+                           day_name__in=day_name_list,
+                           week_type__in=week_type_list,
+                           lessons_time_id__in=lessons_time_id_list)
+                   .order_by('date', 'lessons_time_id__start_time'))
+        else:
+            raise Http404
+
+        # Grouping tt_lesson_objects by curriculum_lesson
+        tt_lesson_obj = [
+            {
+                'date': list(key)[0],
+                'day_name': list(key)[1],
+                'week_type': list(key)[2],
+                'start_time': list(key)[3].start_time,
+                'end_time': list(key)[3].end_time,
+                'classroom_id': list(key)[4].classroom_id,
+                'classroom_number': list(key)[4].number,
+                'lesson_type': list(key)[5],
+                'discipline_id': list(key)[6],
+                'discipline_name': list(key)[7],
+                'lesson_info': [
+                    {
+                        'tutor':
+                            {
+                                'id': item.curriculum_lesson_id.tutor_id.user_id.id,
+                                'last_name': item.curriculum_lesson_id.tutor_id.user_id.last_name,
+                                'first_name': item.curriculum_lesson_id.tutor_id.user_id.first_name,
+                                'second_name': item.curriculum_lesson_id.tutor_id.user_id.second_name
+                            },
+                        'group':
+                            {
+                                'group_id': item.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.group_id,
+                                'name': item.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.name
+                            }
+                    } for item in grp
+                ]
+            } for key, grp in
+            groupby(obj, key=lambda x: (x.date,
+                                        x.day_name,
+                                        x.week_type,
+                                        x.lessons_time_id,
+                                        x.classroom_id,
+                                        x.curriculum_lesson_id.lesson_type,
+                                        x.curriculum_lesson_id.curriculum_id.discipline_id.discipline_id,
+                                        x.curriculum_lesson_id.curriculum_id.discipline_id.name,
+                                        ))
+        ]
+
+        tt_lesson_objs.extend(tt_lesson_obj)
+
+    # Grouping list of tt_lesson_objects by days
+    tt_lesson_obj = [
+        {
+            'date': list(key)[0],
+            'day_name': list(key)[1],
+            'week_type': list(key)[2],
+            'days_info': [
+                {
+                    'start_time': item['start_time'],
+                    'end_time': item['end_time'],
+                    'classroom_id': item['classroom_id'],
+                    'classroom_number': item['classroom_number'],
+                    'lesson_type': item['lesson_type'],
+                    'discipline_id': item['discipline_id'],
+                    'discipline_name': item['discipline_name'],
+                    'lesson_info': item['lesson_info']
+                } for item in grp
+            ]
+        } for key, grp in groupby(tt_lesson_objs, key=lambda x: (x['date'], x['day_name'], x['week_type']))
+    ]
+
+    # Inserting missing dates to the list of dates with empty lessons list
+    for n in range(day_count):
+        dt = start_dt + timedelta(n)
+        if len(tt_lesson_obj) <= n or tt_lesson_obj[n]['date'] != dt:
+            elem = {
+                'date': dt,
+                'day_name': dt.strftime('%a').upper(),
+                'week_type': TTLesson.get_week_type(dt),
+                'days_info': []
+            }
+            tt_lesson_obj.insert(n, elem)
+
+    context = {'tt_lessons': tt_lesson_obj,
+               'lesson_types': dict(TypesOfLesson.choices),
+               'week_types': dict(TTLesson.TYPE_OF_WEEK_CHOICES),
+               'day_names': dict(TTLesson.DAY_OF_WEEK_CHOICES)}
+    return context
+    return render(request, 'tt_lesson/tt_lesson_detail.html', context=context)
 
 
 def tt_lesson_register(request):

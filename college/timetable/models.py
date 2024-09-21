@@ -467,6 +467,41 @@ class TTLesson(models.Model):
             else:
                 self.week_type = 'NE'
 
+    @staticmethod
+    def get_week_type(lesson_date: datetime.date) -> str:
+        if lesson_date.month in [1, 7, 8]:
+            return 'EX'
+        elif lesson_date.month in [9, 10, 11, 12]:
+            start_date = datetime.date(lesson_date.year, 9, 1)
+            week_num = floor((lesson_date - start_date).days / 7.0) + 1
+            if start_date.weekday() == 6:
+                week_num -= 1
+                if lesson_date == start_date:
+                    return 'EX'
+                start_date += datetime.timedelta(days=1)
+            if lesson_date >= start_date + datetime.timedelta(days=16 * 7):
+                return 'CW'
+            elif week_num % 2 == 0:
+                return 'EV'
+            else:
+                return 'NE'
+        elif lesson_date.month in [2, 3, 4, 5, 6]:
+            start_date = datetime.date(lesson_date.year, 2, 1) + datetime.timedelta(days=7)
+            if start_date.weekday() == 6 or start_date.weekday() == 5:
+                start_date += datetime.timedelta(days=7 - start_date.weekday())
+            week_num = floor((lesson_date - start_date).days / 7.0) + 1
+            if lesson_date < start_date:
+                return 'EX'
+            if start_date + datetime.timedelta(days=15 * 7) <= lesson_date < start_date + datetime.timedelta(
+                    days=16 * 7):
+                return 'CW'
+            elif lesson_date.month == 6:
+                return 'EX'
+            elif week_num % 2 == 0:
+                return 'EV'
+            else:
+                return 'NE'
+
     class Meta:
         db_table = 'tt_lessons'
         constraints = [

@@ -4,9 +4,14 @@ URL configuration for account app.
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_views
+from django.urls import path, register_converter
 from . import views
+from .converters import DateConverter
 
 app_name = 'account'
+
+register_converter(DateConverter, 'date')
+
 urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     # path('login/', auth_views.LoginView.as_view(), name='login'),
@@ -82,6 +87,7 @@ urlpatterns = [
     path('curriculum_lesson/delete/<int:curriculum_lesson_id>', views.curriculum_lesson_delete, name='curriculum_lesson_delete'),
 
 
+    re_path(r'tt_lesson/details/?(?P<date>[0-9]{2}.[0-9]{2}.[0-9]{4})?/?$', views.tt_lesson_details, name='tt_lesson_details'),
     path('tt_lesson/register/', views.tt_lesson_register, name='tt_lesson_register'),
 
     # path(r'group_semester/ajax/load_max_semester/?(?P<group_id>\d+)?/?$', views.load_max_semester, name='ajax_load_max_semester'),

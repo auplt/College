@@ -1,0 +1,85 @@
+{% load group_extras %}
+
+<!--{% include "back_button.html" with back_url="account:lesson_time_list" %}-->
+
+
+{% if tt_lessons %}
+<h2>Расписание занятий</h2>
+{% for tt_lesson in tt_lessons %}
+<h3>{{ tt_lesson.date }} {% get_value week_types tt_lesson.week_type %}</h3>
+
+<div class="tt_lesson_day">
+{% get_value day_names tt_lesson.day_name %}
+</div>
+{% for day_inf in tt_lesson.days_info %}
+<div class="tt_lesson_time">
+{{day_inf.start_time}} - {{day_inf.end_time}}
+    </div>
+<div class="tt_lesson_classroom">
+{{day_inf.classroom_id}}
+{{day_inf.classroom_number}}
+    </div>
+<div class="tt_lesson_discipline">
+{% get_value lesson_types day_inf.lesson_type %}
+{{day_inf.discipline_id}}
+{{day_inf.discipline_name}}
+    </div>
+
+<div class="tt_lesson_group">
+{% for lesson_inf in day_inf.lesson_info %}
+{{lesson_inf.group.group_id}}
+{{lesson_inf.group.name}}
+{% endfor %}
+    </div>
+
+<div class="tt_lesson_tutor">
+{% for lesson_inf in day_inf.lesson_info %}
+    {% ifchanged lesson_inf.tutor.id %}
+        {{lesson_inf.tutor.id}}
+        {{lesson_inf.tutor.last_name}}
+        {{lesson_inf.tutor.first_name}}
+        {{lesson_inf.tutor.second_name}}
+    {% endifchanged %}
+{% endfor %}
+    </div>
+ {% endfor %}
+{% endfor %}
+{% endif %}
+
+<!--{% if 1 == 0 %}-->
+<!--{% for ttl in tt_lesson %}-->
+<!--<h2>{{ ttl.date }}{{ttl.week_type}}неделя</h2>-->
+<!--<div class="tt_lesson_day">-->
+
+<!--{{ttl.day_name}}-->
+<!--</div>-->
+<!--<div class="tt_lesson_time">-->
+<!--{{ttl.lessons_time_id__start_time}} - {{ttl.lessons_time_id__end_time}}-->
+<!--</div>-->
+<!--<div class="tt_lesson_classroom">-->
+<!--{{ttl.classroom_id.name}}-->
+<!--</div>-->
+<!--<div class="tt_lesson_discipline">-->
+<!-- {{ttl.curriculum_lesson_id.lesson_type}}-->
+<!--{{ttl.curriculum_lesson_id.curriculum_id.discipline_id.discipline_id}}-->
+<!--{{ttl.curriculum_lesson_id.curriculum_id.discipline_id.name}}-->
+<!--</div>-->
+<!--<div class="tt_lesson_group">-->
+<!--    {{ttl.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.group_id}}-->
+<!--    {{ttl.group_names}}-->
+<!--</div>-->
+<!--<div class="tt_lesson_tutor">-->
+<!--    {{ttl.curriculum_lesson_id.tutor_id.user_id.id}}-->
+<!--{{ttl.curriculum_lesson_id.tutor_id.user_id.last_name}}-->
+<!--{{ttl.curriculum_lesson_id.tutor_id.user_id.first_name}}-->
+<!--{{ttl.curriculum_lesson_id.tutor_id.user_id.second_name}}-->
+<!--</div>-->
+
+
+
+<!--{% endfor %}-->
+<!--{% endif %}-->
+
+<a href="">Редактировать</a>
+<a href="">Удалить</a>
+<a href="">Вернуться к списку</a>
