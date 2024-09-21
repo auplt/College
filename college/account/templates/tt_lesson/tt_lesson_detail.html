@@ -4,7 +4,6 @@
 
 
 {% if tt_lessons %}
-<h2>Расписание занятий</h2>
 {% for tt_lesson in tt_lessons %}
 <h3>{{ tt_lesson.date }} {% get_value week_types tt_lesson.week_type %}</h3>
 
@@ -44,6 +43,15 @@
     </div>
  {% endfor %}
 {% endfor %}
+
+{% if is_week %}
+{% include "tt_lesson/tt_lesson_pagination.html" with page=week_delta iter="week_delta" week=is_week %}
+{% else %}
+{% include "tt_lesson/tt_lesson_pagination.html" with page=day_delta iter="day_delta" week=is_week %}
+{% endif %}
+
+{% else %}
+Занятий не найдено
 {% endif %}
 
 <!--{% if 1 == 0 %}-->

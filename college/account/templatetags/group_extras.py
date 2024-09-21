@@ -13,6 +13,17 @@ def update_variable(data: any):
     return data
 
 
+@register.simple_tag
+def increment(data: int, inc: int):
+    """
+    Simple tag that increments variable.
+    :param data: new value
+    :param inc: increment value
+    :return: variable with new value
+    """
+    return int(data) + int(inc)
+
+
 @register.filter()
 def is_number(value: any):
     """

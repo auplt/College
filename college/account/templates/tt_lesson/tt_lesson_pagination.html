@@ -1,0 +1,8 @@
+{% load group_extras %}
+
+<div class="pagination">
+    <span class="step-links">
+        <a href="?week={{week}}&{{iter}}={% increment page -1 %}">Назад</a>
+        <a href="?week={{week}}&{{iter}}={% increment page 1 %}">Вперед</a>
+    </span>
+</div>

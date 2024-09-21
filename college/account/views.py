@@ -1,7 +1,7 @@
 """
 Views for account app.
 """
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 import django.db.transaction
 from django import forms
@@ -134,7 +134,7 @@ def user_details(request, id):
             del request.session[obj_stat]
 
     context.update(obj_stats)
-    context.update(tt_lesson_details(request))
+    context.update(tt_lesson_details(request, user_id=id))
     print(context)
     return render(request, 'account/user_detail.html', context=context)
 
@@ -1382,6 +1382,12 @@ def curriculum_delete(request):
 
 
 def curriculum_lesson_group_details(request, group_id):
+    """
+    View for curriculum lesson details.
+    :param request: user's request
+    :param group_id: group identifier
+    :return: HTTP response HTML page with curriculum lesson details
+    """
     group_obj = get_object_or_404(Group, group_id=group_id)
     group_lessons_obj = (CurriculumLesson.objects
                          .select_related('curriculum_id__discipline_id',
@@ -1419,15 +1425,6 @@ def curriculum_lesson_group_details(request, group_id):
 
     print(group_lessons_obj.query)
     print(group_lessons_obj)
-    # groups_obj = (Curriculum.objects.select_related('group_semester_id__group_id')
-    #               .values('group_semester_id__semester_num', 'group_semester_id__group_id__name',
-    #                       'group_semester_id__group_id__group_id')
-    #               .filter(discipline_id__discipline_id=discipline_id).all())
-    # tutors_obj = (CurriculumLesson.objects.select_related('tutor_id__user_id')
-    #               .values('tutor_id__user_id__id', 'tutor_id__user_id__last_name', 'tutor_id__user_id__first_name',
-    #                       'tutor_id__user_id__second_name')
-    #               .distinct()
-    #               .filter(curriculum_id__discipline_id__discipline_id=discipline_id).all())
 
     # print(groups_obj.__dict__)
 
@@ -1444,6 +1441,11 @@ def curriculum_lesson_group_details(request, group_id):
 
 
 def curriculum_lesson_register(request):
+    """
+    View for curriculum lesson registration.
+    :param request: user's request
+    :return: HTTP response HTML page with form to register curriculum lesson or redirect page
+    """
     discipline_obj, group_obj, tutor_obj = None, None, None
     if request.method == 'POST':
         curriculum_lesson_form = CurriculumLessonRegisterForm(request.POST)
@@ -1462,10 +1464,6 @@ def curriculum_lesson_register(request):
                                             'group_id': new_curriculum_lesson.curriculum_id.group_semester_id.group_id.group_id}))
     else:
         if 'group_id' in request.GET.dict() and 'group_semester_id' in request.GET.dict() and 'discipline_id' in request.GET.dict():
-            # group_semester_obj = get_object_or_404(
-            #     GroupSemester.objects.select_related('group_id').values('group_id', 'group_id__name', 'semester_num'),
-            #     group_id=request.GET.get('group_id'),
-            #     group_semester_id=request.GET.get('group_semester_id'))
             # print(group_semester_obj)
             group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
             curriculum_obj = get_object_or_404(Curriculum, group_semester_id=request.GET.get('group_semester_id'),
@@ -1502,20 +1500,14 @@ def curriculum_lesson_register(request):
 
 
 def curriculum_lesson_edit(request, curriculum_lesson_id):
+    """
+    View for editing curriculum lesson information.
+    :param request: user's request
+    :param curriculum_lesson_id: curriculum lesson entity identifier
+    :return: HTTP response HTML page with form to edit curriculum lesson information or redirect page
+    """
     curriculum_lesson_obj = get_object_or_404(CurriculumLesson, curriculum_lesson_id=curriculum_lesson_id)
-    # curriculum_lesson = (CurriculumLesson.objects
-    #                      .select_related('curriculum_id__discipline_id',
-    #                                      'curriculum_id__discipline_id__group_semester_id__group_id',
-    #                                      'tutor_id__user_id')
-    #                      .values('curriculum_id__discipline_id',
-    #                              'curriculum_id__discipline_id__name',
-    #                              'curriculum_id__group_semester_id',
-    #                              'curriculum_id__group_semester_id__group_id',
-    #                              'curriculum_id__group_semester_id__semester_num',
-    #                              'curriculum_id__group_semester_id__group_id__name',
-    #                              'tutor_id__user_id__last_name',
-    #                              'tutor_id__user_id__first_name',
-    #                              'tutor_id__user_id__second_name').get(curriculum_lesson_id=curriculum_lesson_id))
+
     curriculum_lesson_form = CurriculumLessonRegisterForm(request.POST or None, instance=curriculum_lesson_obj)
     if curriculum_lesson_form.is_valid():
         curriculum_lesson_form.save()
@@ -1538,6 +1530,12 @@ def curriculum_lesson_edit(request, curriculum_lesson_id):
 
 
 def curriculum_lesson_delete(request, curriculum_lesson_id):
+    """
+    View for deleting curriculum lesson information.
+    :param request: user's request
+    :param curriculum_lesson_id: curriculum lesson entity identifier
+    :return: HTTP response HTML page with form to delete curriculum lesson information or redirect page
+    """
     curriculum_lesson_obj = get_object_or_404(CurriculumLesson, curriculum_lesson_id=curriculum_lesson_id)
     curriculum_lesson = (CurriculumLesson.objects
                          .select_related('curriculum_id__discipline_id',
@@ -1593,31 +1591,62 @@ def curriculum_lesson_delete(request, curriculum_lesson_id):
 
 
 def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
-    context = None
+    """
+    Function to get timetable for users, classrooms and groups.
+    :param request: user's request
+    :param user_id: user identifier
+    :param classroom_id: classroom identifier
+    :param group_id: group identifier
+    :return: dict with tt_lesson objects, grouped in appropriate way
+    """
+    is_week = False
+    week_delta = None
     tt_lesson_objs = []
-    if 'date' in request.GET.keys():
-        start_dt = datetime.strptime(request.GET.get('date'), '%d.%m.%Y').date()
-        day_count = 1
-        # Case for classroom
-    elif 'start_date' in request.GET.keys() and 'end_date' in request.GET.keys():
-        start_dt = datetime.strptime(request.GET.get('start_date'), '%d.%m.%Y').date()
-        end_dt = datetime.strptime(request.GET.get('end_date'), '%d.%m.%Y').date()
-        day_count = (end_dt - start_dt).days + 1
+    try:
+        day_delta = int(request.GET.get('day_delta', 0))
+    except TypeError:
+        day_delta = 0
+    start_dt = date.today() + timedelta(days=day_delta)
+
+    day_count = 1
+
+    if 'week' in request.GET.keys():
+        try:
+            is_week = eval(request.GET.get('week'))
+        except NameError:
+            is_week = False
+
+    if is_week:
+        try:
+            week_delta = int(request.GET.get('week_delta', 0))
+        except TypeError:
+            week_delta = 0
+
+        dt = date.today() + timedelta(days=week_delta * 7)
+        start_dt = dt - timedelta(days=dt.weekday())
+        day_count = 7
+
+    # Getting info about all student's group_semester_ids (about student's group history (group + semester num))
+    if user_id is not None:
+        group_semester_ids = (GroupMember.objects.select_related('student_id__user_id')
+                              .filter(student_id__user_id=user_id)
+                              .values('group_semester_id')
+                              .all())
     else:
-        raise Http404
+        group_semester_ids = None
 
     for dt in [d for d in (start_dt + timedelta(n) for n in range(day_count))]:
-        if classroom_id in request.GET.keys():
-            obj = TTLesson.objects.filter(date=dt, classroom_id=request.GET.get('classroom_id'))
+        # Case for classroom
+        if classroom_id is not None:
+            obj = TTLesson.objects.filter(date=dt, classroom_id=classroom_id)
         # Case for group
-        elif 'group_id' in request.GET.keys():
+        elif group_id is not None:
             # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) to get whole info about
             # all groups, tutors, etc. involved in the lesson
             tt_lessons = (TTLesson.objects
                           .select_related('curriculum_lesson_id__curriculum_id__group_semester_id__group_id')
                           .filter(date=dt,
-                                  curriculum_lesson_id__curriculum_id__group_semester_id__group_id=
-                                  request.GET.get('group_id'))
+                                  curriculum_lesson_id__curriculum_id__group_semester_id__group_id=group_id)
                           .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
 
             day_name_list = [tt_lesson_id['day_name'] for tt_lesson_id in tt_lessons]
@@ -1628,21 +1657,16 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                                           week_type__in=week_type_list,
                                           lessons_time_id__in=lessons_time_id_list)
         # Case for users (tutors & students)
-        elif 'user_id' in request.GET.keys():
+        elif user_id is not None:
             # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) related to tutor
             # to get whole info about all groups, tutors, etc. involved in the lesson
             tt_lesson_tutor = \
                 (TTLesson.objects
                  .select_related('curriculum_lesson_id__tutor_id__user_id')
                  .filter(date=dt,
-                         curriculum_lesson_id__tutor_id__user_id=request.GET.get('user_id'))
+                         curriculum_lesson_id__tutor_id__user_id=user_id)
                  .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
 
-            # Getting info about all student's group_semester_ids (about student's group history (group + semester num))
-            group_semester_ids = (GroupMember.objects.select_related('student_id__user_id')
-                                  .filter(student_id__user_id=request.GET.get('user_id'))
-                                  .values('group_semester_id')
-                                  .all())
             # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) related to student
             # to get whole info about all groups, tutors, etc. involved in the lesson
             tt_lesson_student = \
@@ -1741,10 +1765,15 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
             }
             tt_lesson_obj.insert(n, elem)
 
-    context = {'tt_lessons': tt_lesson_obj,
-               'lesson_types': dict(TypesOfLesson.choices),
-               'week_types': dict(TTLesson.TYPE_OF_WEEK_CHOICES),
-               'day_names': dict(TTLesson.DAY_OF_WEEK_CHOICES)}
+    context = {
+        'tt_lessons': tt_lesson_obj,
+        'lesson_types': dict(TypesOfLesson.choices),
+        'week_types': dict(TTLesson.TYPE_OF_WEEK_CHOICES),
+        'day_names': dict(TTLesson.DAY_OF_WEEK_CHOICES),
+        'is_week': is_week,
+        'week_delta': week_delta,
+        'day_delta': day_delta
+    }
     return context
     return render(request, 'tt_lesson/tt_lesson_detail.html', context=context)
 
