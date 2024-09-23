@@ -12,4 +12,14 @@
 <p>Описание: {{classroom.description}}</p>
 <a href="{{ classroom.get_edit_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">Редактировать</a>
 <a href="{{ classroom.get_delete_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">Удалить</a>
+    <div>
+        <h2>Расписание занятий</h2>
+        <a href="{% url 'account:classroom_details' classroom.classroom_id %}">
+            День
+        </a>
+        <a href="{% url 'account:classroom_details' classroom.classroom_id %}?week=True">
+            Неделя
+        </a>
+        {% include "tt_lesson/tt_lesson_detail.html" %}
+    </div>
 {% endblock %}

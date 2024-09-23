@@ -565,6 +565,7 @@ def group_details(request, group_id):
         for obj_stat in obj_stats:
             del request.session[obj_stat]
     context.update(obj_stats)
+    context.update(tt_lesson_details(request, group_id=group_id))
     # print(context)
     return render(request, 'group/group_detail.html', context=context)
 
@@ -850,6 +851,7 @@ def classroom_details(request, classroom_id):
         for obj_stat in obj_stats:
             del request.session[obj_stat]
     context.update(obj_stats)
+    context.update(tt_lesson_details(request, classroom_id=classroom_id))
     print(context)
     return render(request, 'classroom/classroom_detail.html', context=context)
 
@@ -1706,6 +1708,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                     {
                         'tutor':
                             {
+                                'tt_lesson_id': item.tt_lesson_id,
                                 'id': item.curriculum_lesson_id.tutor_id.user_id.id,
                                 'last_name': item.curriculum_lesson_id.tutor_id.user_id.last_name,
                                 'first_name': item.curriculum_lesson_id.tutor_id.user_id.first_name,
@@ -1713,6 +1716,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                             },
                         'group':
                             {
+                                'tt_lesson_id': item.tt_lesson_id,
                                 'group_id': item.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.group_id,
                                 'name': item.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.name
                             }
@@ -1752,6 +1756,10 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
             ]
         } for key, grp in groupby(tt_lesson_objs, key=lambda x: (x['date'], x['day_name'], x['week_type']))
     ]
+
+    # Sort lessons inside one day by the time they start
+    for tt_lesson in tt_lesson_obj:
+        tt_lesson['days_info'].sort(key=lambda d: d['start_time'])
 
     # Inserting missing dates to the list of dates with empty lessons list
     for n in range(day_count):
@@ -1796,4 +1804,34 @@ def tt_lesson_register(request):
                     tt_lesson_form.add_error(None, ex.__cause__)
     else:
         tt_lesson_form = TTLessonRegisterForm()
-    return render(request, 'tt_lesson/tt_lesson_register.html', {'tt_lesson_form': tt_lesson_form})
+    return render(request, 'tt_lesson/tt_lesson_form.html', {'tt_lesson_form': tt_lesson_form})
+
+
+def tt_lesson_edit(request, tt_lesson_id):
+    """
+    View for editing timetable lesson information.
+    :param request: user's request
+    :param tt_lesson_id: timetable lesson entity identifier
+    :return: HTTP response HTML page with form to edit timetable lesson information or redirect page
+    """
+    tt_lesson_obj = get_object_or_404(TTLesson, tt_lesson_id=tt_lesson_id)
+    tt_lesson_obj.date = tt_lesson_obj.date.strftime("%d.%m.%Y")
+    tt_lesson_form = TTLessonRegisterForm(request.POST or None, instance=tt_lesson_obj)
+    if tt_lesson_form.is_valid():
+        tt_lesson_form.save()
+        request.session["obj_status"] = 'success'
+        request.session["obj_name"] = 'занятие в расписании'
+        request.session["obj_action"] = 'U'
+        try:
+            resolve_match = resolve(request.GET.get('next').split('?')[0])
+            return redirect(request.GET.get('next').replace(':', '&'))
+        except Resolver404 or KeyError:
+            return redirect(reverse('account:group_list'))
+    context = {'tt_lesson_form': tt_lesson_form, 'action': 'U'}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'tt_lesson/tt_lesson_form.html', context=context)
+
+
+def tt_lesson_delete(request, tt_lesson_id):
+    pass

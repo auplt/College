@@ -26,6 +26,10 @@
 
 <div class="tt_lesson_group">
 {% for lesson_inf in day_inf.lesson_info %}
+    <i>{{lesson_inf.group.tt_lesson_id}}</i>
+next={{request.path}}?{{request.GET.urlencode}}
+        <a href="{% url 'account:tt_lesson_edit' lesson_inf.group.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">Редактировать</a>
+    <a href="">Удалить</a>
 {{lesson_inf.group.group_id}}
 {{lesson_inf.group.name}}
 {% endfor %}
@@ -34,6 +38,11 @@
 <div class="tt_lesson_tutor">
 {% for lesson_inf in day_inf.lesson_info %}
     {% ifchanged lesson_inf.tutor.id %}
+    next={{request.path}}?{{request.GET.urlencode}}
+            <i>{{lesson_inf.tutor.tt_lesson_id}}</i>
+        <a href="{% url 'account:tt_lesson_edit' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">Редактировать</a>
+    <a href="">Удалить</a>
+
         {{lesson_inf.tutor.id}}
         {{lesson_inf.tutor.last_name}}
         {{lesson_inf.tutor.first_name}}
@@ -41,6 +50,8 @@
     {% endifchanged %}
 {% endfor %}
     </div>
+<a href="">Редактировать</a>
+<a href="">Удалить</a>
  {% endfor %}
 {% endfor %}
 
@@ -88,6 +99,5 @@
 <!--{% endfor %}-->
 <!--{% endif %}-->
 
-<a href="">Редактировать</a>
-<a href="">Удалить</a>
+
 <a href="">Вернуться к списку</a>

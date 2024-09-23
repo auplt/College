@@ -43,3 +43,13 @@ def get_value(dictionary: dict, data: str):
     :return: variable with new value
     """
     return dictionary.get(data)
+
+
+@register.simple_tag
+def change_query_string(query_string: str):
+    """
+    Simple tag that changes & in query string on :.
+    :param query_string: input query string
+    :return: variable with new value
+    """
+    return query_string.replace('&', ':')

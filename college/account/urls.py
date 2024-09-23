@@ -28,7 +28,7 @@ urlpatterns = [
 
     # path('lgout/', LogoutView.as_view(template_name='registration/logged_out.html'), name='user_logout'),
     path('group/', views.group_list, name='group_list'),
-    path('group/details/<int:group_id>', views.group_details, name='group_details'),
+    re_path(r'group/details/(?P<group_id>\d+)?/?(?P<week>(True|False))?&?(?P<day_delta>\d+)?/?$', views.group_details, name='group_details'),
     path('group/register', views.group_register, name='group_register'),
     path('group/edit/<int:group_id>', views.group_edit, name='group_edit'),
     path('group/delete/<int:group_id>', views.group_delete, name='group_delete'),
@@ -89,6 +89,8 @@ urlpatterns = [
 
     re_path(r'tt_lesson/details/?(?P<date>[0-9]{2}.[0-9]{2}.[0-9]{4})?/?$', views.tt_lesson_details, name='tt_lesson_details'),
     path('tt_lesson/register/', views.tt_lesson_register, name='tt_lesson_register'),
+    path('tt_lesson/edit/<int:tt_lesson_id>', views.tt_lesson_edit, name='tt_lesson_edit'),
+    path('tt_lesson/delete/<int:tt_lesson_id>', views.tt_lesson_delete, name='tt_lesson_delete'),
 
     # path(r'group_semester/ajax/load_max_semester/?(?P<group_id>\d+)?/?$', views.load_max_semester, name='ajax_load_max_semester'),
     path('group_semester/ajax/load_max_semester', views.load_max_semester, name='ajax_load_max_semester')

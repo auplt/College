@@ -138,4 +138,14 @@
         </ul>
     {% endif %}
 </div>
+    <div>
+        <h2>Расписание занятий</h2>
+        <a href="{% url 'account:group_details' group.group_id %}">
+            День
+        </a>
+        <a href="{% url 'account:group_details' group.group_id %}?week=True">
+            Неделя
+        </a>
+        {% include "tt_lesson/tt_lesson_detail.html" %}
+    </div>
 {% endblock %}

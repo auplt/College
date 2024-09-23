@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block page_scripts %}
+ {% load static %}
+  <script src="{% static 'js/tt_lesson_form.js' %}"></script>
+{% endblock %}
+
+{% block title %}Create a lesson{% endblock %}
+
+{% block content %}
+<h1>
+    {% if action == 'C' %}Добавление
+    {% elif action == 'U' %}Изменение
+    {% else %}Форма
+    {% endif %} занятия в расписании
+</h1>
+{% include "form_success.html" with form=tt_lesson_form %}
+<p>
+    {% if action == 'C' %}Добавьте занятие в расписание, используя форму ниже:
+    {% elif action == 'U' %}Измените занятие в расписании, используя форму ниже:
+    {% else %}Используйте форму ниже:
+    {% endif %}
+</p>
+  <form class="register_lesson" method="post">
+    {{ tt_lesson_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit"
+              value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+  </form>
+{% endblock %}
