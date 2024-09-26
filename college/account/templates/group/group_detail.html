@@ -146,6 +146,9 @@
         <a href="{% url 'account:group_details' group.group_id %}?week=True">
             Неделя
         </a>
-        {% include "tt_lesson/tt_lesson_detail.html" %}
+        {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}
+        {% add_to_list add_group as entities %}
+
+        {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
     </div>
 {% endblock %}

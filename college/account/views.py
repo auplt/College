@@ -1783,10 +1783,14 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
         'day_delta': day_delta
     }
     return context
-    return render(request, 'tt_lesson/tt_lesson_detail.html', context=context)
 
 
 def tt_lesson_register(request):
+    """
+    View for timetable lesson registration.
+    :param request: user's request
+    :return: HTTP response HTML page with form to register timetable lesson or redirect page
+    """
     if request.method == 'POST':
         tt_lesson_form = TTLessonRegisterForm(request.POST)
         if tt_lesson_form.is_valid():
@@ -1795,7 +1799,14 @@ def tt_lesson_register(request):
             new_tt_lesson.set_week_type(tt_lesson_form.cleaned_data['date'])
             try:
                 new_tt_lesson.save()
-                return render(request, 'tt_lesson/tt_lesson_register_done.html', {'tt_lesson_form': new_tt_lesson})
+                request.session["obj_status"] = 'success'
+                request.session["obj_name"] = 'занятие в расписании'
+                request.session["obj_action"] = 'C'
+                try:
+                    resolve_match = resolve(request.GET.get('next').split('?')[0])
+                    return redirect(request.GET.get('next').replace(':', '&'))
+                except Resolver404 or KeyError:
+                    return redirect(reverse('account:group_list'))
             except IntegrityError as ex:
                 if isinstance(ex.__cause__, UniqueViolation):
                     if ex.__cause__.diag.constraint_name == 'tt_lesson_day_week_time_curriculum_les_unique':
@@ -1803,8 +1814,44 @@ def tt_lesson_register(request):
                 else:
                     tt_lesson_form.add_error(None, ex.__cause__)
     else:
-        tt_lesson_form = TTLessonRegisterForm()
-    return render(request, 'tt_lesson/tt_lesson_form.html', {'tt_lesson_form': tt_lesson_form})
+        if 'classroom_id' in request.GET.dict():
+            classroom_obj = get_object_or_404(Classroom, classroom_id=request.GET.get('classroom_id'))
+            tt_lesson_form = TTLessonRegisterForm(initial={'classroom_id': classroom_obj})
+        elif 'tutor_id' in request.GET.dict():
+            curriculum_lesson_objects = (CurriculumLesson.objects
+                                         .filter(tutor_id=request.GET.get('tutor_id'))
+                                         .order_by('-curriculum_id__discipline_id__name',
+                                                   'curriculum_id__group_semester_id__group_id__name',
+                                                   '-curriculum_id__group_semester_id__semester_num',
+                                                   'lesson_type'))
+            tt_lesson_form = TTLessonRegisterForm()
+            if curriculum_lesson_objects is not None:
+                tt_lesson_form.set_initial_curriculum_lesson_ids(curriculum_lesson_objects.all())
+        elif 'student_id' in request.GET.dict():
+            group_semester_ids = (GroupMember.objects
+                                  .filter(student_id=request.GET.get('student_id'))
+                                  .values('group_semester_id').all())
+
+            curriculum_lesson_objects = (CurriculumLesson.objects
+                                         .filter(curriculum_id__group_semester_id__in=group_semester_ids)
+                                         .order_by('curriculum_id__group_semester_id__group_id__name',
+                                                   '-curriculum_id__group_semester_id__semester_num'))
+            tt_lesson_form = TTLessonRegisterForm()
+            if curriculum_lesson_objects is not None:
+                tt_lesson_form.set_initial_curriculum_lesson_ids(curriculum_lesson_objects.all())
+        elif 'group_id' in request.GET.dict():
+            curriculum_lesson_objects = (CurriculumLesson.objects
+                                         .filter(curriculum_id__group_semester_id__group_id=request.GET.get('group_id'))
+                                         .order_by('-curriculum_id__group_semester_id__semester_num'))
+            tt_lesson_form = TTLessonRegisterForm()
+            if curriculum_lesson_objects is not None:
+                tt_lesson_form.set_initial_curriculum_lesson_ids(curriculum_lesson_objects.all())
+        else:
+            tt_lesson_form = TTLessonRegisterForm()
+    context = {'tt_lesson_form': tt_lesson_form, 'action': 'C'}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'tt_lesson/tt_lesson_form.html', context=context)
 
 
 def tt_lesson_edit(request, tt_lesson_id):
@@ -1834,4 +1881,34 @@ def tt_lesson_edit(request, tt_lesson_id):
 
 
 def tt_lesson_delete(request, tt_lesson_id):
-    pass
+    """
+    View for deleting timetable lesson information.
+    :param request: user's request
+    :param tt_lesson_id: timetable lesson entity identifier
+    :return: HTTP response HTML page with form to delete timetable lesson information or redirect page
+    """
+    tt_lesson_obj = get_object_or_404(TTLesson, tt_lesson_id=tt_lesson_id)
+    if request.method == 'POST':
+        request.session["obj_name"] = 'занятие в расписании'
+        request.session["obj_action"] = 'D'
+        try:
+            # tt_lesson_obj.delete()
+            request.session["obj_status"] = 'success'
+            try:
+                resolve_match = resolve(request.GET.get('next').split('?')[0])
+                return redirect(request.GET.get('next').replace(':', '&'))
+            except Resolver404 or KeyError or Http404:
+                return redirect(reverse('account:group_list'))
+        except Http404:
+            return redirect(reverse('account:group_list'))
+        except ProtectedError:
+            request.session["obj_status"] = 'error'
+            try:
+                resolve_match = resolve(request.GET.get('next').split('?')[0])
+                return redirect(request.GET.get('next').replace(':', '&'))
+            except Resolver404 or KeyError or Http404:
+                return redirect(reverse('account:group_list'))
+    context = {'tt_lesson': tt_lesson_obj}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'tt_lesson/tt_lesson_delete.html', context=context)

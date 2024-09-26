@@ -183,7 +183,7 @@ class Curriculum(models.Model):
         self.group_semester_id = group_semester_id
 
     def __str__(self):
-        return f'{self.discipline_id.name} {self.group_semester_id.group_id.name}'
+        return f'{self.discipline_id.name} {self.group_semester_id.group_id.name} {self.group_semester_id.semester_num}'
 
     # def clean_discipline_id(self):
     #     cd = self.cleaned_data.get('discipline_id')

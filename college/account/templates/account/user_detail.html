@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}User detail{% endblock %}
 
 {% block content %}
@@ -59,7 +61,17 @@
         <a href="{% url 'account:user_details' user.id %}?week=True">
             Неделя
         </a>
-        {% include "tt_lesson/tt_lesson_detail.html" %}
+        {% update_variable None as entities %}
+        {% if tutor.tutor_id %}
+            {% create_tt_conf_dict entity="tutor_id" entity_id=tutor.tutor_id entity_name="Преподаватель" as add_tutor %}
+            {% add_to_list add_tutor as entities %}
+        {% endif %}
+        {% if student.student_id %}
+            {% create_tt_conf_dict entity="student_id" entity_id=student.student_id entity_name="Студент" as add_student %}
+            {% add_to_list add_student entities as entities %}
+        {% endif %}
+
+        {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
     </div>
 
 </div>

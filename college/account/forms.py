@@ -358,6 +358,9 @@ class TTLessonRegisterForm(forms.ModelForm):
         self.fields['classroom_id'].widget.attrs['class'] = 'choice_input'
         self.fields['curriculum_lesson_id'].widget.attrs['class'] = 'choice_input'
 
+    def set_initial_curriculum_lesson_ids(self, objects):
+        self.fields['curriculum_lesson_id'].queryset = objects
+
     class Meta:
         model = TTLesson
         fields = ['date', 'lessons_time_id', 'classroom_id', 'curriculum_lesson_id']

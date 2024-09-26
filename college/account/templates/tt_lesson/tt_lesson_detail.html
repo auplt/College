@@ -7,52 +7,70 @@
 {% for tt_lesson in tt_lessons %}
 <h3>{{ tt_lesson.date }} {% get_value week_types tt_lesson.week_type %}</h3>
 
+
 <div class="tt_lesson_day">
 {% get_value day_names tt_lesson.day_name %}
 </div>
+{% for entity in entities %}
+<a href="{% url 'account:tt_lesson_register' %}?{{entity.entity}}={{entity.entity_id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">{{entity.entity_name}} Добавить</a>
+{% endfor %}
+{% if tt_lesson.days_info %}
 {% for day_inf in tt_lesson.days_info %}
+
 <div class="tt_lesson_time">
-{{day_inf.start_time}} - {{day_inf.end_time}}
-    </div>
+    {{day_inf.start_time}} - {{day_inf.end_time}}
+</div>
 <div class="tt_lesson_classroom">
-{{day_inf.classroom_id}}
-{{day_inf.classroom_number}}
-    </div>
+    <a href="{% url 'account:classroom_details' day_inf.classroom_id %}">
+        {{day_inf.classroom_number}}
+    </a>
+</div>
 <div class="tt_lesson_discipline">
-{% get_value lesson_types day_inf.lesson_type %}
-{{day_inf.discipline_id}}
-{{day_inf.discipline_name}}
-    </div>
+    {% get_value lesson_types day_inf.lesson_type %}
+    <a href="{% url 'account:discipline_details' day_inf.discipline_id %}">
+        {{day_inf.discipline_name}}
+    </a>
+</div>
 
 <div class="tt_lesson_group">
-{% for lesson_inf in day_inf.lesson_info %}
-    <i>{{lesson_inf.group.tt_lesson_id}}</i>
-next={{request.path}}?{{request.GET.urlencode}}
-        <a href="{% url 'account:tt_lesson_edit' lesson_inf.group.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">Редактировать</a>
-    <a href="">Удалить</a>
-{{lesson_inf.group.group_id}}
-{{lesson_inf.group.name}}
-{% endfor %}
-    </div>
+    {% for lesson_inf in day_inf.lesson_info %}
+        <i>{{lesson_inf.group.tt_lesson_id}}</i>
+        <a href="{% url 'account:group_details' lesson_inf.group.group_id %}">
+            {{lesson_inf.group.name}}
+        </a>
+        <a href="{% url 'account:tt_lesson_edit' lesson_inf.group.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
+            Редактировать
+        </a>
+        <a href="{% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
+            Удалить
+        </a>
+    {% endfor %}
+</div>
 
 <div class="tt_lesson_tutor">
-{% for lesson_inf in day_inf.lesson_info %}
-    {% ifchanged lesson_inf.tutor.id %}
-    next={{request.path}}?{{request.GET.urlencode}}
+    {% for lesson_inf in day_inf.lesson_info %}
+        {% ifchanged lesson_inf.tutor.id %}
             <i>{{lesson_inf.tutor.tt_lesson_id}}</i>
-        <a href="{% url 'account:tt_lesson_edit' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">Редактировать</a>
-    <a href="">Удалить</a>
 
-        {{lesson_inf.tutor.id}}
-        {{lesson_inf.tutor.last_name}}
-        {{lesson_inf.tutor.first_name}}
-        {{lesson_inf.tutor.second_name}}
-    {% endifchanged %}
+            <a href="{% url 'account:user_details' lesson_inf.tutor.id %}">
+                {{lesson_inf.tutor.last_name}}
+                {{lesson_inf.tutor.first_name}}
+                {{lesson_inf.tutor.second_name}}
+            </a>
+            <a href="{% url 'account:tt_lesson_edit' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
+                Редактировать
+            </a>
+            <a href="{% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
+                Удалить
+            </a>
+        {% endifchanged %}
+    {% endfor %}
+</div>
+
 {% endfor %}
-    </div>
-<a href="">Редактировать</a>
-<a href="">Удалить</a>
- {% endfor %}
+ {% else %}
+Занятий не найдено
+{% endif %}
 {% endfor %}
 
 {% if is_week %}
@@ -63,6 +81,9 @@ next={{request.path}}?{{request.GET.urlencode}}
 
 {% else %}
 Занятий не найдено
+{% for entity in entities %}
+<a href="{% url 'account:tt_lesson_register' %}?{{entity.entity}}={{entity.entity_id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">{{entity.entity_name}} Добавить</a>
+{% endfor %}
 {% endif %}
 
 <!--{% if 1 == 0 %}-->

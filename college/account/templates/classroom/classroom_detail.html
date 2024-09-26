@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load group_extras %}
+
 {% block title %}Classroom detail{% endblock %}
 
 {% block content %}
@@ -20,6 +22,9 @@
         <a href="{% url 'account:classroom_details' classroom.classroom_id %}?week=True">
             Неделя
         </a>
-        {% include "tt_lesson/tt_lesson_detail.html" %}
+        {% create_tt_conf_dict entity="classroom_id" entity_id=classroom.classroom_id entity_name="Аудитория" as add_classroom %}
+        {% add_to_list add_classroom as entities %}
+
+        {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
     </div>
 {% endblock %}
