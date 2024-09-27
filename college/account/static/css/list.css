@@ -1,0 +1,36 @@
+:root {
+  --primary-backgroud-color: #f0f0f0;
+  --primary-backgroud-color-hover: #e4e4e4;
+  --primary-border-radius: 10px;
+}
+
+.items_list_sem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list_item {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 15px;
+  background-color: var(--primary-backgroud-color);
+  border-radius: var(--primary-border-radius);
+}
+
+.list_item:hover {
+  background-color: var(--primary-backgroud-color-hover);
+}
+
+.item_title {
+  position: relative;
+  display: inline-block;
+}
+
+.item_title:hover .tooltiptext {
+  visibility: visible;
+}
+
+.item_title_heading {
+  margin: 0;
+}

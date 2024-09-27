@@ -1,0 +1,35 @@
+{% load static %}
+{% load group_extras %}
+<link href="{% static 'css/buttons_controllers.css' %}" rel="stylesheet">
+
+
+<div class="list_ctrl">
+    {% with None as full_edit_link %}
+        {% if next_edit_link %}
+            {% update_variable edit_link|add:"?next="|add:next_edit_link as full_edit_link %}
+        {% else %}
+            {% update_variable edit_link as full_edit_link %}
+        {% endif %}
+        <div class="list_ctrl_edit">
+            <a href="{{ full_edit_link }}"><img
+                class="list_ctrl_edit_img"
+                src="{% static 'images/edit.svg' %}"/>
+            </a>
+            <span class="tooltiptext">Редактировать</span>
+        </div>
+    {%endwith %}
+    {% with None as full_del_link %}
+        {% if next_del_link %}
+            {% update_variable del_link|add:"?next="|add:next_del_link as full_del_link %}
+        {% else %}
+            {% update_variable del_link as full_del_link %}
+        {% endif %}
+        <div class="list_ctrl_trash">
+            <a href="{{ full_del_link }}"><img
+                class="list_ctrl_trash_img"
+                src="{% static 'images/trash.svg' %}"/>
+            </a>
+            <span class="tooltiptext">Удалить</span>
+        </div>
+    {%endwith %}
+</div>

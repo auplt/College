@@ -1,13 +1,28 @@
 {% extends "base.html" %}
 
+{% load group_extras %}
+{% load static %}
+
+{% block page_scripts %}
+{% load static %}
+<link href="{% static 'css/list.css' %}" rel="stylesheet">
+<!--<link href="{% static 'css/add_button.css' %}" rel="stylesheet">-->
+{% endblock %}
+
 {% block title %}Groups list{% endblock %}
 
-{% load group_extras %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:group_list" %}
-    <h1>Список групп</h1>
-    <a href="{% url 'account:group_register' %}">Добавить</a>
+<div class="page_title">
+    <div class="page_title_nav">
+        {% include "back_button.html" with back_url="account:group_list" %}
+        <h1>Список групп</h1>
+    </div>
+    {% url 'account:group_register' as add_url %}
+    {% include "add_button.html" with add_link=add_url %}
+</div>
+
+<div class="items_list">
     {% include "success_msg.html" %}
     {% if groups %}
         {% with prev_max_sem=-1 %}
@@ -18,16 +33,24 @@
         </div>
                         {% endif %}
         <h2>Семестр {{group.max_sem}}</h2>
-        <div class="groups_sem_list">
+        <div class="items_list_sem">
                     {% endif %}
-            <h2>{{ group.name }}</h2>
-            <a href="{{ group.get_absolute_url }}">Подробнее</a>
-            <a href="{{ group.get_edit_url }}?next={% url 'account:group_list' %}">Редактировать</a>
-            <a href="{{ group.get_delete_url }}?next={% url 'account:group_list' %}">Удалить</a>
+            <div class="list_item">
+                <div class="item_title">
+
+            <a href="{{ group.get_absolute_url }}"><h2 class="item_title_heading">{{ group.name }}</h2></a>
+                    <span class="tooltiptext">Подробнее</span>
+                </div>
+            {% url 'account:group_list' as next_url %}
+            {% include "buttons_controllers.html" with edit_link=group.get_edit_url next_edit_link=next_url del_link=group.get_delete_url next_del_link=next_url %}
+<!--            <a href="{{ group.get_edit_url }}?next={% url 'account:group_list' %}">Редактировать</a>-->
+<!--            <a href="{{ group.get_delete_url }}?next={% url 'account:group_list' %}">Удалить</a>-->
                     {% update_variable group.max_sem as prev_max_sem %}
+            </div>
                 {% endif %}
             {% endfor %}
         {% endwith %}
         </div>
     {% endif %}
+</div>
 {% endblock %}

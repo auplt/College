@@ -1,0 +1,51 @@
+:root {
+  --button-edit-color: #0055bb;
+  --button-edit-color-hover: brightness(0) saturate(100%) invert(14%) sepia(89%)
+    saturate(1844%) hue-rotate(200deg) brightness(92%) contrast(105%);
+
+  --button-cancel-color: #c01512;
+  --button-cancel-color-hover: brightness(0) saturate(100%) invert(15%)
+    sepia(29%) saturate(6303%) hue-rotate(347deg) brightness(111%)
+    contrast(106%);
+}
+
+.list_ctrl {
+  display: flex;
+  gap: 20px;
+}
+
+.list_ctrl_trash {
+  position: relative;
+  display: inline-block;
+}
+
+.list_ctrl_trash_img {
+  height: 25px;
+  width: 25px;
+}
+
+.list_ctrl_edit {
+  position: relative;
+  display: inline-block;
+}
+
+.list_ctrl_edit_img {
+  height: 25px;
+  width: 25px;
+}
+
+.list_ctrl_trash:hover .list_ctrl_trash_img {
+  filter: var(--button-cancel-color-hover);
+}
+
+.list_ctrl_trash:hover .tooltiptext {
+  visibility: visible;
+}
+
+.list_ctrl_edit:hover .list_ctrl_edit_img {
+  filter: var(--button-edit-color-hover);
+}
+
+.list_ctrl_edit:hover .tooltiptext {
+  visibility: visible;
+}

@@ -12,6 +12,17 @@
   --msg-error-border-color: #e2483d;
   --msg-primary-text-color: #172b4d;
 
+  --button-confirm-color: #12c064;
+  /* --button-confirm-color-hover: #109950; */
+  --button-confirm-color-hover: brightness(0) saturate(100%) invert(36%)
+    sepia(44%) saturate(2336%) hue-rotate(123deg) brightness(95%) contrast(87%);
+
+  --button-cancel-color: #c01512;
+  /* --button-cancel-color-hover: #a11210; */
+  --button-cancel-color-hover: brightness(0) saturate(100%) invert(15%)
+    sepia(29%) saturate(6303%) hue-rotate(347deg) brightness(111%)
+    contrast(106%);
+
   --primary-border-radius: 10px;
 }
 
@@ -26,12 +37,12 @@ p {
 }
 
 a {
-  color: #12c064;
+  color: #0055b2;
   text-decoration: none;
 }
 
 a:hover {
-  color: #00a74f;
+  color: #003273;
 }
 
 h1,
@@ -41,13 +52,12 @@ h4,
 h5,
 h6 {
   font-family: "Muli", sans-serif;
-  font-weight: normal;
+  font-weight: bold;
 }
 
 h1 {
-  border-bottom: 1px solid #bbb;
-  padding: 0 0 10px 0;
-  margin: 10px 0 20px 0;
+  padding: 0;
+  margin: 0;
 }
 
 h2 {
@@ -492,4 +502,36 @@ select:hover {
 .msg_cross:hover {
   filter: var(--secondary-text-filter);
   cursor: pointer;
+}
+
+/* TOOLTIPS */
+
+.tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -20px;
+  left: 105%;
+}
+
+.page_title {
+  border-bottom: 1px solid #bbb;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.page_title_nav {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  padding: 20px 0;
 }
