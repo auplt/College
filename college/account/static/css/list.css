@@ -4,6 +4,12 @@
   --primary-border-radius: 10px;
 }
 
+.list_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .items_list_sem {
   display: flex;
   flex-direction: column;

@@ -514,11 +514,16 @@ select:hover {
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
+  /* max-width: 100%; */
 
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
   top: -20px;
+  right: 105%;
+}
+
+.tooltiptext_more {
   left: 105%;
 }
 

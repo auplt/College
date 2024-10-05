@@ -1,56 +1,66 @@
+{# Template for list of groups #}
+
 {% extends "base.html" %}
 
 {% load group_extras %}
 {% load static %}
 
 {% block page_scripts %}
-{% load static %}
-<link href="{% static 'css/list.css' %}" rel="stylesheet">
-<!--<link href="{% static 'css/add_button.css' %}" rel="stylesheet">-->
+    {% load static %}
+    <link href="{% static 'css/list.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}Groups list{% endblock %}
 
 
 {% block content %}
-<div class="page_title">
-    <div class="page_title_nav">
-        {% include "back_button.html" with back_url="account:group_list" %}
-        <h1>Список групп</h1>
+    <div class="page_title">
+        <div class="page_title_nav">
+            {# Including back button #}
+            {% include "back_button.html" with back_url="account:group_list" %}
+            <h1>Список групп</h1>
+        </div>
+        {# Including add button #}
+        {% url 'account:group_register' as add_url %}
+        {% include "add_button.html" with add_link=add_url %}
     </div>
-    {% url 'account:group_register' as add_url %}
-    {% include "add_button.html" with add_link=add_url %}
-</div>
 
-<div class="items_list">
-    {% include "success_msg.html" %}
-    {% if groups %}
-        {% with prev_max_sem=-1 %}
-            {% for group in groups %}
-                {% if group.max_sem != -1 %}
-                    {% if prev_max_sem != group.max_sem %}
-                        {% if prev_max_sem != -1 %}
-        </div>
-                        {% endif %}
-        <h2>Семестр {{group.max_sem}}</h2>
-        <div class="items_list_sem">
-                    {% endif %}
-            <div class="list_item">
-                <div class="item_title">
-
-            <a href="{{ group.get_absolute_url }}"><h2 class="item_title_heading">{{ group.name }}</h2></a>
-                    <span class="tooltiptext">Подробнее</span>
-                </div>
-            {% url 'account:group_list' as next_url %}
-            {% include "buttons_controllers.html" with edit_link=group.get_edit_url next_edit_link=next_url del_link=group.get_delete_url next_del_link=next_url %}
-<!--            <a href="{{ group.get_edit_url }}?next={% url 'account:group_list' %}">Редактировать</a>-->
-<!--            <a href="{{ group.get_delete_url }}?next={% url 'account:group_list' %}">Удалить</a>-->
-                    {% update_variable group.max_sem as prev_max_sem %}
+    <div class="items_list">
+        {% include "success_msg.html" %}
+        {% if groups %}
+            {# Number of previous semester. Initial -1 #}
+            {% with prev_max_sem=-1 %}
+                {% for group in groups %}
+                    {# Excluding semesters with number -1 #}
+                    {% if group.max_sem != -1 %}
+                        {# Opening div tag for semester, when all groups are listed or this semester is first #}
+                        {% if prev_max_sem != group.max_sem %}
+                            {# Closing div tag for semester, when all groups are listed #}
+                            {% if prev_max_sem != -1 %}
             </div>
-                {% endif %}
-            {% endfor %}
-        {% endwith %}
-        </div>
-    {% endif %}
-</div>
+                            {% endif %}
+            <h2>Семестр {{ group.max_sem }}</h2>
+            <div class="items_list_sem">
+                        {% endif %}
+                <div class="list_item">
+                    <div class="item_title">
+                        <a href="{{ group.get_absolute_url }}">
+                            <h3 class="item_title_heading">{{ group.name }}</h3>
+                        </a>
+                        <span class="tooltiptext tooltiptext_more">Подробнее</span>
+                    </div>
+                    {# Including control buttons edit and delete #}
+                    {% url 'account:group_list' as next_url %}
+                    {% include "buttons_controllers.html" with edit_link=group.get_edit_url next_edit_link=next_url del_link=group.get_delete_url next_del_link=next_url %}
+
+                    {# Changing previous semester number on current #}
+                    {% update_variable group.max_sem as prev_max_sem %}
+                </div>
+                    {% endif %}
+                {% endfor %}
+            {% endwith %}
+            {# Closing last semester div tag #}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

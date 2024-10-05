@@ -1,17 +1,45 @@
+{# Template for list of lesson_times #}
+
 {% extends "base.html" %}
+
+{% load group_extras %}
+{% load static %}
+
+{% block page_scripts %}
+    {% load static %}
+    <link href="{% static 'css/list.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}Lesson time list{% endblock %}
 
 {% block content %}
-<h1>Список времени занятий</h1>
-{% include "back_button.html" with back_url="account:lesson_time_list" %}
-<a href="{% url 'account:lesson_time_register' %}">Добавить</a>
-{% include "success_msg.html" %}
-{% for lesson_time in lesson_times %}
-    <h2>{{lesson_time.name}}</h2>
-    <p>Начало в {{lesson_time.start_time}} окончание в {{lesson_time.end_time}}</p>
-    <a href="{{ lesson_time.get_absolute_url }}">Подробнее</a>
-    <a href="{{ lesson_time.get_edit_url }}?next={% url 'account:lesson_time_list' %}">Редактировать</a>
-    <a href="{{ lesson_time.get_delete_url }}?next={% url 'account:lesson_time_list' %}">Удалить</a>
-{% endfor %}
+    <div class="page_title">
+        <div class="page_title_nav">
+            {# Including back button #}
+            {% include "back_button.html" with back_url="account:lesson_time_list" %}
+            <h1>Список времени занятий</h1>
+        </div>
+        {# Including add button #}
+        {% url 'account:lesson_time_register' as add_url %}
+        {% include "add_button.html" with add_link=add_url %}
+    </div>
+
+    <div class="items_list list_wrapper">
+    {% include "success_msg.html" %}
+    {% for lesson_time in lesson_times %}
+        <div class="list_item">
+            <div class="item_title">
+                <a href="{{ lesson_time.get_absolute_url }}">
+                    <h2 class="item_title_heading">
+                        {{ lesson_time.name }}
+                    </h2>
+                </a>
+                <span class="tooltiptext tooltiptext_more">Подробнее</span>
+            </div>
+            {# Including control buttons edit and delete #}
+            {% url 'account:lesson_time_list' as next_url %}
+            {% include "buttons_controllers.html" with edit_link=lesson_time.get_edit_url next_edit_link=next_url del_link=lesson_time.get_delete_url next_del_link=next_url %}
+        </div>
+    {% endfor %}
+    </div>
 {% endblock %}

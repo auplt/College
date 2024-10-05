@@ -1,18 +1,46 @@
+{# Template for list of disciplines #}
+
 {% extends "base.html" %}
+
+{% load group_extras %}
+{% load static %}
+
+{% block page_scripts %}
+    {% load static %}
+    <link href="{% static 'css/list.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}Discipline list{% endblock %}
 
 {% block content %}
-<h1>Список дисциплин</h1>
-{% include "back_button.html" with back_url="account:discipline_list" %}
-<a href="{% url 'account:discipline_register' %}">Добавить</a>
-{% include "success_msg.html" %}
-{% for discipline in disciplines %}
-    <h2>{{ discipline.name }}</h2>
-    <p>Описание: {{ discipline.description }}</p>
-    <a href="{{ discipline.get_absolute_url }}">Подробнее</a>
-    <a href="{{ discipline.get_edit_url }}?next={% url 'account:discipline_list' %}">Редактировать</a>
-    <a href="{{ discipline.get_delete_url }}?next={% url 'account:discipline_list' %}">Удалить</a>
-{% endfor %}
-{% include "pagination.html" with page=disciplines %}
+    <div class="page_title">
+        <div class="page_title_nav">
+            {# Including back button #}
+            {% include "back_button.html" with back_url="account:discipline_list" %}
+            <h1>Список дисциплин</h1>
+        </div>
+        {# Including add button #}
+        {% url 'account:discipline_register' as add_url %}
+        {% include "add_button.html" with add_link=add_url %}
+    </div>
+
+    <div class="items_list list_wrapper">
+    {% include "success_msg.html" %}
+    {% for discipline in disciplines %}
+        <div class="list_item">
+            <div class="item_title">
+                <a href="{{ discipline.get_absolute_url }}">
+                    <h2 class="item_title_heading">
+                        {{ discipline.name }}
+                    </h2>
+                </a>
+                <span class="tooltiptext tooltiptext_more">Подробнее</span>
+            </div>
+            {# Including control buttons edit and delete #}
+            {% url 'account:discipline_list' as next_url %}
+            {% include "buttons_controllers.html" with edit_link=discipline.get_edit_url next_edit_link=next_url del_link=discipline.get_delete_url next_del_link=next_url %}
+        </div>
+    {% endfor %}
+    </div>
+    {% include "pagination.html" with page=disciplines %}
 {% endblock %}

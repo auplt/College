@@ -1,10 +1,12 @@
+{# Template for control buttons for list pages: edit, delete #}
+
 {% load static %}
 {% load group_extras %}
 <link href="{% static 'css/buttons_controllers.css' %}" rel="stylesheet">
 
-
 <div class="list_ctrl">
     {% with None as full_edit_link %}
+        {# Creating edit link #}
         {% if next_edit_link %}
             {% update_variable edit_link|add:"?next="|add:next_edit_link as full_edit_link %}
         {% else %}
@@ -19,6 +21,7 @@
         </div>
     {%endwith %}
     {% with None as full_del_link %}
+        {# Creating delete link #}
         {% if next_del_link %}
             {% update_variable del_link|add:"?next="|add:next_del_link as full_del_link %}
         {% else %}

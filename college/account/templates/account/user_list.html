@@ -1,17 +1,46 @@
+{# Template for list of users #}
+
 {% extends "base.html" %}
+
+{% load group_extras %}
+{% load static %}
+
+{% block page_scripts %}
+    {% load static %}
+    <link href="{% static 'css/list.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}Users list{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:user_list" %}
-<h1>Список пользователей</h1>
-<a href="{% url 'account:user_register' %}">Добавить</a>
-{% include "success_msg.html" %}
-{% for user in users %}
-    <h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
-    <a href="{{ user.get_absolute_url }}">Подробнее</a>
-    <a href="{{ user.get_edit_url }}?next={% url 'account:user_list' %}">Редактировать</a>
-    <a href="{{ user.get_delete_url }}?next={% url 'account:user_list' %}">Удалить</a>
-{% endfor %}
-{% include "pagination.html" with page=users %}
+    <div class="page_title">
+        <div class="page_title_nav">
+            {# Including back button #}
+            {% include "back_button.html" with back_url="account:user_list" %}
+            <h1>Список пользователей</h1>
+        </div>
+        {# Including add button #}
+        {% url 'account:user_register' as add_url %}
+        {% include "add_button.html" with add_link=add_url %}
+    </div>
+
+    <div class="items_list list_wrapper">
+        {% include "success_msg.html" %}
+        {% for user in users %}
+        <div class="list_item">
+            <div class="item_title">
+                <a href="{{ user.get_absolute_url }}">
+                    <h2 class="item_title_heading">
+                        {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}
+                    </h2>
+                </a>
+                <span class="tooltiptext tooltiptext_more">Подробнее</span>
+            </div>
+            {# Including control buttons edit and delete #}
+            {% url 'account:user_list' as next_url %}
+            {% include "buttons_controllers.html" with edit_link=user.get_edit_url next_edit_link=next_url del_link=user.get_delete_url next_del_link=next_url %}
+        </div>
+    {% endfor %}
+    </div>
+    {% include "pagination.html" with page=users %}
 {% endblock %}
