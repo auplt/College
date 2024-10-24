@@ -535,6 +535,31 @@ img.user-detail {
   overflow: ellipsis;
 }
 
+form .errorlist {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 200;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+}
+/*
+
+form > div {
+  margin-bottom: 24px;
+}
+*/
+form input {
+  max-width: max-content;
+}
+
 .form_submit_button__reg {
   color: #ffffff;
   background: #0061ae;
@@ -579,7 +604,7 @@ option {
   content: "*";
   font-style: none;
   font-family: sans-serif;
-  color: red;
+  color: #c01512;
 }
 
 .more_info_heading {
@@ -791,6 +816,19 @@ select:hover {
   text-align: left;
 }
 
+.form_object_description {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.form_object_description__important {
+  color: #c01512;
+}
+
 .delete_form {
   display: flex;
   flex-direction: column;
@@ -807,6 +845,7 @@ select:hover {
 
 .controllers_confirm_cancel {
   display: flex;
+  flex-direction: row;
   gap: 16px;
 }
 

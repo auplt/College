@@ -100,5 +100,10 @@ def add_to_list(item, lst=None) -> list:
 
 
 @register.filter
-def get_type(value):
+def get_type(value: any) -> str:
+    """
+    Filter that returns class name
+    :param value: input value which class is needed to be returned
+    :return: class name
+    """
     return type(value).__name__

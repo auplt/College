@@ -9,6 +9,11 @@
   height: min-content;
 }
 
+/* Used when there is no .page_heading__content */
+.page_heading_wrapper {
+  margin: 8px 0 16px 0;
+}
+
 .page_heading_list {
   height: min-content;
 }

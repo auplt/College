@@ -1,23 +1,26 @@
 """
 URL configuration for account app.
 """
-from django.contrib.auth.views import LogoutView
-from django.urls import path, include, re_path
+from django.urls import path, register_converter, re_path, include, reverse_lazy
 from django.contrib.auth import views as auth_views
-from django.urls import path, register_converter
 from . import views
 from .converters import DateConverter
-from .forms import LoginForm
+from .forms import CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm, CustomPasswordChangeForm
 
 app_name = 'account'
 
 register_converter(DateConverter, 'date')
 
 urlpatterns = [
-    path('', include('django.contrib.auth.urls'), {'authentication_form':LoginForm}),
-    # re_path(r'^login/$', auth_views.LoginView.as_view(template_name='account/login.html',
-    #                                     form_class=LoginForm), name='login'),
-    # re_path(r'^logout/$', auth_views.LoginView.as_view(), name='logout'),
+    # path('', include('django.contrib.auth.urls')),
+    re_path(r'^login/$', auth_views.LoginView.as_view(form_class=CustomAuthenticationForm), name='login'),
+    re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
+    re_path(r'^password_change/$', auth_views.PasswordChangeView.as_view(form_class=CustomPasswordChangeForm, success_url=reverse_lazy('account:password_change_done')), name='password_change'),
+    re_path(r'^password_change/done/$', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+    re_path(r'^password_reset/$', auth_views.PasswordResetView.as_view(form_class=CustomPasswordResetForm, success_url=reverse_lazy('account:password_reset_done')), name='password_reset'),
+    re_path(r'^password_reset/done$', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<str:uidb64>/<str:token>/', auth_views.PasswordResetConfirmView.as_view(form_class=CustomSetPasswordForm, success_url=reverse_lazy('account:password_reset_complete')), name='password_reset_confirm'),
+    re_path(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     # re_path(r'^password_reset/$', auth_views.PasswordResetView.as_view(), name='password_reset'),
     # re_path(r'^password_reset/$', auth_views.),
 

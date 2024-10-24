@@ -4,7 +4,7 @@ Forms for account app.
 
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
 from formset.widgets import DateCalendar
 from django.forms.utils import ErrorList, ErrorDict
 from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, \
@@ -21,21 +21,44 @@ USER_TYPES = (
 )
 
 
-class LoginForm(AuthenticationForm):
+class CustomAuthenticationForm(AuthenticationForm):
     """
     Form for user data to log in.
     """
-    # username = forms.CharField(label=False)
-    # password = forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(label=False, widget=forms.TextInput(attrs={
+        'placeholder': 'Логин'
+    }))
+    password = forms.CharField(label=False, widget=forms.PasswordInput(attrs={
+        'placeholder': 'Пароль'
+    }))
 
-    # class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'custom-class'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'custom-class'}))
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'custom-class'})
-        self.fields['password'].widget.attrs.update({'class': 'custom-class'})
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.CharField(label=False, widget=forms.TextInput(attrs={
+        'placeholder': 'Электронная почта'
+    }))
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(label=False, widget=forms.PasswordInput(attrs={
+        'placeholder': 'Старый пароль',
+        "autofocus": True
+    }))
+    new_password1 = forms.CharField(label=False, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Пароль',
+               "autocomplete": "new-password"}))
+    new_password2 = forms.CharField(label=False, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Повторите пароль',
+               "autocomplete": "new-password"}))
+
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(label=False, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Пароль',
+               "autocomplete": "new-password"}))
+    new_password2 = forms.CharField(label=False, widget=forms.PasswordInput(
+        attrs={'placeholder': 'Повторите пароль',
+               "autocomplete": "new-password"}))
 
 
 class StudentAdditionalForm(forms.ModelForm):

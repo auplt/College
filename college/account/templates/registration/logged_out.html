@@ -1,11 +1,18 @@
+{# Template for successful logout #}
+
 {% extends "base.html" %}
 
-{% block title %}Log-out{% endblock %}
+{% block page_scripts %}
+  {% load static %}
+  <link href="{% static 'css/page_heading.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Выход{% endblock %}
 
 {% block content %}
-  <h1>Выход</h1>
-  <p>
-    Вы успешно вышли из системы.
+  <h1 class="page_heading_title page_heading_wrapper">Выход</h1>
+  <p class="form_object_description">
+    Вы успешно вышли из системы. <br/>
     Вы можете <a href="{% url 'account:login' %}">войти снова</a>.
   </p>
 {% endblock %}

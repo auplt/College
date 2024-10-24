@@ -23,7 +23,7 @@ from django.db import connection
 from django.contrib.postgres.aggregates import StringAgg
 from psycopg2.errors import UniqueViolation
 
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, \
+from .forms import UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, \
     GroupRegisterForm, \
     DisciplineRegisterForm, ClassroomRegisterForm, LessonTimeRegisterForm, GroupSemesterRegisterForm, \
     GroupMemberRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm, TTLessonRegisterForm
@@ -31,28 +31,28 @@ from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, Lesso
     GroupMember, CurriculumLesson, Group, TypesOfLesson, TTLesson
 
 
-def user_login(request):
-    """
-    View for logging user in.
-    :param request: user's request
-    :return: HTTP response HTML page with login form
-    """
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(request,
-                                username=cd['username'],
-                                password=cd['password'])
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    return HttpResponse('Authenticated successfully')
-                return HttpResponse('Disabled account')
-            return HttpResponse('Invalid login')
-    else:
-        form = LoginForm()
-    return render(request, 'account/login.html', {'form': form})
+# def user_login(request):
+#     """
+#     View for logging user in.
+#     :param request: user's request
+#     :return: HTTP response HTML page with login form
+#     """
+#     if request.method == 'POST':
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             cd = form.cleaned_data
+#             user = authenticate(request,
+#                                 username=cd['username'],
+#                                 password=cd['password'])
+#             if user is not None:
+#                 if user.is_active:
+#                     login(request, user)
+#                     return HttpResponse('Authenticated successfully')
+#                 return HttpResponse('Disabled account')
+#             return HttpResponse('Invalid login')
+#     else:
+#         form = LoginForm()
+#     return render(request, 'account/login.html', {'form': form})
 
 
 @login_required

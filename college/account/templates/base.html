@@ -47,11 +47,10 @@
     <span class="user">
       {% if request.user.is_authenticated %}
         Здравствуйте, {{ request.user.first_name|default:request.user.username }},
-        <a href="{% url 'account:logout' %}">Выйти</a>
-<!--      <form action="{% url 'account:logout' %}" method="post">-->
-<!--    {% csrf_token %}-->
-<!--    <button type="submit">Logout</button>-->
-<!--</form>-->
+      <form action="{% url 'account:logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
       {% else %}
         <a href="{% url 'account:login' %}">Войти</a>
       {% endif %}
