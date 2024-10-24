@@ -1,4 +1,102 @@
-@import url(//fonts.googleapis.com/css?family=Muli);
+/* @import url(//fonts.googleapis.com/css?family=Muli); */
+
+@font-face {
+  font-family: "Circe Rounded";
+  src: url("../fonts/CirceRounded-ExtraLight.eot");
+  src: local("Circe Rounded Extra Light"), local("CirceRounded-ExtraLight"),
+    url("../fonts/CirceRounded-ExtraLight.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/CirceRounded-ExtraLight.woff2") format("woff2"),
+    url("../fonts/CirceRounded-ExtraLight.woff") format("woff"),
+    url("../fonts/CirceRounded-ExtraLight.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded";
+  src: url("../fonts/CirceRounded-Regular2.eot");
+  src: local("Circe Rounded  Regular 2"), local("CirceRounded-Regular2"),
+    url("../fonts/CirceRounded-Regular2.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/CirceRounded-Regular2.woff2") format("woff2"),
+    url("../fonts/CirceRounded-Regular2.woff") format("woff"),
+    url("../fonts/CirceRounded-Regular2.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded Alt";
+  src: url("../fonts/CirceRoundedAlt-Regular2.eot");
+  src: local("Circe Rounded Alt  Regular 2"), local("CirceRoundedAlt-Regular2"),
+    url("../fonts/CirceRoundedAlt-Regular2.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/CirceRoundedAlt-Regular2.woff2") format("woff2"),
+    url("../fonts/CirceRoundedAlt-Regular2.woff") format("woff"),
+    url("../fonts/CirceRoundedAlt-Regular2.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded";
+  src: url("../fonts/CirceRounded-Regular3.eot");
+  src: local("Circe Rounded  Regular 3"), local("CirceRounded-Regular3"),
+    url("../fonts/CirceRounded-Regular3.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/CirceRounded-Regular3.woff2") format("woff2"),
+    url("../fonts/CirceRounded-Regular3.woff") format("woff"),
+    url("../fonts/CirceRounded-Regular3.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded";
+  src: url("../fonts/CirceRounded-Regular5.eot");
+  src: local("Circe Rounded  Regular 5"), local("CirceRounded-Regular5"),
+    url("../fonts/CirceRounded-Regular5.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/CirceRounded-Regular5.woff2") format("woff2"),
+    url("../fonts/CirceRounded-Regular5.woff") format("woff"),
+    url("../fonts/CirceRounded-Regular5.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded";
+  src: url("CirceRounded-Regular.eot");
+  src: local("Circe Rounded"), local("CirceRounded-Regular"),
+    url("../fonts/CirceRounded-Regular.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/CirceRounded-Regular.woff2") format("woff2"),
+    url("../fonts/CirceRounded-Regular.woff") format("woff"),
+    url("../fonts/CirceRounded-Regular.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded Alt";
+  src: url("../fonts/CirceRounded-AltBold.eot");
+  src: local("Circe Rounded Alt Bold"), local("CirceRounded-AltBold"),
+    url("../fonts/CirceRounded-AltBold.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/CirceRounded-AltBold.woff2") format("woff2"),
+    url("../fonts/CirceRounded-AltBold.woff") format("woff"),
+    url("../fonts/CirceRounded-AltBold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Circe Rounded";
+  src: url("../fonts/CirceRounded-Regular4.eot");
+  src: local("Circe Rounded  Regular 4"), local("CirceRounded-Regular4"),
+    url("../fonts/CirceRounded-Regular4.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/CirceRounded-Regular4.woff2") format("woff2"),
+    url("../fonts/CirceRounded-Regular4.woff") format("woff"),
+    url("../fonts/CirceRounded-Regular4.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
 
 :root {
   --secondary-text-color: #808082;
@@ -23,17 +121,22 @@
     sepia(29%) saturate(6303%) hue-rotate(347deg) brightness(111%)
     contrast(106%);
 
-  --primary-border-radius: 10px;
+  --primary-border-radius: 6px;
+}
+
+* {
+  font-family: "Circe Rounded", sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: helvetica, sans-serif;
+  font-family: "Circe Rounded", sans-serif;
 }
 
 p {
   line-height: 1.8;
+  margin: 0;
 }
 
 a {
@@ -51,17 +154,28 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Muli", sans-serif;
-  font-weight: bold;
+  font-family: "Circe Rounded", sans-serif;
+  font-weight: 500;
 }
 
 h1 {
-  padding: 0;
+  /* padding: 8px 8px 16px 8px; */
   margin: 0;
+
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
 }
 
 h2 {
-  margin: 30px 0 20px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  margin: 0;
 }
 
 ol {
@@ -114,8 +228,20 @@ ol {
   padding-top: 4px;
 }
 
+.main_content {
+  display: flex;
+  padding: 0 100px 30px 100px;
+  gap: 30px;
+}
+
+.navigation {
+  flex: 1 1 auto;
+  background-color: fuchsia;
+}
+
 #content {
-  padding: 30px 100px;
+  padding-top: 30px;
+  flex: 2 1 auto;
 }
 
 /* forms */
@@ -129,12 +255,16 @@ form p {
 }
 
 label {
+  font-weight: 200;
+}
+
+/* label {
   float: left;
   clear: both;
   color: #333;
   margin-bottom: 4px;
-}
-input,
+} */
+/* input, */
 textarea {
   clear: both;
   float: left;
@@ -155,12 +285,12 @@ a.button {
 }
 
 input[type="submit"] {
-  font-weight: bold;
+  /* font-weight: bold;
   background: #12c064;
   color: #fff;
   padding: 10px 20px;
   font-size: 14px;
-  text-transform: uppercase;
+  text-transform: uppercase; */
   margin: 0;
   cursor: pointer;
 }
@@ -370,22 +500,103 @@ img.user-detail {
   color: #ccc;
 }
 
-.choice_input {
-  clear: both;
-  float: left;
-  background: #efefef;
-  border: 0;
-  padding: 6px 10px;
+/* FORM Block */
+
+.form_description {
   font-size: 14px;
-  /* width: 150px; */
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+  margin-bottom: 16px;
 }
 
-.delete_form_controllers {
+.register_form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.register_form input {
+  display: block;
+  font-size: 13px;
+  font-weight: 200;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: left;
+  padding: 8px 16px;
+  border: 1px solid #0061ae;
+  border-radius: var(--primary-border-radius);
+}
+
+.register_form input::placeholder {
+  color: #8c9cb0;
+  padding: 0;
+  overflow: ellipsis;
+}
+
+.form_submit_button__reg {
+  color: #ffffff;
+  background: #0061ae;
+}
+
+.choice_input {
+  display: block;
+  font-size: 13px;
+  font-weight: 200;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: left;
+  padding: 8px 16px;
+  border: 1px solid #0061ae;
+  border-radius: var(--primary-border-radius);
+  color: #8c9cb0;
+}
+
+option {
+  font-size: 13px;
+  font-weight: 200;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: left;
+  color: #8c9cb0;
+}
+
+.register_form_checkbox {
+  display: flex;
+  gap: 5px;
+}
+
+.register_form_link {
+  font-size: 13px;
+  font-weight: 200;
+  line-height: 16px;
+  letter-spacing: 0%;
+  font-style: italic;
+}
+
+.register_form_link:before {
+  content: "*";
+  font-style: none;
+  font-family: sans-serif;
+  color: red;
+}
+
+.more_info_heading {
+  display: flex;
+  gap: 16px;
+}
+
+.more_info_title {
+  margin: 8px 0;
+}
+
+/* .delete_form_controllers {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
+} */
+/* 
 .controllers_confirm_cancel {
   display: flex;
   gap: 50px;
@@ -409,33 +620,12 @@ img.user-detail {
   cursor: pointer;
 }
 
-.form_controllers_back {
-  font-weight: bold;
-  color: var(--secondary-text-color);
-  display: flex;
-  align-items: center;
-}
-
-.form_controllers_back:hover {
-  /* color: #3a3a3b; */
-  filter: var(--secondary-text-filter);
-}
-
-.form_controllers_back_img {
-  height: 32px;
-  width: 32px;
-}
-
 .form_controllers_cancel:hover {
   color: #fff;
   background: #a11210;
-}
+} */
 
-option {
-  font-size: 14px;
-}
-
-option:checked,
+/* option:checked,
 option:hover {
   background-color: #12c064;
 }
@@ -444,33 +634,35 @@ select:checked,
 select:focus,
 select:hover {
   box-shadow: 0 0 10px 100px #12c064 inset;
-}
+} */
 
 .msg {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--msg-primary-text-color);
   border: 2px solid;
   border-radius: var(--primary-border-radius);
-  padding: 10px 30px 10px 20px;
+  padding: 9px 30px 9px 20px;
   position: relative;
+  margin-bottom: 16px;
+  max-width: max-content;
 }
 
 .msg_heading {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 0 5px 0;
+  gap: 7px;
+  margin-bottom: 2px;
 }
 
 .msg_title {
   font-weight: 700;
-  line-height: 20px;
+  line-height: 14px;
   margin: 0;
 }
 
 .msg_text {
   font-weight: 400;
-  padding-left: 26px;
+  padding-left: 19px;
 }
 
 .success_msg__success {
@@ -489,14 +681,14 @@ select:hover {
 }
 
 .msg_icon {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
 }
 
 .msg_cross {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 5px;
+  right: 5px;
 }
 
 .msg_cross:hover {
@@ -524,19 +716,105 @@ select:hover {
 }
 
 .tooltiptext_more {
-  left: 105%;
+  right: 80%;
 }
 
 .page_title {
-  border-bottom: 1px solid #bbb;
   display: flex;
-  gap: 30px;
-  align-items: center;
+  flex-direction: column;
+  margin-bottom: 16px;
 }
 
-.page_title_nav {
+/* .page_title_nav {
   display: flex;
-  gap: 25px;
+  gap: 16px;
   align-items: center;
+  margin: 8px 0 16px 0;
   padding: 20px 0;
+} */
+
+/* Description pages */
+
+.details_description {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+}
+
+.details_controllers {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.controller_button {
+  padding: 9px 30px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: center;
+  border: 1px solid #0061ae;
+  border-radius: var(--primary-border-radius);
+  cursor: pointer;
+}
+
+.details_controller_button__edit {
+  color: #ffffff;
+  background: #0061ae;
+}
+
+.details_controller_button__delete {
+  color: #0061ae;
+}
+
+/* Delete block */
+
+.delete_object {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.delete_object_name {
+  font-size: 16px;
+}
+
+.delete_object_description {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+}
+
+.delete_form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.delete_form_question {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+}
+
+.controllers_confirm_cancel {
+  display: flex;
+  gap: 16px;
+}
+
+.delete_controllers_confirm {
+  color: #ffffff;
+  background: #0061ae;
+}
+
+.delete_controllers_cancel {
+  color: #0061ae;
 }

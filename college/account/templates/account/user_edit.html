@@ -1,3 +1,5 @@
+{# Template for editing user information #}
+
 {% extends "base.html" %}
 
 {% block page_scripts %}
@@ -8,23 +10,49 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:user_list" %}
-<h1>Изменение информации о пользователе</h1>
-{% include "form_success.html" with form=user_form %}
-<p>Измените информацию, используя форму ниже:</p>
-<form class="edit_user" method="post">
-    {{ user_form.as_p }}
-          <div class="register_user__student">
-          <h2>Дополнительная информация о студенте</h2>
-          <a href="{% url 'account:user_delete_student' user.id %}">Удалить студента</a>
-      {{ student_form.as_p }}
-      </div>
-      <div class="register_user__tutor">
-          <h2>Дополнительная информация о преподавателе</h2>
-          <a href="{% url 'account:user_delete_tutor' user.id %}">Удалить преподавателя</a>
-      {{ tutor_form.as_p }}
-      </div>
-    {% csrf_token %}
-    <p><input type="submit" value="Изменить"></p>
-</form>
+    {# Including page title #}
+    {% include 'page_heading.html' with back_url='account:user_list' page_title="Изменение информации о пользователе" list_url='account:user_list' %}
+
+    {% include "form_success.html" with form=user_form %}
+    <form class="register_form edit_user" method="post">
+        {{ user_form.as_div }}
+            <div class="register_user__student">
+                <div class="register_form_checkbox">
+                    {{user_form.is_student.label_tag}} {{user_form.is_student}}
+                </div>
+                <div class="more_info__student">
+                    <div class="more_info_heading">
+                    <h2 class="more_info_title">Дополнительная информация о студенте</h2>
+                    {# Including control buttons delete #}
+                    {% url 'account:user_edit' user.id as next_url %}
+                    {% url 'account:user_delete_student' user.id as del_url %}
+
+                    {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+                    </div>
+                    {{ student_form.as_div }}
+                </div>
+            </div>
+            <div class="register_user__tutor">
+                <div class="register_form_checkbox">
+                    {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
+                </div>
+                <div class="more_info__tutor">
+                    <div class="more_info_heading">
+                        <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
+                        {# Including control buttons delete #}
+                        {% url 'account:user_edit' user.id as next_url %}
+                        {% url 'account:user_delete_tutor' user.id as del_url %}
+
+                        {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+                    </div>
+                    {{ tutor_form.as_div }}
+                </div>
+            </div>
+        {% csrf_token %}
+        <div>
+            <input class="controller_button form_submit_button__reg"
+                type="submit"
+                value="Изменить">
+        </div>
+    </form>
 {% endblock %}

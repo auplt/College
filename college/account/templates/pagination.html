@@ -1,15 +1,26 @@
 {# Template for pagination #}
 
+{% load static %}
+<link href="{% static 'css/pagination.css' %}" rel="stylesheet">
+
 <div class="pagination">
     <span class="step-links">
         {% if page.has_previous %}
-            <a href="?page={{page.previous_page_number}}">Назад</a>
+        <div class="change_page" onclick="window.location = '?page={{page.previous_page_number}}'">
+            <img
+                class=""
+                src="{% static 'images/prev_page.svg' %}"/>
+        </div>
         {% endif %}
-        <span class="current">
-            Страница {{page.number}} из {{page.paginator.num_pages}}
+        <span class="current_page">
+            Страница {{page.number}}/{{page.paginator.num_pages}}
         </span>
         {% if page.has_next %}
-            <a href="?page={{page.next_page_number}}">Вперед</a>
+        <div class="change_page" onclick="window.location = '?page={{page.next_page_number}}'">
+            <img
+                class=""
+                src="{% static 'images/next_page.svg' %}"/>
+        </div>
         {% endif %}
     </span>
 </div>

@@ -1,3 +1,5 @@
+{# Template for group semester creation form #}
+
 {% extends "base.html" %}
 
 {% block page_scripts %}
@@ -8,22 +10,33 @@
 {% block title %}Add new semester{% endblock %}
 
 {% block content %}
-    {% if group %}
-        {% if group.group_id %}
-            {% include "back_button.html" with back_url="account:group_details" back_id=group.group_id %}
-        {% endif %}
-    {% else %}
-        {% include "back_button.html" with back_url="account:group_list" %}
+  {# Including page title #}
+  {% if group %}
+    {% if group.group_id %}
+      {% include 'page_heading.html' with back_url="account:group_details" back_id=group.group_id page_title="Добавление нового семестра" list_url='account:group_list' %}
     {% endif %}
-<h1>Добавить новый семестр</h1>
-{% include "form_success.html" with form=group_semester_form %}
-<p>Добавьте семестр, используя форму ниже:</p>
-<form class="register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}">
-    {{ group_semester_form.as_p }}
+  {% else %}
+     {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление нового семестра" list_url='account:group_list' %}
+  {% endif %}
+
+  {% include 'form_success.html' with form=group_semester_form %}
+  <form class="register_form register_group_semester" method="post">
+    {% for field in group_semester_form %}
+    <div>
+      {{field}}
+      {# Links to redirect to another page #}
+      {% if field.auto_id == "id_group_id" %}
+        {% if group %}
+          <a class="register_form_link" href="{% url 'account:group_register' %}?next={% url 'account:group_semester_register' %}?group_id={{ group.group_id }}">Нужной группы нет в списке</a>
+        {% endif %}
+      {% endif %}
+    </div>
+    {% endfor %}
     {% csrf_token %}
-    <p><input type="submit" value="Создать семестр"></p>
-</form>
-{% if group %}
-<a href="{% url 'account:group_register' %}">Нужной группы нет в списке</a>
-{% endif %}
+    <div>
+      <input class="controller_button form_submit_button__reg"
+        type="submit"
+        value="Добавить" />
+    </div>
+  </form>
 {% endblock %}

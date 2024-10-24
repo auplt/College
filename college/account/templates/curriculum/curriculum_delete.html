@@ -1,16 +1,23 @@
+{# Template for delete curriculum #}
+
 {% extends "base.html" %}
 
 {% block title %}Curriculum delete{% endblock %}
 
 {% block content %}
-<h1>Удаление плана занятий</h1>
-<h2>Удаление занятия {{ discipline.name }} из плана занятий {{group_semester.group_id__name}} на {{group_semester.semester_num}} семестр</h2>
-<form method="POST">
-    <p>Вы действительно хотите {{ discipline.name }} из плана занятий {{group_semester.group_id__name}} на {{group_semester.semester_num}} семестр?</p>
-    {% include "delete_from_controllers.html" with cancel_url="account:curriculum_lesson_group_details" cancel_id=group_semester.group_id__group_id %}
-    {% csrf_token %}
-</form>
-<a href="{% url 'account:group_list' %}">Вернуться к списку</a>
-<a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:curriculum_lesson_group_details" back_id=group_semester.group_id page_title="Удаление плана занятий" list_url="account:group_list" %}
 
+    <div class="delete_object">
+        <h2 class="delete_object_name">{{ discipline.name }}</h2>
+        <div class="delete_object_description">
+            Группа {{group_semester.group_id__name}} <br/>
+            Семестр {{group_semester.semester_num}}
+        </div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить занятие из плана?</div>
+        {% include "delete_from_controllers.html" with cancel_url="account:curriculum_lesson_group_details" cancel_id=group_semester.group_id__group_id %}
+        {% csrf_token %}
+    </form>
 {% endblock %}

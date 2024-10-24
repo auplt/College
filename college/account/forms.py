@@ -4,9 +4,11 @@ Forms for account app.
 
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import AuthenticationForm
 from formset.widgets import DateCalendar
 from django.forms.utils import ErrorList, ErrorDict
-from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, Curriculum, CurriculumLesson, TypesOfLesson, TTLesson
+from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, \
+    Curriculum, CurriculumLesson, TypesOfLesson, TTLesson
 
 from django.core.exceptions import ValidationError
 
@@ -19,12 +21,21 @@ USER_TYPES = (
 )
 
 
-class LoginForm(forms.Form):
+class LoginForm(AuthenticationForm):
     """
     Form for user data to log in.
     """
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    # username = forms.CharField(label=False)
+    # password = forms.CharField(widget=forms.PasswordInput)
+
+    # class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(label=False, widget=forms.TextInput(attrs={'class': 'custom-class'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'custom-class'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'custom-class'})
+        self.fields['password'].widget.attrs.update({'class': 'custom-class'})
 
 
 class StudentAdditionalForm(forms.ModelForm):
@@ -45,16 +56,19 @@ class StudentAdditionalForm(forms.ModelForm):
 
     def __init__(self, required, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['date_of_birth'] = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
-                                    widget=forms.TextInput(attrs={
-                                        'class': 'datepicker'
-                                    }))
+        self.fields['date_of_birth'] = forms.DateField(label=False, input_formats=['%d.%m.%Y'],
+                                                       required=required,
+                                                       widget=forms.TextInput(attrs={
+                                                           'class': 'datepicker',
+                                                           'placeholder': 'Дата рождения'
+                                                       }))
 
 
 class TutorAdditionalForm(forms.ModelForm):
     """
     Form for additional tutor information.
     """
+
     # date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=False,
     #                                 widget=forms.TextInput(attrs={
     #                                     'class': 'datepicker'
@@ -69,11 +83,12 @@ class TutorAdditionalForm(forms.ModelForm):
 
     def __init__(self, required, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['date_of_birth'] = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
-                                    widget=forms.TextInput(attrs={
-                                        'class': 'datepicker'
-                                    }))
-
+        self.fields['date_of_birth'] = forms.DateField(label=False, input_formats=['%d.%m.%Y'],
+                                                       required=required,
+                                                       widget=forms.TextInput(attrs={
+                                                           'class': 'datepicker',
+                                                           'placeholder': 'Дата рождения'
+                                                       }))
 
     # def change_required(self, required):
     #     self.date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
@@ -86,12 +101,34 @@ class UserRegistrationForm(forms.ModelForm):
     """
     Form for user data to register.
     """
-    last_name = forms.CharField(label='Фамилия')
-    first_name = forms.CharField(label='Имя')
-    second_name = forms.CharField(label='Отчество')
-    username = forms.CharField(label='Логин', required=True, help_text='1112')
-    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput)
+    last_name = forms.CharField(label=False,
+                                widget=forms.TextInput(attrs={
+                                    'placeholder': 'Фамилия'
+                                }))
+    first_name = forms.CharField(label=False,
+                                 widget=forms.TextInput(attrs={
+                                     'placeholder': 'Имя'
+                                 }))
+    second_name = forms.CharField(label=False,
+                                  widget=forms.TextInput(attrs={
+                                      'placeholder': 'Отчество'
+                                  }))
+    username = forms.CharField(label=False, required=True,
+                               widget=forms.TextInput(attrs={
+                                   'placeholder': 'Логин'
+                               }))
+    email = forms.EmailField(label=False, required=True,
+                             widget=forms.EmailInput(attrs={
+                                 'placeholder': 'Электронная почта'
+                             }))
+    password = forms.CharField(label=False,
+                               widget=forms.PasswordInput(attrs={
+                                   'placeholder': 'Пароль'
+                               }))
+    password2 = forms.CharField(label=False,
+                                widget=forms.PasswordInput(attrs={
+                                    'placeholder': 'Повторите пароль'
+                                }))
     # is_student = forms.ChoiceField(choices=USER_TYPES
     is_student = forms.BooleanField(label='Студент', widget=forms.CheckboxInput, required=False, initial=False)
     is_tutor = forms.BooleanField(label='Преподаватель', widget=forms.CheckboxInput, required=False, initial=False)
@@ -106,6 +143,13 @@ class UserRegistrationForm(forms.ModelForm):
 
     class Media:
         js = ('js/user_form.js',)
+
+    def user_fields(self):
+        # Set of invisible fields
+        invisibles = [self.fields['is_student'], self.fields['is_tutor']]
+        # Set of visible fields
+        visibles = super(UserRegistrationForm, self).visible_fields()
+        return [v for v in visibles if v.field not in invisibles]
 
     def clean_password2(self):
         """
@@ -134,10 +178,26 @@ class UserEditForm(forms.ModelForm):
     """
     Form for user data to edit.
     """
-    last_name = forms.CharField(label='Фамилия')
-    first_name = forms.CharField(label='Имя')
-    second_name = forms.CharField(label='Отчество')
-    username = forms.CharField(label='Логин', required=True, help_text='1112')
+    last_name = forms.CharField(label=False,
+                                widget=forms.TextInput(attrs={
+                                    'placeholder': 'Фамилия'
+                                }))
+    first_name = forms.CharField(label=False,
+                                 widget=forms.TextInput(attrs={
+                                     'placeholder': 'Имя'
+                                 }))
+    second_name = forms.CharField(label=False,
+                                  widget=forms.TextInput(attrs={
+                                      'placeholder': 'Отчество'
+                                  }))
+    username = forms.CharField(label=False,
+                               widget=forms.TextInput(attrs={
+                                   'placeholder': 'Логин'
+                               }))
+    email = forms.EmailField(label=False, required=True,
+                             widget=forms.EmailInput(attrs={
+                                 'placeholder': 'Электронная почта'
+                             }))
 
     class Meta:
         """
@@ -155,9 +215,11 @@ class UserEditForm(forms.ModelForm):
         return cleaned_data
 
 
-
 class GroupRegisterForm(forms.ModelForm):
-    name = forms.CharField(label='Название группы')
+    name = forms.CharField(label=False,
+                           widget=forms.TextInput(attrs={
+                               'placeholder': 'Название'
+                           }))
 
     class Meta:
         model = Group
@@ -165,8 +227,14 @@ class GroupRegisterForm(forms.ModelForm):
 
 
 class DisciplineRegisterForm(forms.ModelForm):
-    name = forms.CharField(label='Название дисциплины')
-    description = forms.CharField(label='Описание дисциплины', required=False)
+    name = forms.CharField(label=False,
+                           widget=forms.TextInput(attrs={
+                               'placeholder': 'Название'
+                           }))
+    description = forms.CharField(label=False, required=False,
+                                  widget=forms.TextInput(attrs={
+                                      'placeholder': 'Описание'
+                                  }))
 
     class Meta:
         model = Discipline
@@ -174,8 +242,15 @@ class DisciplineRegisterForm(forms.ModelForm):
 
 
 class ClassroomRegisterForm(forms.ModelForm):
-    number = forms.CharField(label='Номер аудитории')
-    description = forms.CharField(label='Описание аудитории', required=False)
+    number = forms.CharField(label=False,
+                             widget=forms.TextInput(attrs={
+                                 'placeholder': 'Номер'
+                             }))
+    description = forms.CharField(label=False,
+                                  required=False,
+                                  widget=forms.TextInput(attrs={
+                                      'placeholder': 'Описание'
+                                  }))
 
     class Meta:
         model = Classroom
@@ -183,15 +258,21 @@ class ClassroomRegisterForm(forms.ModelForm):
 
 
 class LessonTimeRegisterForm(forms.ModelForm):
-    name = forms.CharField(label='Название времени занятия')
-    start_time = forms.TimeField(label='Начало занятия',
+    name = forms.CharField(label=False,
+                           widget=forms.TextInput(attrs={
+                               'placeholder': 'Название'
+                           })
+                           )
+    start_time = forms.TimeField(label=False,
                                  widget=forms.TextInput(attrs={
-                                     'class': 'timepicker'
+                                     'class': 'timepicker',
+                                     'placeholder': 'Начало занятия'
                                  })
                                  )
-    end_time = forms.TimeField(label='Окончание занятия',
+    end_time = forms.TimeField(label=False,
                                widget=forms.TextInput(attrs={
-                                   'class': 'timepicker'
+                                   'class': 'timepicker',
+                                   'placeholder': 'Окончание занятия'
                                })
                                )
 
@@ -225,9 +306,12 @@ class LessonTimeEditForm(forms.ModelForm):
 
 
 class GroupSemesterRegisterForm(forms.ModelForm):
-    semester_num = forms.IntegerField(label='Номер семестра')
+    semester_num = forms.IntegerField(label=False,
+                                      widget=forms.NumberInput(attrs={
+                                          'placeholder': 'Номер семестра'
+                                      }))
     # group_id = forms.IntegerField(label='Номер uheggs')
-    group_id = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label='-----', label='Группа')
+    group_id = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label='Группа', label=False)
 
     class Meta:
         model = GroupSemester
@@ -243,8 +327,11 @@ class GroupSemesterRegisterForm(forms.ModelForm):
 
 
 class GroupMemberRegisterForm(forms.ModelForm):
-    group_semester_id = forms.ModelChoiceField(GroupSemester.objects.all(), empty_label='-----', label='Группа')
-    student_id = forms.ModelChoiceField(Student.objects.all(), empty_label='-----', label='Студент')
+    group_semester_id = forms.ModelChoiceField(GroupSemester.objects.all().order_by('-semester_num', 'group_id__name'),
+                                               empty_label='Группа', label=False)
+    student_id = forms.ModelChoiceField(
+        Student.objects.all().order_by('user_id__last_name', 'user_id__first_name', 'user_id__second_name'),
+        empty_label='Студент', label=False)
 
     def __init__(self, *args, **kwargs):
         super(GroupMemberRegisterForm, self).__init__(*args, **kwargs)
@@ -254,15 +341,16 @@ class GroupMemberRegisterForm(forms.ModelForm):
     def set_initial_group_semester_ids(self, objects):
         self.fields['group_semester_id'].queryset = objects
 
-
     class Meta:
         model = GroupMember
         fields = ['student_id', 'group_semester_id']
 
 
 class CurriculumRegisterForm(forms.ModelForm):
-    discipline_id = forms.ModelChoiceField(Discipline.objects.all(), empty_label='-----', label='Дисциплины')
-    group_semester_id = forms.ModelChoiceField(GroupSemester.objects.all(), empty_label='-----', label='Группы')
+    discipline_id = forms.ModelChoiceField(Discipline.objects.all().order_by('name'), empty_label='Дисциплины',
+                                           label=False)
+    group_semester_id = forms.ModelChoiceField(GroupSemester.objects.all().order_by('-semester_num', 'group_id__name'),
+                                               empty_label='Группы', label=False)
 
     def __init__(self, *args, **kwargs):
         super(CurriculumRegisterForm, self).__init__(*args, **kwargs)
@@ -320,11 +408,17 @@ class CurriculumRegisterForm(forms.ModelForm):
 
 
 class CurriculumLessonRegisterForm(forms.ModelForm):
-    lesson_type = forms.ChoiceField(label="Тип урока", choices=TypesOfLesson.choices)
-    duration = forms.IntegerField(label="Продолжительность")
-    curriculum_id = forms.ModelChoiceField(Curriculum.objects.all(), empty_label='-----', label='План занятий')
+    lesson_type = forms.ChoiceField(label=False, choices=TypesOfLesson.choices,
+                                    widget=forms.NumberInput(attrs={
+                                        'placeholder': 'Тип урока'
+                                    }))
+    duration = forms.IntegerField(label=False,
+                                  widget=forms.NumberInput(attrs={
+                                      'placeholder': 'Продолжительность'
+                                  }))
+    curriculum_id = forms.ModelChoiceField(Curriculum.objects.all(), empty_label='План занятий', label=False)
     # tutors = Tutor.objects.all()
-    tutor_id = forms.ModelChoiceField(Tutor.objects.all(), empty_label='-----', label='Преподаватель')
+    tutor_id = forms.ModelChoiceField(Tutor.objects.all(), empty_label='Преподаватель', label=False)
 
     def __init__(self, *args, **kwargs):
         super(CurriculumLessonRegisterForm, self).__init__(*args, **kwargs)
@@ -337,24 +431,25 @@ class CurriculumLessonRegisterForm(forms.ModelForm):
 
     class Meta:
         model = CurriculumLesson
-        fields = ['lesson_type', 'duration', 'curriculum_id', 'tutor_id' ]
+        fields = ['lesson_type', 'duration', 'curriculum_id', 'tutor_id']
 
 
 class TTLessonRegisterForm(forms.ModelForm):
-    date = forms.DateField(label='Дата занятия', input_formats=['%d.%m.%Y'], required=False,
-                      widget=forms.TextInput(attrs={
-                          'class': 'datepicker'
-                      }))
+    date = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=True,
+                           widget=forms.TextInput(attrs={
+                               'class': 'datepicker',
+                               'placeholder': 'Дата занятия'
+                           }))
     # day_name = forms.ChoiceField(label="День недели", choices=TTLesson.DAY_OF_WEEK_CHOICES)
     # week_type = forms.ChoiceField(label="Тип недели", choices=TTLesson.TYPE_OF_WEEK_CHOICES)
-    lessons_time_id = forms.ModelChoiceField(LessonTime.objects.all(), empty_label='-----', label='Время занятия')
-    classroom_id = forms.ModelChoiceField(Classroom.objects.all(), empty_label='-----', label='Аудитория')
-    curriculum_lesson_id = forms.ModelChoiceField(CurriculumLesson.objects.all(), empty_label='-----', label='Предмет')
+    lesson_time_id = forms.ModelChoiceField(LessonTime.objects.all(), empty_label='Время занятия', label=False)
+    classroom_id = forms.ModelChoiceField(Classroom.objects.all(), empty_label='Аудитория', label=False)
+    curriculum_lesson_id = forms.ModelChoiceField(CurriculumLesson.objects.all(), empty_label='Предмет', label=False)
 
     def __init__(self, *args, **kwargs):
         super(TTLessonRegisterForm, self).__init__(*args, **kwargs)
         # self.fields['week_type'].widget.attrs['class'] = 'choice_input'
-        self.fields['lessons_time_id'].widget.attrs['class'] = 'choice_input'
+        self.fields['lesson_time_id'].widget.attrs['class'] = 'choice_input'
         self.fields['classroom_id'].widget.attrs['class'] = 'choice_input'
         self.fields['curriculum_lesson_id'].widget.attrs['class'] = 'choice_input'
 
@@ -363,4 +458,4 @@ class TTLessonRegisterForm(forms.ModelForm):
 
     class Meta:
         model = TTLesson
-        fields = ['date', 'lessons_time_id', 'classroom_id', 'curriculum_lesson_id']
+        fields = ['date', 'lesson_time_id', 'classroom_id', 'curriculum_lesson_id']

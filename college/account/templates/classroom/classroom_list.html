@@ -14,32 +14,29 @@
 
 {% block content %}
     <div class="page_title">
-        <div class="page_title_nav">
-            {# Including back button #}
-            {% include "back_button.html" with back_url="account:classroom_list" %}
-            <h1>Список аудиторий</h1>
-        </div>
+        {# Including page title #}
+        {% include "page_heading.html" with back_url="account:classroom_list" page_title="Список аудиторий" %}
         {# Including add button #}
-        {% url 'account:discipline_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url %}
+        {% url 'account:classroom_register' as add_url %}
+        {% include "add_button.html" with add_link=add_url add_txt="аудиторию" %}
     </div>
 
-    <div class="items_list list_wrapper">
     {% include "success_msg.html" %}
-    {% for classroom in classrooms %}
-        <div class="list_item">
-            <div class="item_title">
-                <a href="{{ classroom.get_absolute_url }}">
-                    <h2 class="item_title_heading">
-                        {{ classroom.number }}
-                    </h2>
-                </a>
-                <span class="tooltiptext tooltiptext_more">Подробнее</span>
+    <div class="items_list list_wrapper">
+        {% for classroom in classrooms %}
+            <div class="list_item">
+                <div class="item_title">
+                    <a href="{{ classroom.get_absolute_url }}">
+                        <h2 class="item_title_heading">
+                            {{ classroom.number }}
+                        </h2>
+                    </a>
+                    <span class="tooltiptext tooltiptext_more">Подробнее</span>
+                </div>
+                {# Including control buttons edit and delete #}
+                {% url 'account:classroom_list' as next_url %}
+                {% include "buttons_controllers.html" with edit_link=classroom.get_edit_url next_edit_link=next_url del_link=classroom.get_delete_url next_del_link=next_url %}
             </div>
-            {# Including control buttons edit and delete #}
-            {% url 'account:classroom_list' as next_url %}
-            {% include "buttons_controllers.html" with edit_link=classroom.get_edit_url next_edit_link=next_url del_link=classroom.get_delete_url next_del_link=next_url %}
-        </div>
-    {% endfor %}
+        {% endfor %}
     </div>
 {% endblock %}

@@ -1,42 +1,70 @@
 :root {
   --primary-backgroud-color: #f0f0f0;
   --primary-backgroud-color-hover: #e4e4e4;
-  --primary-border-radius: 10px;
+  --primary-border-radius: 6px;
 }
 
 .list_wrapper {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  max-width: max-content;
 }
 
-.items_list_sem {
+.items_list_sem_heading {
+  margin-bottom: 8px;
+  font-weight: 500;
+  padding: 8px 35px 8px 0;
+}
+
+.items_list_sem_items {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  max-width: max-content;
+  margin-bottom: 8px;
 }
 
 .list_item {
   display: flex;
-  justify-content: space-between;
-  padding: 20px 15px;
-  background-color: var(--primary-backgroud-color);
-  border-radius: var(--primary-border-radius);
+  justify-content: left;
+  gap: 20px;
 }
 
-.list_item:hover {
+/* .list_item:hover {
   background-color: var(--primary-backgroud-color-hover);
-}
+} */
 
 .item_title {
   position: relative;
   display: inline-block;
+  width: 100%;
+
+  padding: 8px;
+  background: #e4e4e4;
+  background-color: var(--primary-backgroud-color);
+  border-radius: var(--primary-border-radius);
 }
 
 .item_title:hover .tooltiptext {
   visibility: visible;
 }
 
+.item_title a {
+  display: flex;
+  align-items: center;
+}
+
 .item_title_heading {
   margin: 0;
+  color: rgb(0, 0, 0);
+  font-family: Circe Rounded;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  white-space: nowrap;
+  max-width: 400px;
+  overflow: hidden;
 }

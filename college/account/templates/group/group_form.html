@@ -1,26 +1,33 @@
+{# Template for group creation and edit form #}
+
 {% extends "base.html" %}
 
 {% block title %}Create a group{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:group_list" %}
-<h1>
-    {% if action == 'C' %}Добавление
-    {% elif action == 'U' %}Изменение
-    {% else %}Форма
-    {% endif %} группы
-</h1>
-{% include "form_success.html" with form=group_form %}
-<p>
-    {% if action == 'C' %}Добавьте группу, используя форму ниже:
-    {% elif action == 'U' %}Измените группу, используя форму ниже:
-    {% else %}Используйте форму ниже:
-    {% endif %}
-</p>
-<form class="register_group" method="post">
-    {{ group_form.as_p }}
+  {# Including page title #}
+  {% if action == 'C' %}
+    {% with page_title='Добавление группы' %}
+      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' %}
+    {% endwith %}
+  {% elif action == 'U' %}
+    {% with page_title='Изменение группы' %}
+      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' %}
+    {% endwith %}
+  {% else %}
+    {% with page_title='Форма группы' %}
+      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' %}
+    {% endwith %}
+  {% endif %}
+
+  {% include 'form_success.html' with form=group_form %}
+  <form class="register_form register_group" method="post">
+    {{ group_form.as_div }}
     {% csrf_token %}
-    <p><input type="submit"
-              value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
-</form>
+    <div>
+      <input class="controller_button form_submit_button__reg"
+        type="submit"
+        value="{% if action == 'C' %}Добавить{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}" />
+    </div>
+  </form>
 {% endblock %}

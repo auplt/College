@@ -1,3 +1,5 @@
+{# Template for registering user #}
+
 {% extends "base.html" %}
 
 {% block page_scripts %}
@@ -8,21 +10,40 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:user_list" %}
-<h1>Создание аккаунта</h1>
-{% include "form_success.html" with form=user_form %}
-<p>Создайте аккаунт, используя форму ниже:</p>
-<form class="register_user" method="post" novalidate>
-    {{ user_form.as_p }}
-    <div class="register_user__student">
-        <h2>Дополнительная информация о студенте</h2>
-        {{ student_form.as_p }}
-    </div>
-    <div class="register_user__tutor">
-        <h2>Дополнительная информация о преподавателе</h2>
-        {{ tutor_form.as_p }}
-    </div>
-    {% csrf_token %}
-    <p><input type="submit" value="Создать аккаунт"></p>
-</form>
+    {# Including page title #}
+    {% include 'page_heading.html' with back_url='account:user_list' page_title="Создание аккаунта" list_url='account:user_list' %}
+
+    {% include "form_success.html" with form=user_form %}
+    <form class="register_form register_user" method="post" novalidate>
+        {% for field in user_form.user_fields %}
+            <div>
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <div class="register_user__student">
+            <div class="register_form_checkbox">
+                {{user_form.is_student.label_tag}} {{user_form.is_student}}
+            </div>
+            <div class="more_info__student">
+                <h2 class="more_info_title">Дополнительная информация о студенте</h2>
+                {{ student_form.as_div }}
+            </div>
+        </div>
+        <div class="register_user__tutor">
+            <div class="register_form_checkbox">
+                {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
+            </div>
+            <div class="more_info__tutor">
+                <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
+                {{ tutor_form.as_div }}
+            </div>
+        </div>
+        {% csrf_token %}
+        <div>
+            <input class="controller_button form_submit_button__reg"
+                   type="submit"
+                   value="Зарегистрироваться">
+        </div>
+    </form>
 {% endblock %}

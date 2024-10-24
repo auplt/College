@@ -1,37 +1,52 @@
+{# Template for curriculum lesson creation and edit form #}
+
 {% extends "base.html" %}
+
+{% load group_extras %}
 
 {% block title %}Create curriculum lesson{% endblock %}
 
 {% block content %}
-{% if group %}
-{% include "back_button.html" with back_url="account:curriculum_lesson_group_details" back_id=group.group_id %}
-{% elif discipline %}
-{% include "back_button.html" with back_url="account:discipline_details" back_id=discipline.discipline_id %}
-{% elif tutor %}
-{% include "back_button.html" with back_url="account:user_details" back_id=tutor.user_id.id %}
-{% endif %}
-  <h1>
-      {% if action == 'C' %}Добавление занятия в план
-      {% elif action == 'U' %}Изменение занятия
-      {% elif action == 'D' %}Удаление занятия
-      {% else %}Занятие
-      {% endif %}
-  </h1>
-{% include "form_success.html" with form=curriculum_lesson_form %}
-  <p>{% if action == 'C' %}Добавьте занятие в план, используя форму ниже:
-    {% elif action == 'U' %}Измените занятие в плане, используя форму ниже:
-    {% else %}Используйте форму ниже:
+  {% with "Занятие" as page_title %}
+    {% if action == 'C' %}
+      {% update_variable "Добавление занятия в план" as page_title %}
+    {% elif action == 'U' %}
+      {% update_variable "Изменение занятия" as page_title %}
+    {% elif action == 'D' %}
+      {% update_variable "Удаление занятия" as page_title %}
     {% endif %}
-  </p>
-  <form class="register_curriculum_lesson" method="post">
-    {{ curriculum_lesson_form.as_p }}
+
+    {% if group %}
+      {% include 'page_heading.html' with back_url='account:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='account:group_list' %}
+    {% elif discipline %}
+      {% include 'page_heading.html' with back_url='account:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='account:group_list' %}
+    {% elif tutor %}
+      {% include 'page_heading.html' with back_url='account:user_details' back_id=tutor.user_id.id page_title=page_title list_url='account:group_list' %}
+    {% else %}
+       {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title list_url='account:group_list' %}
+    {% endif %}
+  {% endwith %}
+
+  {% include 'form_success.html' with form=curriculum_lesson_form %}
+  <form class="register_form register_curriculum_lesson" method="post">
+    {% for field in curriculum_lesson_form %}
+      <div>
+        {{field}}
+        {# Links to redirect to another page #}
+        {% if field.auto_id == "id_curriculum_id" %}
+          {% if group %}
+            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Нужной группы нет в списке</a>
+          {% elif discipline %}
+            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Нужной группы нет в списке</a>
+        {% endif %}
+      {% endif %}
+      </div>
+    {% endfor %}
     {% csrf_token %}
-    <p><input type="submit" value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+    <div>
+      <input class="controller_button form_submit_button__reg"
+        type="submit"
+        value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}" />
+    </div>
   </form>
-  {% if discipline %}
-  <a href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Нужной группы нет в списке</a>
-  {% endif %}
-  {% if group %}
-  <a href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Нужной группы нет в списке</a>
-  {% endif %}
 {% endblock %}

@@ -1,33 +1,36 @@
+{# Template for curriculum creation form #}
+
 {% extends "base.html" %}
 
 {% block page_scripts %}
 {% load static %}
 <script src="{% static 'js/curriculum_form.js' %}"></script>
 <link href="{% static 'css/curriculum.css' %}" rel="stylesheet">
+<link href="{% static 'css/add_button.css' %}" rel="stylesheet">
 <script src="https://malsup.github.io/jquery.form.js"></script>
 {% endblock %}
 
 {% block title %}Create curriculum{% endblock %}
 
 {% block content %}
-{{group.get_type}}
+  {# Including page title #}
+  {% if group %}
     {% if group %}
-        {% if group %}
-            {% include "back_button.html" with back_url="account:curriculum_lesson_group_details" back_id=group.group_id %}
-        {% elif group.student_id %}
-            {% include "back_button.html" with back_url="account:curriculum_lesson_group_details" back_id=group.student_id %}
-        {% endif %}
-    {% else %}
-        {% include "back_button.html" with back_url="account:group_list" %}
+      {% include 'page_heading.html' with back_url="account:curriculum_lesson_group_details" back_id=group.group_id page_title="Добавление дисциплины группе" list_url='account:group_list' %}
+    {% elif group.student_id %}
+      {% include 'page_heading.html' with back_url="account:curriculum_lesson_group_details" back_id=group.student_id page_title="Добавление дисциплины группе" list_url='account:group_list' %}
     {% endif %}
-<h1>Добавление дисциплины группе</h1>
+  {% else %}
+     {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление дисциплины группе" list_url='account:group_list' %}
+  {% endif %}
+
+
 {% include "form_success.html" with form=curriculum_form %}
-<p>Добавьте дисциплины, используя форму ниже:</p>
-<form class="curriculum_group_form" method="post" data-url-img="{% static 'images' %}" novalidate>
+<form class="register_form curriculum_group_form" method="post" data-url-img="{% static 'images' %}" novalidate>
+    <div class="curriculum_group_form_content">
     <div class="curriculum_group_input__wrapper">
         <div class="group_list__wrapper">
             <div class="group_list">
-                {{ curriculum_form.group_semester_id.label_tag }}
                 {% if curriculum_form.errors %}
                 {% for field, errors in curriculum_form.errors.items %}
                 {% if field == "group_semester_id" %}
@@ -41,13 +44,13 @@
                 {% endif %}
                 {{ curriculum_form.group_semester_id }}
             </div>
-            <button id="group_list_add_button">
-                <img class="add_icon" src="{% static 'images/plus.png' %}" alt="Добавление группы">
+            <button class="list_ctrl_add" id="group_list_add_button">
+                <img class="list_ctrl_add_img" src="{% static 'images/add.svg' %}" alt="Добавление группы">
+                <div class="list_ctrl_add_txt">Добавить</div>
             </button>
         </div>
         <div class="discipline_list__wrapper">
             <div class="discipline_list">
-                {{ curriculum_form.discipline_id.label_tag }}
                 {% if curriculum_form.errors %}
                 {% for field, errors in curriculum_form.errors.items %}
                 {% if field == "discipline_id" %}
@@ -61,19 +64,23 @@
                 {% endif %}
                 {{ curriculum_form.discipline_id }}
             </div>
-            <button id="discipline_list_add_button">
-                <img class="add_icon" src="{% static 'images/plus.png' %}" alt="Добавление дисциплины">
+            <button class="list_ctrl_add" id="discipline_list_add_button">
+                <img class="list_ctrl_add_img" src="{% static 'images/add.svg' %}" alt="Добавление дисциплины">
+                <div class="list_ctrl_add_txt">Добавить</div>
             </button>
+
+
         </div>
         {% csrf_token %}
     </div>
-    <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">
-        Нужной группы нет в списке
-    </a>
-    <a href="{{request.META.HTTP_REFERER|escape}}">Go back</a>
+                <a class="register_form_link"  href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">
+                    Нужной группы нет в списке
+                </a>
+
     {% if curriculum_form.errors %}
     {{ curriculum_form.non_field_errors }}
     {% endif %}
-    <input class="curriculum_group_form_submit" type="submit" value="Добавить">
+    </div>
+    <input class="controller_button form_submit_button__reg curriculum_group_form_submit" type="submit" value="Добавить">
 </form>
 {% endblock %}

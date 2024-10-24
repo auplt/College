@@ -14,18 +14,15 @@
 
 {% block content %}
     <div class="page_title">
-        <div class="page_title_nav">
-            {# Including back button #}
-            {% include "back_button.html" with back_url="account:user_list" %}
-            <h1>Список пользователей</h1>
-        </div>
+        {# Including page title #}
+        {% include "page_heading.html" with back_url="account:user_list" page_title="Список пользователей" %}
         {# Including add button #}
         {% url 'account:user_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url %}
+        {% include "add_button.html" with add_link=add_url add_txt="пользователя" %}
     </div>
 
+    {% include "success_msg.html" %}
     <div class="items_list list_wrapper">
-        {% include "success_msg.html" %}
         {% for user in users %}
         <div class="list_item">
             <div class="item_title">

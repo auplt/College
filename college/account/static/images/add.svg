@@ -1,6 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font
-    Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License -
-    https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-    <path fill="#12c064"
-        d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+<svg width="12.000000" height="12.000000" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>
+			Created with Pixso.
+	</desc>
+	<defs/>
+	<g opacity="0.000000">
+		<path id="Прямоугольник 910" d="M0 0L12 0L12 12L0 12L0 0Z" fill="#0061AE" fill-opacity="1.000000" fill-rule="evenodd"/>
+	</g>
+	<path id="Vector" d="M5.99 1.75L5.99 10.24M1.75 6L10.24 6" stroke="#0061AE" stroke-opacity="1.000000" stroke-width="2.000000" stroke-linejoin="round" stroke-linecap="round"/>
 </svg>

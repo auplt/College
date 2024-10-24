@@ -1,3 +1,5 @@
+{# Template for group member creation form #}
+
 {% extends "base.html" %}
 
 {% load group_extras %}
@@ -5,27 +7,43 @@
 {% block title %}Create group member{% endblock %}
 
 {% block content %}
-    {% if group %}
-        {% if group.get_type == 'Group' %}
-            {% include "back_button.html" with back_url="account:group_details" back_id=group.group_id %}
-        {% elif group.group_id %}
-            {% include "back_button.html" with back_url="account:group_details" back_id=group.group_id.group_id %}
-        {% elif group.student_id %}
-            {% include "back_button.html" with back_url="account:student_details" back_id=group.student_id %}
-        {% endif %}
-    {% else %}
-        {% include "back_button.html" with back_url="account:group_list" %}
-    {% endif %}
-  <h1>Добавление в группу</h1>
-{% include "form_success.html" with form=group_member_form %}
-  <p>Добавьте в группу, используя форму ниже:</p>
-  <form class="register_group" method="post">
-    {{ group_member_form.as_p }}
-    {% csrf_token %}
-    <p><input type="submit" value="Добавить"></p>
-  </form>
-{{group_member_form.group_id}}
+  {# Including page title #}
   {% if group %}
-  <a href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">Группы с нужным номером семестра нет в списке</a>
+    {% if group|get_type == 'Group' %}
+      {% include 'page_heading.html' with back_url="account:group_details" back_id=group.group_id page_title="Добавление студента в группу" list_url='account:group_list' %}
+    {% elif group.group_id %}
+      {% include 'page_heading.html' with back_url="account:group_details" back_id=group.group_id.group_id page_title="Добавление студента в группу" list_url='account:group_list' %}
+    {% elif group.student_id %}
+      {% include 'page_heading.html' with back_url="account:user_details" back_id=group.user_id.id page_title="Добавление студента в группу" list_url='account:group_list' %}
+    {% endif %}
+  {% else %}
+    {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление студента в группу" list_url='account:group_list' %}
   {% endif %}
+
+  {% include 'form_success.html' with form=group_member_form %}
+  <form class="register_form register_group_member" method="post">
+    {% for field in group_member_form %}
+    <div>
+      {{field}}
+      {# Links to redirect to another page #}
+      {% if field.auto_id == "id_group_semester_id" %}
+        {% if group %}
+          {% if group|get_type == 'Group' %}
+            <a class="register_form_link" href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">Группы с нужным семестром нет в списке</a>
+          {% elif group.group_id %}
+            <a class="register_form_link" href="{% url 'account:group_semester_register' %}?group_id={{group.group_id.group_id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">Группы с нужным семестром нет в списке</a>
+          {% elif group.student_id %}
+            <a class="register_form_link" href="{% url 'account:group_semester_register' %}?student_id={{group.user_id.id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">Группы с нужным семестром нет в списке</a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+    {% endfor %}
+    {% csrf_token %}
+    <div>
+      <input class="controller_button form_submit_button__reg"
+        type="submit"
+        value="Добавить" />
+    </div>
+  </form>
 {% endblock %}

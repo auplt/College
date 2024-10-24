@@ -1,5 +1,8 @@
+{# Template for lesson in timetable creation and edit form #}
+
 {% extends "base.html" %}
 
+{% load group_extras %}
 {% block page_scripts %}
  {% load static %}
   <script src="{% static 'js/tt_lesson_form.js' %}"></script>
@@ -8,23 +11,31 @@
 {% block title %}Create a lesson{% endblock %}
 
 {% block content %}
-<h1>
-    {% if action == 'C' %}Добавление
-    {% elif action == 'U' %}Изменение
-    {% else %}Форма
-    {% endif %} занятия в расписании
-</h1>
-{% include "form_success.html" with form=tt_lesson_form %}
-<p>
-    {% if action == 'C' %}Добавьте занятие в расписание, используя форму ниже:
-    {% elif action == 'U' %}Измените занятие в расписании, используя форму ниже:
-    {% else %}Используйте форму ниже:
-    {% endif %}
-</p>
-  <form class="register_lesson" method="post">
-    {{ tt_lesson_form.as_p }}
+  {# Including page title #}
+  {% original_query_string next_url as next_url %}
+
+  {% if action == 'C' %}
+    {% with page_title='Добавление занятия в расписание' %}
+      {% include 'page_heading.html' with back_url=next_url page_title=page_title%}
+    {% endwith %}
+  {% elif action == 'U' %}
+    {% with page_title='Изменение занятия в расписание' %}
+      {% include 'page_heading.html' with back_url=next_url page_title=page_title%}
+    {% endwith %}
+  {% else %}
+    {% with page_title='Форма занятие в расписании' %}
+      {% include 'page_heading.html' with back_url=next_url page_title=page_title%}
+    {% endwith %}
+  {% endif %}
+
+  {% include 'form_success.html' with form=tt_lesson_form %}
+  <form class="register_form register_tt_lesson" method="post">
+    {{ tt_lesson_form.as_div }}
     {% csrf_token %}
-    <p><input type="submit"
-              value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}"></p>
+    <div>
+      <input class="controller_button form_submit_button__reg"
+        type="submit"
+        value="{% if action == 'C' %}Добавить{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}" />
+    </div>
   </form>
 {% endblock %}

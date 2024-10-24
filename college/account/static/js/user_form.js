@@ -1,8 +1,10 @@
+/*
+ * Отображение / скрытие блока доп. информации о студенте
+ */
 $(document).ready(function () {
-  let studentInfo = $(".register_user__student");
+  let studentInfo = $(".more_info__student");
   studentInfo.hide();
   let items = $("form p").length - 2;
-  $("#id_is_student").parent().after(studentInfo);
   $("#id_is_student")[0].addEventListener("change", (event) => {
     if (event.target.checked) {
       studentInfo.show();
@@ -17,11 +19,13 @@ $(document).ready(function () {
   });
 });
 
+/*
+ * Отображение / скрытие блока доп. информации о преподавателе
+ */
 $(document).ready(function () {
-  let tutorInfo = $(".register_user__tutor");
+  let tutorInfo = $(".more_info__tutor");
   tutorInfo.hide();
   let items = $("form p").length;
-  $("#id_is_tutor").parent().after(tutorInfo);
   $("#id_is_tutor")[0].addEventListener("change", (event) => {
     if (event.target.checked) {
       console.log("2");
@@ -37,27 +41,35 @@ $(document).ready(function () {
   });
 });
 
+/*
+ * Отображение / скрытие блока доп. информации при возврате на страницу в
+ * случае ошибок в форме
+ */
 $(document).ready(function () {
   if ($("#id_std-date_of_birth").val()) {
     console.log("11");
-    $(".register_user__student").show();
+    $(".more_info__student").show();
     $("#id_is_student").prop("checked", true);
   }
   if ($("#id_tut-date_of_birth").val()) {
     console.log("12");
-    $(".register_user__tutor").show();
+    $(".more_info__tutor").show();
     $("#id_is_tutor").prop("checked", true);
   }
   if ($("#id_is_tutor").is(":checked")) {
     console.log("13");
-    $(".register_user__tutor").show();
+    $(".more_info__tutor").show();
   }
   if ($("#id_is_student").is(":checked")) {
     console.log("14");
-    $(".register_user__student").show();
+    $(".more_info__student").show();
   }
 });
 
+/*
+ * Установление одинаковых дат рожения при внесении информации о
+ * дате рождения студента
+ */
 $(document).ready(function () {
   $("#id_std-date_of_birth")
     .datepicker({
@@ -74,6 +86,10 @@ $(document).ready(function () {
     });
 });
 
+/*
+ * Установление одинаковых дат рожения при внесении информации о
+ * дате рождения преподавателя
+ */
 $(document).ready(function () {
   $("#id_tut-date_of_birth")
     .datepicker({
@@ -89,6 +105,9 @@ $(document).ready(function () {
     });
 });
 
+/*
+ * Добавление календаря при перезагрузке страницы
+ */
 $(document).ready(function () {
   $(".datepicker").datepicker({
     dateFormat: "dd.mm.yy",
@@ -99,18 +118,22 @@ $(document).ready(function () {
 });
 
 console.log($("#id_is_tutor").val());
+/*
+ * Отображение / скрытие блока доп. информации о студенте и преподавателе
+ * при возврате на страницу
+ */
 if ($("#id_is_tutor").is(":checked")) {
-  $(".register_user__tutor").show();
+  $(".more_info__tutor").show();
 }
 if ($("#id_is_student").is(":checked")) {
-  $(".register_user__student").show();
+  $(".more_info__student").show();
 }
 if ($("#id_std-date_of_birth").val()) {
-  $(".register_user__student").show();
+  $(".more_info__student").show();
   $("#id_is_student").prop("checked", true);
 }
 if ($("#id_tut-date_of_birth").val()) {
   console.log("1");
-  $(".register_user__tutor").show();
+  $(".more_info__tutor").show();
   $("#id_is_tutor").prop("checked", true);
 }

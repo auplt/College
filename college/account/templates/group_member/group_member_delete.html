@@ -1,18 +1,27 @@
+{# Template for delete student from group #}
+
 {% extends "base.html" %}
 
 {% block title %}Group member delete{% endblock %}
 
 {% block content %}
-<h1>Удаление студента группы</h1>
-<form method="POST">
-    <p>Вы точно хотите удалить студента
-        {{group_member.student_id__user_id__last_name}}
-        {{group_member.student_id__user_id__first_name}}
-        {{group_member.student_id__user_id__second_name}}
-        из состава группы {{group_member.group_semester_id__group_id__name}}
-        за {{group_member.group_semester_id__semester_num}} семестр?</p>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:group_details" back_id=group_member.group_semester_id__group_id page_title="Удаление студента группы" list_url="account:group_list" %}
+
+    <div class="delete_object">
+        <h2 class="delete_object_name">
+            {{group_member.student_id__user_id__last_name}}
+            {{group_member.student_id__user_id__first_name}}
+            {{group_member.student_id__user_id__second_name}}
+        </h2>
+        <div class="delete_object_description">
+            Группа {{group_member.group_semester_id__group_id__name}} <br/>
+            Семестр {{group_member.group_semester_id__semester_num}}
+        </div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить этого студента из группы?</div>
         {% include "delete_from_controllers.html" with cancel_url="account:group_details" cancel_id=group_member.group_semester_id__group_id__group_id %}
-    {% csrf_token %}
-</form>
-<a href="{% url 'account:group_list' %}">Вернуться к списку</a>
+        {% csrf_token %}
+    </form>
 {% endblock %}

@@ -1,13 +1,19 @@
+{# Template for delete user #}
+
 {% extends "base.html" %}
 
 {% block title %}User delete{% endblock %}
 
 {% block content %}
-<h1>Удаление пользователя</h1>
-<h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
-<form method="POST">
-    <p>Вы точно хотите удалить этого пользователя?</p>
-    {% include "delete_from_controllers.html" with cancel_url="account:user_details" cancel_id=user.id %}
-    {% csrf_token %}
-</form>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:user_list" page_title="Удаление пользователя" list_url="account:user_list" %}
+    <div class="delete_object">
+        <h2 class="delete_object_name">{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
+        <div class="delete_object_description">Логин {{ user.username }}</div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить этого пользователя?</div>
+        {% include "delete_from_controllers.html" with cancel_url="account:user_details" cancel_id=user.id %}
+        {% csrf_token %}
+    </form>
 {% endblock %}

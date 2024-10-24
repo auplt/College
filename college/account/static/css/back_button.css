@@ -1,0 +1,38 @@
+/* .form_controllers_back {
+  font-weight: bold;
+  color: var(--secondary-text-color);
+  display: flex;
+  align-items: center;
+}
+
+.form_controllers_back:hover {
+   color: #3a3a3b; 
+  filter: var(--secondary-text-filter);
+}
+
+.form_controllers_back_img {
+  height: 32px;
+  width: 32px;
+} */
+
+/* .form_controllers_back {
+  font-weight: bold;
+  color: var(--secondary-text-color);
+  display: flex;
+  align-items: center;
+}*/
+
+.form_controllers_back {
+  height: min-content;
+}
+
+.form_controllers_back:hover {
+  filter: var(--secondary-text-filter);
+}
+
+.form_controllers_back_img {
+  display: block;
+  cursor: pointer;
+  height: 22px;
+  width: 22px;
+}

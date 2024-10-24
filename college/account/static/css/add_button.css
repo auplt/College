@@ -3,23 +3,44 @@
 
   --button-confirm-color-hover: brightness(0) saturate(100%) invert(36%)
     sepia(44%) saturate(2336%) hue-rotate(123deg) brightness(95%) contrast(87%);
+
+  --primary-border-radius: 6px;
 }
 
 .list_ctrl_add {
   position: relative;
   /* display: inline-block; */
   display: flex;
+  /* flex-direction: column; */
   align-items: center;
-}
+  justify-content: center;
+  gap: 8px;
+  background-color: #fff;
 
-.list_ctrl_add > a {
-  display: flex;
-  align-items: center;
+  padding: 9px 30px;
+
+  border: 1px solid rgb(0, 97, 174);
+  border-radius: var(--primary-border-radius);
+  max-width: max-content;
+  cursor: pointer;
 }
 
 .list_ctrl_add_img {
-  height: 25px;
-  width: 25px;
+  height: 12px;
+  width: 12px;
+  line-height: 14px;
+}
+
+.list_ctrl_add_txt {
+  text-align: center;
+  vertical-align: middle;
+  color: rgb(0, 97, 174);
+  font-family: Circe Rounded;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: right;
 }
 
 .list_ctrl_add:hover .list_ctrl_add_img {

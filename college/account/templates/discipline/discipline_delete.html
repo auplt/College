@@ -1,15 +1,20 @@
+{# Template for delete discipline #}
+
 {% extends "base.html" %}
 
 {% block title %}Discipline delete{% endblock %}
 
 {% block content %}
-<h1>Удаление дисциплины</h1>
-<h2>{{ discipline.name }}</h2>
-<p>Описание: {{ discipline.description }}</p>
-<form method="POST">
-    <p>Вы точно хотите удалить эту дисциплину?</p>
-    {% include "delete_from_controllers.html" with cancel_url="account:discipline_details" cancel_id=discipline.discipline_id %}
-    {% csrf_token %}
-</form>
-<a href="{% url 'account:discipline_list' %}">Вернуться к списку</a>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:discipline_list" page_title="Удаление дисциплины" list_url="account:discipline_list" %}
+
+    <div class="delete_object">
+        <h2 class="delete_object_name">{{ discipline.name }}</h2>
+        <div class="delete_object_description">{{ discipline.description }}</div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить эту дисциплину?</div>
+        {% include "delete_from_controllers.html" with cancel_url="account:discipline_details" cancel_id=discipline.discipline_id %}
+        {% csrf_token %}
+    </form>
 {% endblock %}

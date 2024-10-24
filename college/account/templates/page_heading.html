@@ -1,0 +1,15 @@
+{# Template for page heading #}
+
+{% load static %}
+{% load group_extras %}
+<link href="{% static 'css/page_heading.css' %}" rel="stylesheet">
+
+<div class="page_heading__content">
+    {% include "back_button.html" with back_url=back_url %}
+    <h1 class="page_heading_title">{{ page_title }}</h1>
+    {% if list_url %}
+        <div class="page_heading_list" onclick="window.location = '{% url list_url %}'">
+            <img class="page_heading_list_img" src="{% static 'images/list.svg' %}"/>
+        </div>
+    {% endif %}
+</div>

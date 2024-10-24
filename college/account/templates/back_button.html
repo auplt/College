@@ -1,19 +1,16 @@
 {# Template for back button #}
 
 {% load static %}
+<link href="{% static 'css/back_button.css' %}" rel="stylesheet">
 
 {% if back_id %}
-    <a class="form_controllers_back"
-       href="{% if next_url %}{{next_url}}{% else %}{% url back_url back_id %}{% endif %}"><img
-            class="form_controllers_back_img"
-            src="{% static 'images/back.svg' %}"/>
-        <span>Назад</span>
-    </a>
+    <div class="form_controllers_back"
+         onclick="window.location = '{% if next_url %}{{next_url}}{% else %}{% url back_url back_id %}{% endif %}'">
+        <img class="form_controllers_back_img" src="{% static 'images/back.svg' %}"/>
+    </div>
 {% else %}
-    <a class="form_controllers_back"
-       href="{% if next_url %}{{next_url}}{% else %}{% url back_url %}{% endif %}"><img
-            class="form_controllers_back_img"
-            src="{% static 'images/back.svg' %}"/>
-        <span>Назад</span>
-    </a>
+    <div class="form_controllers_back"
+         onclick="window.location = '{% if next_url %}{{next_url}}{% else %}{% url back_url %}{% endif %}'">
+        <img class="form_controllers_back_img" src="{% static 'images/back.svg' %}"/>
+    </div>
 {% endif %}

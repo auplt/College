@@ -15,18 +15,15 @@
 
 {% block content %}
     <div class="page_title">
-        <div class="page_title_nav">
-            {# Including back button #}
-            {% include "back_button.html" with back_url="account:group_list" %}
-            <h1>Список групп</h1>
-        </div>
+        {# Including page title #}
+        {% include "page_heading.html" with back_url="account:group_list" page_title="Список групп" %}
         {# Including add button #}
         {% url 'account:group_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url %}
+        {% include "add_button.html" with add_link=add_url  add_txt="группу" %}
     </div>
 
+    {% include "success_msg.html" %}
     <div class="items_list">
-        {% include "success_msg.html" %}
         {% if groups %}
             {# Number of previous semester. Initial -1 #}
             {% with prev_max_sem=-1 %}
@@ -39,8 +36,8 @@
                             {% if prev_max_sem != -1 %}
             </div>
                             {% endif %}
-            <h2>Семестр {{ group.max_sem }}</h2>
-            <div class="items_list_sem">
+            <h2 class="items_list_sem_heading">Семестр {{ group.max_sem }}</h2>
+            <div class="items_list_sem_items">
                         {% endif %}
                 <div class="list_item">
                     <div class="item_title">

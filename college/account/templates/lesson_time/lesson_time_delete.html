@@ -1,14 +1,21 @@
+{# Template for delete lesson time object #}
+
 {% extends "base.html" %}
 
+{% load static %}
 {% block title %}Lesson time delete{% endblock %}
 
 {% block content %}
-<h1>Удаление времени занятия</h1>
-<h2>{{ lesson_time.name }}</h2>
-<p>Начало в {{ lesson_time.start_time }} окончание в {{ lesson_time.end_time }}</p>
-<form method="POST">
-    <p>Вы точно хотите удалить это время занятия?</p>
-    {% include "delete_from_controllers.html" with cancel_url="account:lesson_time_details" cancel_id=lesson_time.lesson_id %}
-    {% csrf_token %}
-</form>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:lesson_time_list" page_title="Удаление времени занятия" list_url="account:lesson_time_list" %}
+
+    <div class="delete_object">
+        <h2 class="delete_object_name">{{ lesson_time.name }}</h2>
+        <div class="delete_object_description">Начало в {{ lesson_time.start_time }} окончание в {{ lesson_time.end_time }}</div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить это время занятия?</div>
+        {% include "delete_from_controllers.html" with cancel_url="account:lesson_time_details" cancel_id=lesson_time.lesson_id %}
+        {% csrf_token %}
+    </form>
 {% endblock %}

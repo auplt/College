@@ -423,7 +423,7 @@ class TTLesson(models.Model):
     week_type = models.CharField(max_length=2,
                                  choices=TYPE_OF_WEEK_CHOICES
                                  )
-    lessons_time_id = models.ForeignKey(LessonTime, on_delete=models.PROTECT, db_column='lessons_time_id')
+    lesson_time_id = models.ForeignKey(LessonTime, on_delete=models.PROTECT, db_column='lesson_time_id')
     classroom_id = models.ForeignKey(Classroom, on_delete=models.PROTECT, db_column='classroom_id')
     curriculum_lesson_id = models.ForeignKey(CurriculumLesson, on_delete=models.PROTECT,
                                              db_column='curriculum_lesson_id')
@@ -505,7 +505,7 @@ class TTLesson(models.Model):
     class Meta:
         db_table = 'tt_lessons'
         constraints = [
-            models.UniqueConstraint(fields=['day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'],
+            models.UniqueConstraint(fields=['day_name', 'week_type', 'curriculum_lesson_id', 'lesson_time_id'],
                                     name='tt_lesson_day_week_time_curriculum_les_unique')
         ]
 

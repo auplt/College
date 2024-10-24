@@ -7,14 +7,31 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, register_converter
 from . import views
 from .converters import DateConverter
+from .forms import LoginForm
 
 app_name = 'account'
 
 register_converter(DateConverter, 'date')
 
 urlpatterns = [
-    path('', include('django.contrib.auth.urls')),
-    # path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('', include('django.contrib.auth.urls'), {'authentication_form':LoginForm}),
+    # re_path(r'^login/$', auth_views.LoginView.as_view(template_name='account/login.html',
+    #                                     form_class=LoginForm), name='login'),
+    # re_path(r'^logout/$', auth_views.LoginView.as_view(), name='logout'),
+    # re_path(r'^password_reset/$', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    # re_path(r'^password_reset/$', auth_views.),
+
+# account/ login/ [name='login']
+# account/ logout/ [name='logout']
+# account/ password_change/ [name='password_change']
+# account/ password_change/done/ [name='password_change_done']
+# account/ password_reset/ [name='password_reset']
+# account/ password_reset/done/ [name='password_reset_done']
+# account/ reset/<uidb64>/<token>/ [name='password_reset_confirm']
+# account/ reset/done/ [name='password_reset_complete']
+
+    # path('loginn/', auth_views.LoginView.as_view(), name='login'),
+    # path('loginn/', views.user_login, name='login'),
 
     path('', views.dashboard, name='dashboard'),
 

@@ -428,7 +428,7 @@ def user_delete_student(request, id):
     context = {'user': user_obj}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/tutor_delete.html', context=context)
+    return render(request, 'account/student_delete.html', context=context)
 
 
 # GROUP BLOCK
@@ -1643,51 +1643,51 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
             obj = TTLesson.objects.filter(date=dt, classroom_id=classroom_id)
         # Case for group
         elif group_id is not None:
-            # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) to get whole info about
+            # Searching for tt_lesson's identifiers (day_name, week_type, lesson_time_id) to get whole info about
             # all groups, tutors, etc. involved in the lesson
             tt_lessons = (TTLesson.objects
                           .select_related('curriculum_lesson_id__curriculum_id__group_semester_id__group_id')
                           .filter(date=dt,
                                   curriculum_lesson_id__curriculum_id__group_semester_id__group_id=group_id)
-                          .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
+                          .values('day_name', 'week_type', 'curriculum_lesson_id', 'lesson_time_id'))
 
             day_name_list = [tt_lesson_id['day_name'] for tt_lesson_id in tt_lessons]
             week_type_list = [tt_lesson_id['week_type'] for tt_lesson_id in tt_lessons]
-            lessons_time_id_list = [tt_lesson_id['lessons_time_id'] for tt_lesson_id in tt_lessons]
+            lesson_time_id_list = [tt_lesson_id['lesson_time_id'] for tt_lesson_id in tt_lessons]
             obj = TTLesson.objects.filter(date=dt,
                                           day_name__in=day_name_list,
                                           week_type__in=week_type_list,
-                                          lessons_time_id__in=lessons_time_id_list)
+                                          lesson_time_id__in=lesson_time_id_list)
         # Case for users (tutors & students)
         elif user_id is not None:
-            # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) related to tutor
+            # Searching for tt_lesson's identifiers (day_name, week_type, lesson_time_id) related to tutor
             # to get whole info about all groups, tutors, etc. involved in the lesson
             tt_lesson_tutor = \
                 (TTLesson.objects
                  .select_related('curriculum_lesson_id__tutor_id__user_id')
                  .filter(date=dt,
                          curriculum_lesson_id__tutor_id__user_id=user_id)
-                 .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
+                 .values('day_name', 'week_type', 'curriculum_lesson_id', 'lesson_time_id'))
 
-            # Searching for tt_lesson's identifiers (day_name, week_type, lessons_time_id) related to student
+            # Searching for tt_lesson's identifiers (day_name, week_type, lesson_time_id) related to student
             # to get whole info about all groups, tutors, etc. involved in the lesson
             tt_lesson_student = \
                 (TTLesson.objects
                  .select_related('curriculum_lesson_id__curriculum_id')
                  .filter(date=dt,
                          curriculum_lesson_id__curriculum_id__group_semester_id__in=group_semester_ids)
-                 .values('day_name', 'week_type', 'curriculum_lesson_id', 'lessons_time_id'))
+                 .values('day_name', 'week_type', 'curriculum_lesson_id', 'lesson_time_id'))
 
             tt_lesson_ids = tt_lesson_tutor.union(tt_lesson_student)
             day_name_list = [tt_lesson_id['day_name'] for tt_lesson_id in tt_lesson_ids]
             week_type_list = [tt_lesson_id['week_type'] for tt_lesson_id in tt_lesson_ids]
-            lessons_time_id_list = [tt_lesson_id['lessons_time_id'] for tt_lesson_id in tt_lesson_ids]
+            lesson_time_id_list = [tt_lesson_id['lesson_time_id'] for tt_lesson_id in tt_lesson_ids]
             obj = (TTLesson.objects
                    .filter(date=dt,
                            day_name__in=day_name_list,
                            week_type__in=week_type_list,
-                           lessons_time_id__in=lessons_time_id_list)
-                   .order_by('date', 'lessons_time_id__start_time'))
+                           lesson_time_id__in=lesson_time_id_list)
+                   .order_by('date', 'lesson_time_id__start_time'))
         else:
             raise Http404
 
@@ -1726,7 +1726,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
             groupby(obj, key=lambda x: (x.date,
                                         x.day_name,
                                         x.week_type,
-                                        x.lessons_time_id,
+                                        x.lesson_time_id,
                                         x.classroom_id,
                                         x.curriculum_lesson_id.lesson_type,
                                         x.curriculum_lesson_id.curriculum_id.discipline_id.discipline_id,

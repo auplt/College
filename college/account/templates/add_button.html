@@ -1,4 +1,4 @@
-{# Template for add  button #}
+{# Template for add button #}
 
 {% load static %}
 {% load group_extras %}
@@ -12,11 +12,9 @@
             {% update_variable add_link as full_add_link %}
         {% endif %}
 
-        <div class="list_ctrl_add">
-            <a href="{{ full_add_link }}"><img
-                class="list_ctrl_add_img"
-                src="{% static 'images/add.svg' %}"/>
-            </a>
+        <div class="list_ctrl_add" onclick="window.location = '{{ full_add_link }}'">
+            <img class="list_ctrl_add_img" src="{% static 'images/add.svg' %}"/>
+                <div class="list_ctrl_add_txt">Добавить {{add_txt}}</div>
             <span class="tooltiptext">Добавить</span>
         </div>
     {%endwith %}

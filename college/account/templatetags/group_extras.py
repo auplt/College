@@ -97,3 +97,8 @@ def add_to_list(item, lst=None) -> list:
         lst = list()
     lst.append(copy.deepcopy(item))
     return lst
+
+
+@register.filter
+def get_type(value):
+    return type(value).__name__

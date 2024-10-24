@@ -14,32 +14,34 @@
 
 {% block content %}
     <div class="page_title">
-        <div class="page_title_nav">
-            {# Including back button #}
-            {% include "back_button.html" with back_url="account:lesson_time_list" %}
-            <h1>Список времени занятий</h1>
-        </div>
+        {# Including page title #}
+        {% include "page_heading.html" with back_url="account:lesson_time_list" page_title="Список времени занятий" %}
+<!--        <div class="page_title_nav">-->
+<!--            {# Including back button #}-->
+<!--            {% include "back_button.html" with back_url="account:lesson_time_list" %}-->
+<!--            <h1>Список времени занятий</h1>-->
+<!--        </div>-->
         {# Including add button #}
         {% url 'account:lesson_time_register' as add_url %}
         {% include "add_button.html" with add_link=add_url %}
     </div>
 
-    <div class="items_list list_wrapper">
     {% include "success_msg.html" %}
-    {% for lesson_time in lesson_times %}
-        <div class="list_item">
-            <div class="item_title">
-                <a href="{{ lesson_time.get_absolute_url }}">
-                    <h2 class="item_title_heading">
-                        {{ lesson_time.name }}
-                    </h2>
-                </a>
-                <span class="tooltiptext tooltiptext_more">Подробнее</span>
+    <div class="items_list list_wrapper">
+        {% for lesson_time in lesson_times %}
+            <div class="list_item">
+                <div class="item_title">
+                    <a href="{{ lesson_time.get_absolute_url }}">
+                        <h2 class="item_title_heading">
+                            {{ lesson_time.name }}
+                        </h2>
+                    </a>
+                    <span class="tooltiptext tooltiptext_more">Подробнее</span>
+                </div>
+                {# Including control buttons edit and delete #}
+                {% url 'account:lesson_time_list' as next_url %}
+                {% include "buttons_controllers.html" with edit_link=lesson_time.get_edit_url next_edit_link=next_url del_link=lesson_time.get_delete_url next_del_link=next_url %}
             </div>
-            {# Including control buttons edit and delete #}
-            {% url 'account:lesson_time_list' as next_url %}
-            {% include "buttons_controllers.html" with edit_link=lesson_time.get_edit_url next_edit_link=next_url del_link=lesson_time.get_delete_url next_del_link=next_url %}
-        </div>
-    {% endfor %}
+        {% endfor %}
     </div>
 {% endblock %}

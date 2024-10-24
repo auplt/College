@@ -1,14 +1,19 @@
+{# Template for delete group semester object #}
+
 {% extends "base.html" %}
 
 {% block title %}Group semester delete{% endblock %}
 
 {% block content %}
-<h1>Удаление семестра группы</h1>
-<h2>{{ group.name }}</h2>
-<p>Семестр {{ group_semester.semester_num }}</p>
-<form method="POST">
-    <p>Вы точно хотите удалить этот семестр для группы {{ group.name }}?</p>
-    {% include "delete_from_controllers.html" with cancel_url="account:group_details" cancel_id=group.group_id %}
-    {% csrf_token %}
-</form>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:group_details" back_id=group.group_id page_title="Удаление семестра группы" list_url="account:group_list" %}
+    <div class="delete_object">
+        <h2 class="delete_object_name">{{ group.name }}</h2>
+        <div class="delete_object_description">Семестр {{ group_semester.semester_num }}</div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить этот семестр?</div>
+        {% include "delete_from_controllers.html" with cancel_url="account:group_details" cancel_id=group.group_id %}
+        {% csrf_token %}
+    </form>
 {% endblock %}

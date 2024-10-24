@@ -1,34 +1,40 @@
-{% extends "base.html" %}
+{# Template for lesson time creation and edit form #}
+
+{% extends 'base.html' %}
 
 {% block page_scripts %}
-{% load static %}
-<script src="{% static 'js/time_form.js' %}"></script>
+  {% load static %}
+  <script src="{% static 'js/time_form.js' %}"></script>
 {% endblock %}
 
-{% block title %}Lesson time form{% endblock %}
+{% block title %}
+  Lesson time form
+{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:lesson_time_list" %}
+  {# Including page title #}
+  {% if action == 'C' %}
+    {% with page_title='Добавление времени занятия' %}
+      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' %}
+    {% endwith %}
+  {% elif action == 'U' %}
+    {% with page_title='Изменение времени занятия' %}
+      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' %}
+    {% endwith %}
+  {% else %}
+    {% with page_title='Форма времени занятия' %}
+      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' %}
+    {% endwith %}
+  {% endif %}
 
-<h1>
-    {% if action == 'C' %}Добавление
-    {% elif action == 'U' %}Изменение
-    {% else %}Форма
-    {% endif %}
-    времени занятия
-</h1>
-{% include "form_success.html" with form=lesson_time_form %}
-<p>
-    {% if action == 'C' %}Добавьте время занятия, используя форму ниже:
-    {% elif action == 'U' %}Измените время занятия, используя форму ниже:
-    {% else %}Используйте форму ниже:
-    {% endif %}
-</p>
-<form class="register_group" method="post">
-    {{ lesson_time_form.as_p }}
+  {% include 'form_success.html' with form=lesson_time_form %}
+  <form class="register_form register_lesson_time" method="post">
+    {{ lesson_time_form.as_div }}
     {% csrf_token %}
-    <p><input type="submit"
-              value="{% if action == 'C' %}Добавить{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}">
-    </p>
-</form>
+    <div>
+      <input class="controller_button form_submit_button__reg"
+        type="submit"
+        value="{% if action == 'C' %}Добавить{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}" />
+    </div>
+  </form>
 {% endblock %}

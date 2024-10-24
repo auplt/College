@@ -1,0 +1,21 @@
+.page_heading__content {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0 16px 0;
+}
+
+.page_heading_title {
+  padding: 0;
+  height: min-content;
+}
+
+.page_heading_list {
+  height: min-content;
+}
+
+.page_heading_list_img {
+  height: 22px;
+  width: 22px;
+  display: block;
+  cursor: pointer;
+}

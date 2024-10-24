@@ -32,6 +32,9 @@
 
 </head>
 <body>
+
+
+
   <div id="header">
     <span class="logo">Колледж</span>
   {% if request.user.is_authenticated %}
@@ -64,9 +67,15 @@
       {% endfor %}
     </ul>
   {% endif %}
-  <div id="content">
+  <div class="main_content">
+      <nav class="navigation">
+НАВИГАЦИЯ...
+    </nav>
+    <div id="content">
     {% block content %}
     {% endblock %}
+    </div>
   </div>
+
 </body>
 </html>

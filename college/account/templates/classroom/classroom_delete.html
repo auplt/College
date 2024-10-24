@@ -1,3 +1,5 @@
+{# Template for delete classroom #}
+
 {% extends "base.html" %}
 
 {% load static %}
@@ -5,12 +7,16 @@
 {% block title %}Classroom delete{% endblock %}
 
 {% block content %}
-<h1>Удаление аудитории</h1>
-<h2>{{ classroom.number }}</h2>
-<p>Описание: {{ classroom.description }}</p>
-<form method="POST">
-    <p>Вы точно хотите удалить эту аудиторию?</p>
-    {% include "delete_from_controllers.html" with cancel_url="account:classroom_details" cancel_id=classroom.classroom_id %}
-    {% csrf_token %}
-</form>
+    {# Including page title #}
+    {% include "page_heading.html" with back_url="account:classroom_list" page_title="Удаление аудитории" list_url="account:classroom_list" %}
+
+    <div class="delete_object">
+        <h2 class="delete_object_name">{{ classroom.number }}</h2>
+        <div class="delete_object_description">{{ classroom.description }}</div>
+    </div>
+    <form class="delete_form" method="POST">
+        <div class="delete_form_question">Вы действительно хотите удалить эту аудиторию?</div>
+        {% include "delete_from_controllers.html" with cancel_url="account:classroom_details" cancel_id=classroom.classroom_id %}
+        {% csrf_token %}
+    </form>
 {% endblock %}
