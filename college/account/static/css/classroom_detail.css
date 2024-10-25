@@ -1,0 +1,25 @@
+:root {
+  --primary-text--color: #000000;
+  --primary-backgroud-color: #e4e4e4;
+  --primary-border-radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.classroom_info_wrapper {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.classroom_info_detail_title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 8px 16px 8px;
+}

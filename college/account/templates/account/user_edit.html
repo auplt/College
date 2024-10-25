@@ -22,14 +22,16 @@
                 </div>
                 <div class="more_info__student">
                     <div class="more_info_heading">
-                    <h2 class="more_info_title">Дополнительная информация о студенте</h2>
-                    {# Including control buttons delete #}
-                    {% url 'account:user_edit' user.id as next_url %}
-                    {% url 'account:user_delete_student' user.id as del_url %}
-
-                    {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+                        <h2 class="more_info_title">Дополнительная информация о студенте</h2>
                     </div>
-                    {{ student_form.as_div }}
+                    <div class="more_info_content">
+                        {{ student_form.as_div }}
+
+                        {# Including control buttons delete #}
+                        {% url 'account:user_edit' user.id as next_url %}
+                        {% url 'account:user_delete_student' user.id as del_url %}
+                        {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+                    </div>
                 </div>
             </div>
             <div class="register_user__tutor">
@@ -39,13 +41,16 @@
                 <div class="more_info__tutor">
                     <div class="more_info_heading">
                         <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
+                    </div>
+                    <div class="more_info_content">
+                        {{ tutor_form.as_div }}
+
                         {# Including control buttons delete #}
                         {% url 'account:user_edit' user.id as next_url %}
                         {% url 'account:user_delete_tutor' user.id as del_url %}
 
                         {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
                     </div>
-                    {{ tutor_form.as_div }}
                 </div>
             </div>
         {% csrf_token %}

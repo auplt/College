@@ -107,3 +107,9 @@ def get_type(value: any) -> str:
     :return: class name
     """
     return type(value).__name__
+
+
+@register.filter
+def add_str(arg1, arg2):
+    """concatenate arg1 & arg2"""
+    return str(arg1) + str(arg2)

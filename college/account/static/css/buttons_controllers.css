@@ -11,12 +11,14 @@
 
 .list_ctrl {
   display: flex;
+  flex-direction: row;
   gap: 4px;
 }
 
 .list_ctrl_trash {
   position: relative;
   display: flex;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -29,6 +31,7 @@
 .list_ctrl_edit {
   position: relative;
   display: flex;
+  flex-direction: row;
   align-items: center;
 }
 

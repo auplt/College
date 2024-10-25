@@ -1,30 +1,44 @@
 {% extends "base.html" %}
 
 {% load static %}
-
 {% load group_extras %}
+{% block page_scripts %}
+  <link href="{% static 'css/classroom_detail.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}Classroom detail{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:classroom_list" %}
-<h1>Информация об аудитории</h1>
-{% include "success_msg.html" %}
-<h2>{{ classroom.number }}</h2>
-<p>Описание: {{classroom.description}}</p>
-<a href="{{ classroom.get_edit_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">Редактировать</a>
-<a href="{{ classroom.get_delete_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">Удалить</a>
-    <div>
-        <h2>Расписание занятий</h2>
-        <a href="{% url 'account:classroom_details' classroom.classroom_id %}">
-            День
-        </a>
-        <a href="{% url 'account:classroom_details' classroom.classroom_id %}?week=True">
-            Неделя
-        </a>
-        {% create_tt_conf_dict entity="classroom_id" entity_id=classroom.classroom_id entity_name="Аудитория" as add_classroom %}
-        {% add_to_list add_classroom as entities %}
+  {# Including page title #}
+  {% include "page_heading.html" with back_url="account:classroom_list" page_title=classroom.number list_url="account:classroom_list" %}
+  {% include "success_msg.html" %}
+  <div class="details_description">
+    {{classroom.description}}
+  </div>
+  <div class="details_controllers">
+    <a class="controller_button details_controller_button__delete"
+       href="{{ classroom.get_delete_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">
+      Удалить
+    </a>
+    <a class="controller_button details_controller_button__edit"
+       href="{{ classroom.get_edit_url }}?next={% url 'account:classroom_details' classroom.classroom_id %}">
+      Редактировать
+    </a>
+  </div>
 
-        {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
-    </div>
+<div class="classroom_info_wrapper">
+  <div class="classroom_info_detail">
+      <h2 class="classroom_info_detail_title">Расписание занятий</h2>
+      <a href="{% url 'account:classroom_details' classroom.classroom_id %}">
+          День
+      </a>
+      <a href="{% url 'account:classroom_details' classroom.classroom_id %}?week=True">
+          Неделя
+      </a>
+      {% create_tt_conf_dict entity="classroom_id" entity_id=classroom.classroom_id entity_name="Аудитория" as add_classroom %}
+      {% add_to_list add_classroom as entities %}
+
+      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
+  </div>
+</div>
 {% endblock %}

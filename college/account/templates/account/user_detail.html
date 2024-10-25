@@ -1,78 +1,123 @@
+{# Template for user details #}
+
 {% extends "base.html" %}
 
+{% load static %}
 {% load group_extras %}
+{% block page_scripts %}
+  <link href="{% static 'css/user_detail.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block title %}User detail{% endblock %}
 
 {% block content %}
-{% include "back_button.html" with back_url="account:user_list" %}
-<h1>Информация о пользователе</h1>
-{% include "success_msg.html" %}
-<h2>{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
-<a href="{{ user.get_edit_url }}?next={% url 'account:user_details' user.id %}">Редактировать</a>
-<a href="{{ user.get_delete_url }}?next={% url 'account:user_details' user.id %}">Удалить</a>
-<div class="user_info_wrapper">
+  {# Including page title #}
+  {% with user.last_name|add_str:" "|add_str:user.first_name|add_str:" "|add_str:user.second_name as page_title %}
+    {% include "page_heading.html" with back_url="account:user_list" page_title=page_title list_url="account:user_list" %}
+  {% endwith %}
+
+  {% include "success_msg.html" %}
+  <div class="details_description">
+    {% if student %}
+    Студент <br/>
+    Дата рождения: {{ student.date_of_birth }}
+    {% elif tutor %}
+    Преподаватель <br/>
+    Дата рождения: {{ tutor.date_of_birth }}
+    {% elif student and tutor %}
+    Студент и преподаватель <br/>
+    Дата рождения: {{ student.date_of_birth }}
+    {% else %}
+    Пользователь не является студентом или преподавателем
+    {% endif %}
+  </div>
+  <div class="details_controllers">
+    <a class="controller_button details_controller_button__delete"
+       href="{{ user.get_delete_url }}?next={% url 'account:user_details' user.id %}">
+      Удалить
+    </a>
+    <a class="controller_button details_controller_button__edit"
+       href="{{ user.get_edit_url }}?next={% url 'account:user_details' user.id %}">
+      Редактировать
+    </a>
+  </div>
+
+  <div class="user_info_wrapper">
     <div class="user_info_detail">
-        {% if student %}
-        Дата рождения: {{ student.date_of_birth }}
-        <h2> Учебные группы </h2>
-        <a href="{% url 'account:group_member_register' %}?student_id={{student.student_id}}">Добавить в группу</a>
+      {% if student %}
+        <div class="user_info_detail_heading">
+          <h2 class="user_info_detail_title">Учебные группы</h2>
+          {# Including add button #}
+          {% url 'account:group_member_register' as add_url %}
+          {% url 'account:user_details' user.id as next_url %}
+          {% include "add_button.html" with add_link=add_url|add_str:"?student_id="|add_str:student.student_id|add_str:"&next="|add_str:next_url add_txt="группу" %}
+        </div>
         <div class="user_info_groups">
-            {% if groups %}
-            <ul class="user_info_groups_list">
-                {% for group in groups %}
-                <li>
-                    <a href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}">
-                        Семестр: {{group.group_semester_id__semester_num}}
-                        Группа: {{group.group_semester_id__group_id__name}}
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+          {% if groups %}
+            <div class="user_info_groups_list">
+              {% for group in groups %}
+                <span class="groups_item_semester">Семестр {{group.group_semester_id__semester_num}}</span>
+                <a class="groups_item_group" href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}">
+                  <span>{{group.group_semester_id__group_id__name}}</span>
+                </a>
+                {# Including control buttons delete #}
+                {% with request.path|add_str:"?"|add_str:request.GET.urlencode as next_url %}
+                  {% url 'account:group_delete' group.group_semester_id__group_id__group_id as del_link %}
+                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=next_url %}
+                {% endwith %}
+              {% endfor %}
+            </div>
+          {% endif %}
         </div>
-        {% endif %}
+      {% endif %}
     </div>
     <div class="user_info_detail">
-        {% if tutor %}
-        Дата рождения: {{ tutor.date_of_birth }}
-        <h2> Дисциплины </h2>
-        <a href="{% url 'account:curriculum_lesson_register' %}?tutor_id={{tutor.tutor_id}}">Добавить дисциплину</a>
-        <div class="user_info_disciplines">
-            {% if disciplines %}
-            <ul class="user_info_disciplines_list">
-                {% for discipline in disciplines %}
-                <li>
-                    <a href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">{{discipline.curriculum_id__discipline_id__name}}</a>
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
+      {% if tutor %}
+        <div class="user_info_detail_heading">
+          <h2 class="user_info_detail_title">Преподаваемые дисциплины</h2>
+          {# Including add button #}
+          {% url 'account:group_member_register' as add_url %}
+          {% url 'account:user_details' user.id as next_url %}
+          {% include "add_button.html" with add_link=add_url|add_str:"?student_id="|add_str:student.student_id|add_str:"&next="|add_str:next_url add_txt="дисциплину" %}
         </div>
-        {% endif %}
-
-
+        <div class="user_info_disciplines">
+          {% if disciplines %}
+            <div class="user_info_disciplines_list">
+              {% for discipline in disciplines %}
+                <a class="disciplines_item" href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">
+                  <span>{{discipline.curriculum_id__discipline_id__name}}</span>
+                </a>
+                {# Including control buttons delete #}
+                {% with request.path|add_str:"?"|add_str:request.GET.urlencode as next_url %}
+                  {% url 'account:discipline_delete' discipline.curriculum_id__discipline_id__discipline_id as del_link %}
+                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=next_url %}
+                {% endwith %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
     </div>
-    <div>
-        <h2>Расписание занятий</h2>
-        <a href="{% url 'account:user_details' user.id %}">
-            День
-        </a>
-        <a href="{% url 'account:user_details' user.id %}?week=True">
-            Неделя
-        </a>
-        {% update_variable None as entities %}
-        {% if tutor.tutor_id %}
-            {% create_tt_conf_dict entity="tutor_id" entity_id=tutor.tutor_id entity_name="Преподаватель" as add_tutor %}
-            {% add_to_list add_tutor as entities %}
-        {% endif %}
-        {% if student.student_id %}
-            {% create_tt_conf_dict entity="student_id" entity_id=student.student_id entity_name="Студент" as add_student %}
-            {% add_to_list add_student entities as entities %}
-        {% endif %}
+    <div class="user_info_detail">
+      <h2 class="user_info_detail_title">Расписание занятий</h2>
+      <a href="{% url 'account:user_details' user.id %}">
+        День
+      </a>
+      <a href="{% url 'account:user_details' user.id %}?week=True">
+        Неделя
+      </a>
+      {% update_variable None as entities %}
+      {% if tutor.tutor_id %}
+      {% create_tt_conf_dict entity="tutor_id" entity_id=tutor.tutor_id entity_name="Преподаватель" as add_tutor %}
+      {% add_to_list add_tutor as entities %}
+      {% endif %}
+      {% if student.student_id %}
+      {% create_tt_conf_dict entity="student_id" entity_id=student.student_id entity_name="Студент" as add_student %}
+      {% add_to_list add_student entities as entities %}
+      {% endif %}
 
-        {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
+      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
     </div>
 
-</div>
+  </div>
 {% endblock %}

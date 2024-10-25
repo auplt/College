@@ -1,0 +1,95 @@
+:root {
+  --primary-text--color: #000000;
+  --primary-backgroud-color: #e4e4e4;
+  --primary-border-radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.user_info_wrapper {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user_info_detail_heading {
+  margin-bottom: 16px;
+}
+
+.user_info_detail_title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 8px 16px 8px;
+}
+
+.user_info_groups_list {
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+  grid-row-gap: 10px;
+  grid-column-gap: 8px;
+}
+
+.user_info_groups_list > .list_ctrl {
+  margin-left: 12px;
+}
+
+.groups_item_semester {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  white-space: nowrap;
+  padding: 8px 12px 8px 12px;
+}
+
+.groups_item_group {
+  color: var(--primary-text--color);
+  background-color: var(--primary-backgroud-color);
+  border-radius: var(--primary-border-radius);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+
+  display: flex;
+  padding: 8px;
+}
+
+.user_info_disciplines_list {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+  grid-row-gap: 8px;
+  grid-column-gap: 20px;
+}
+
+.disciplines_item {
+  color: var(--primary-text--color);
+  background-color: var(--primary-backgroud-color);
+  border-radius: var(--primary-border-radius);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+
+  display: flex;
+  padding: 8px;
+}
