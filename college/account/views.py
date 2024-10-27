@@ -700,21 +700,30 @@ def discipline_details(request, discipline_id):
     """
     discipline_obj = get_object_or_404(Discipline.objects, discipline_id=discipline_id)
     groups_obj = (Curriculum.objects.select_related('group_semester_id__group_id')
-                  .values('group_semester_id__semester_num',
+                  .values('curriculum_id',
+                          'group_semester_id',
+                          'group_semester_id__semester_num',
                           'group_semester_id__group_id__name',
                           'group_semester_id__group_id__group_id')
                   .filter(discipline_id__discipline_id=discipline_id)
+                  .order_by('-group_semester_id__semester_num',
+                            'group_semester_id__group_id__name')
                   .all())
     tutors_obj = (CurriculumLesson.objects.select_related('tutor_id__user_id')
-                  .values('tutor_id__user_id__id',
+                  .values('curriculum_lesson_id',
+                          'tutor_id__user_id__id',
                           'tutor_id__user_id__last_name',
                           'tutor_id__user_id__first_name',
                           'tutor_id__user_id__second_name')
                   .distinct()
                   .filter(curriculum_id__discipline_id__discipline_id=discipline_id)
+                  .order_by('tutor_id__user_id__last_name',
+                            'tutor_id__user_id__first_name',
+                            'tutor_id__user_id__second_name')
                   .all())
 
     print(groups_obj.__dict__)
+    print(tutors_obj.__dict__)
 
     context = {'discipline': discipline_obj,
                'groups': groups_obj,
@@ -1303,7 +1312,14 @@ def curriculum_register(request):
             # errors = curriculum_form.errors
             # return HttpResponse(simplejson.dumps(errors), status=422)
     else:
-        if 'discipline_id' in request.GET.dict():
+        if 'discipline_id' in request.GET.dict() and 'semester_num' in request.GET.dict():
+            group_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
+            group_semesters_obj = (GroupSemester.objects
+                                   .filter(semester_num=request.GET.get('semester_num'))
+                                   .order_by('-semester_num', 'group_id__name'))
+            curriculum_form = CurriculumRegisterForm(initial={'discipline_id': group_obj})
+            curriculum_form.set_initial_group_semester_ids(group_semesters_obj.all())
+        elif 'discipline_id' in request.GET.dict():
             group_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
             curriculum_form = CurriculumRegisterForm(initial={'discipline_id': group_obj})
         elif 'group_id' in request.GET.dict() and 'semester_num' in request.GET.dict():
@@ -1311,13 +1327,15 @@ def curriculum_register(request):
             group_semester_obj = get_object_or_404(GroupSemester, group_id=request.GET.get('group_id'),
                                                    semester_num=request.GET.get('semester_num'))
             group_semesters_obj = (GroupSemester.objects
-                                   .filter(group_id=request.GET.get('group_id')).order_by('-semester_num'))
+                                   .filter(group_id=request.GET.get('group_id'))
+                                   .order_by('-semester_num', 'group_id__name'))
             curriculum_form = CurriculumRegisterForm(initial={'group_semester_id': group_semester_obj})
             curriculum_form.set_initial_group_semester_ids(group_semesters_obj.all())
         elif 'group_id' in request.GET.dict():
             group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
             group_semesters_obj = (GroupSemester.objects
-                                   .filter(group_id=request.GET.get('group_id')).order_by('-semester_num'))
+                                   .filter(group_id=request.GET.get('group_id'))
+                                   .order_by('-semester_num'))
             curriculum_form = CurriculumRegisterForm(initial={'group_semester_id': group_semesters_obj.first()})
             curriculum_form.set_initial_group_semester_ids(group_semesters_obj.all())
         else:
@@ -1329,55 +1347,69 @@ def curriculum_register(request):
     return render(request, 'curriculum/curriculum_from.html', context)
 
 
-def curriculum_delete(request):
+def curriculum_delete(request, curriculum_id=None):
     """
     View for deleting curriculum information.
+    :param curriculum_id: curriculum identifier
     :param request: user's request
     :return: HTTP response HTML page with form to delete curriculum information or redirect page
     """
     if 'discipline_id' and 'group_semester_id' in request.GET.dict():
         curriculum_obj = get_object_or_404(Curriculum, discipline_id=request.GET.get('discipline_id'),
                                            group_semester_id=request.GET.get('group_semester_id'))
-        group_semester_obj = get_object_or_404(
-            GroupSemester.objects
-            .select_related('group_id')
-            .values('group_id',
-                    'group_id__group_id',
-                    'group_id__name',
-                    'semester_num'),
-            group_semester_id=request.GET.get('group_semester_id'))
-        print(group_semester_obj.get('group_id__group_id'))
-        discipline_obj = get_object_or_404(Discipline, discipline_id=request.GET.get('discipline_id'))
-        if request.method == 'POST':
-            request.session["obj_name"] = 'план занятий'
-            request.session["obj_action"] = 'D'
-            try:
-                curriculum_obj.delete()
-                request.session["obj_status"] = 'success'
+        group_semester_id = request.GET.get('group_semester_id')
+        discipline_id = request.GET.get('discipline_id')
 
-                try:
-                    resolve_match = resolve(request.GET.get('next'))
-                    return redirect(request.GET.get('next'))
-                except Resolver404 or KeyError:
-                    return redirect(reverse('account:curriculum_lesson_group_details',
-                                            kwargs={'group_id': group_semester_obj.get('group_id__group_id')}))
-            except Http404:
+    elif curriculum_id is not None:
+        curriculum_obj = get_object_or_404(Curriculum, curriculum_id=curriculum_id)
+
+        group_semester_id = curriculum_obj.group_semester_id.group_semester_id
+        discipline_id = curriculum_obj.discipline_id.discipline_id
+
+    else:
+        raise Http404
+
+    group_semester_obj = get_object_or_404(
+        GroupSemester.objects
+        .select_related('group_id')
+        .values('group_id',
+                'group_id__group_id',
+                'group_id__name',
+                'semester_num'),
+        group_semester_id=group_semester_id)
+    print(group_semester_obj.get('group_id__group_id'))
+    discipline_obj = get_object_or_404(Discipline, discipline_id=discipline_id)
+
+    if request.method == 'POST':
+        request.session["obj_name"] = 'план занятий'
+        request.session["obj_action"] = 'D'
+        try:
+            curriculum_obj.delete()
+            request.session["obj_status"] = 'success'
+
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
                 return redirect(reverse('account:curriculum_lesson_group_details',
                                         kwargs={'group_id': group_semester_obj.get('group_id__group_id')}))
-            except ProtectedError:
-                request.session["obj_status"] = 'error'
-                try:
-                    resolve_match = resolve(request.GET.get('next'))
-                    return redirect(request.GET.get('next'))
-                except Resolver404 or KeyError:
-                    return redirect(reverse('account:curriculum_lesson_group_details',
-                                            kwargs={'group_id': group_semester_obj.get('group_id__group_id')}))
+        except Http404:
+            return redirect(reverse('account:curriculum_lesson_group_details',
+                                    kwargs={'group_id': group_semester_obj.get('group_id__group_id')}))
+        except ProtectedError:
+            request.session["obj_status"] = 'error'
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('account:curriculum_lesson_group_details',
+                                        kwargs={'group_id': group_semester_obj.get('group_id__group_id')}))
 
-        context = {'discipline': discipline_obj,
-                   'group_semester': group_semester_obj}
-        if 'next' in request.GET.keys():
-            context['next_url'] = request.GET.get('next')
-        return render(request, 'curriculum/curriculum_delete.html', context=context)
+    context = {'discipline': discipline_obj,
+               'group_semester': group_semester_obj}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'curriculum/curriculum_delete.html', context=context)
 
 
 # CURRICULUM LESSON BLOCK

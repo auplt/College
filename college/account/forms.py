@@ -65,9 +65,10 @@ class StudentAdditionalForm(forms.ModelForm):
     """
     Form for additional student information.
     """
-    date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=False,
+    date_of_birth = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=False,
                                     widget=forms.TextInput(attrs={
-                                        'class': 'datepicker'
+                                        'class': 'datepicker',
+                                        'placeholder': 'Дата рождения'
                                     }))
 
     class Meta:
@@ -91,11 +92,11 @@ class TutorAdditionalForm(forms.ModelForm):
     """
     Form for additional tutor information.
     """
-
-    # date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=False,
-    #                                 widget=forms.TextInput(attrs={
-    #                                     'class': 'datepicker'
-    #                                 }))
+    date_of_birth = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=False,
+                                    widget=forms.TextInput(attrs={
+                                        'class': 'datepicker',
+                                        'placeholder': 'Дата рождения'
+                                    }))
 
     class Meta:
         """
@@ -307,25 +308,25 @@ class LessonTimeRegisterForm(forms.ModelForm):
         js = ('js/time_form.js',)
 
 
-class LessonTimeEditForm(forms.ModelForm):
-    name = forms.CharField(label='Название времени занятия')
-    start_time = forms.TimeField(label='Начало занятия',
-                                 widget=forms.TextInput(attrs={
-                                     'class': 'timepicker'
-                                 })
-                                 )
-    end_time = forms.TimeField(label='Окончание занятия',
-                               widget=forms.TextInput(attrs={
-                                   'class': 'timepicker'
-                               })
-                               )
-
-    class Meta:
-        model = LessonTime
-        fields = ['name', 'start_time', 'end_time']
-
-    class Media:
-        js = ('js/time_form.js',)
+# class LessonTimeEditForm(forms.ModelForm):
+#     name = forms.CharField(label='Название времени занятия')
+#     start_time = forms.TimeField(label='Начало занятия',
+#                                  widget=forms.TextInput(attrs={
+#                                      'class': 'timepicker'
+#                                  })
+#                                  )
+#     end_time = forms.TimeField(label='Окончание занятия',
+#                                widget=forms.TextInput(attrs={
+#                                    'class': 'timepicker'
+#                                })
+#                                )
+#
+#     class Meta:
+#         model = LessonTime
+#         fields = ['name', 'start_time', 'end_time']
+#
+#     class Media:
+#         js = ('js/time_form.js',)
 
 
 class GroupSemesterRegisterForm(forms.ModelForm):
@@ -333,7 +334,6 @@ class GroupSemesterRegisterForm(forms.ModelForm):
                                       widget=forms.NumberInput(attrs={
                                           'placeholder': 'Номер семестра'
                                       }))
-    # group_id = forms.IntegerField(label='Номер uheggs')
     group_id = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label='Группа', label=False)
 
     class Meta:

@@ -1,0 +1,123 @@
+:root {
+  --primary-text-color: #000000;
+  --primary-backgroud-color: #e4e4e4;
+  --primary-border-radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.discipline_info_wrapper {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.discipline_info_detail_heading {
+  margin-bottom: 16px;
+}
+
+.discipline_info_detail_title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 8px 16px 8px;
+}
+
+.discipline_info_groups {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+  grid-row-gap: 8px;
+  grid-column-gap: 20px;
+  align-items: center;
+  padding: 0;
+}
+
+.discipline_groups_semester_item {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  margin: 0;
+}
+
+.discipline_groups_semester_ctrl {
+  align-self: center;
+}
+
+.discipline_groups_name {
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  vertical-align: middle;
+
+  padding: 0 15px;
+}
+
+.discipline_groups_ctrl {
+  align-self: center;
+}
+
+/* Из list.css */
+.list_ctrl {
+  justify-content: center;
+}
+
+.discipline_info_tutors_list {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+  grid-row-gap: 8px;
+  grid-column-gap: 20px;
+}
+
+.tutors_item {
+  color: var(--primary-text-color);
+  background-color: var(--primary-backgroud-color);
+  border-radius: var(--primary-border-radius);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+
+  display: flex;
+  padding: 8px;
+}
+
+.semester_number_controller {
+  display: flex;
+  cursor: pointer;
+}
+
+.semester_number_controller_img {
+  width: 16px;
+  height: 16px;
+  transform: rotate(180deg);
+}
+
+.discipline_groups_semester_number {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}

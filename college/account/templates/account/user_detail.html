@@ -8,7 +8,7 @@
   <link href="{% static 'css/user_detail.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block title %}User detail{% endblock %}
+{% block title %}Информация о пользователе{% endblock %}
 
 {% block content %}
   {# Including page title #}
@@ -52,8 +52,8 @@
           {% url 'account:user_details' user.id as next_url %}
           {% include "add_button.html" with add_link=add_url|add_str:"?student_id="|add_str:student.student_id|add_str:"&next="|add_str:next_url add_txt="группу" %}
         </div>
-        <div class="user_info_groups">
-          {% if groups %}
+        {% if groups %}
+          <div class="user_info_groups">
             <div class="user_info_groups_list">
               {% for group in groups %}
                 <span class="groups_item_semester">Семестр {{group.group_semester_id__semester_num}}</span>
@@ -80,8 +80,8 @@
           {% url 'account:user_details' user.id as next_url %}
           {% include "add_button.html" with add_link=add_url|add_str:"?student_id="|add_str:student.student_id|add_str:"&next="|add_str:next_url add_txt="дисциплину" %}
         </div>
-        <div class="user_info_disciplines">
-          {% if disciplines %}
+        {% if disciplines %}
+          <div class="user_info_disciplines">
             <div class="user_info_disciplines_list">
               {% for discipline in disciplines %}
                 <a class="disciplines_item" href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">

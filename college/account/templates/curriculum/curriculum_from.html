@@ -2,6 +2,7 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
 {% block page_scripts %}
 {% load static %}
 <script src="{% static 'js/curriculum_form.js' %}"></script>
@@ -73,9 +74,14 @@
         </div>
         {% csrf_token %}
     </div>
-                <a class="register_form_link"  href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}">
-                    Нужной группы нет в списке
-                </a>
+        {% if group %}
+            {% if group|get_type == 'Group' %}
+        <a class="register_form_link"  href="{% url 'account:group_semester_register' %}?group_id=group.group_id">
+            Нужной группы нет в списке
+        </a>
+        {% endif %}
+
+        {% endif %}
 
     {% if curriculum_form.errors %}
     {{ curriculum_form.non_field_errors }}

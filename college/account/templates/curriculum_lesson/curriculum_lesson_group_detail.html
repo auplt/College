@@ -55,7 +55,7 @@
                         <a href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}">
                             {{group_lesson.curriculum_id__discipline_id__name}}
                         </a>
-                        <a href="{% url 'account:curriculum_delete' %}?discipline_id={{group_lesson.curriculum_id__discipline_id__discipline_id}}&group_semester_id={{group_lesson.curriculum_id__group_semester_id__group_semester_id}}">
+                        <a href="{% url 'account:curriculum_delete_params' %}?discipline_id={{group_lesson.curriculum_id__discipline_id__discipline_id}}&group_semester_id={{group_lesson.curriculum_id__group_semester_id__group_semester_id}}">
                             Удалить дисциплину из плана
                         </a>
                         <a href="{% url 'account:curriculum_lesson_register' %}?group_id={{group.group_id}}&group_semester_id={{group_lesson.curriculum_id__group_semester_id__group_semester_id}}&discipline_id={{group_lesson.curriculum_id__discipline_id__discipline_id}}">
