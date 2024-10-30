@@ -18,7 +18,7 @@
         {% include "page_heading.html" with back_url="account:user_list" page_title="Список пользователей" %}
         {# Including add button #}
         {% url 'account:user_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url add_txt="пользователя" %}
+        {% include "add_button.html" with add_link=add_url add_txt="Пользователь" %}
     </div>
 
     {% include "success_msg.html" %}

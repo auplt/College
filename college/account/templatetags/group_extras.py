@@ -111,5 +111,10 @@ def get_type(value: any) -> str:
 
 @register.filter
 def add_str(arg1, arg2):
-    """concatenate arg1 & arg2"""
+    """
+    Filter that concatenates two strings
+    :param arg1: input string to which string will be added
+    :param arg2: input string that would be added
+    :return: concatenated input strings
+    """
     return str(arg1) + str(arg2)

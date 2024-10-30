@@ -23,7 +23,7 @@
 <!--        </div>-->
         {# Including add button #}
         {% url 'account:lesson_time_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url %}
+        {% include "add_button.html" with add_link=add_url add_txt="Время занятия" %}
     </div>
 
     {% include "success_msg.html" %}

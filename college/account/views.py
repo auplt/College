@@ -135,6 +135,8 @@ def user_details(request, id):
 
     context.update(obj_stats)
     context.update(tt_lesson_details(request, user_id=id))
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     print(context)
     return render(request, 'account/user_detail.html', context=context)
 
@@ -477,6 +479,7 @@ def group_details(request, group_id):
         .values(
             'group_semester_id__group_semester_id',
             'group_semester_id',
+            'group_semester_id__group_id',
             'group_semester_id__semester_num',
             'group_member_id',
             'student_id__user_id__id',
@@ -498,6 +501,7 @@ def group_details(request, group_id):
 
     print(group_members_obj)
     print(group_members_obj.query)
+    max_semester = max([gm.get('group_semester_id__semester_num') for gm in group_members_obj])
 
     #     with connection.cursor() as cursor:
     #         cursor.execute("SELECT * FROM group_members gm \
@@ -559,7 +563,8 @@ def group_details(request, group_id):
     context = {'group': group_obj,
                'group_members': group_members_obj,
                'group_lessons': group_lessons_obj,
-               'lesson_types': dict(TypesOfLesson.choices)}
+               'lesson_types': dict(TypesOfLesson.choices),
+               'max_semester': max_semester}
     obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
     if obj_stats:
         for obj_stat in obj_stats:
@@ -733,6 +738,8 @@ def discipline_details(request, discipline_id):
         for obj_stat in obj_stats:
             del request.session[obj_stat]
     context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     print(context)
     return render(request, 'discipline/discipline_detail.html', context=context)
 

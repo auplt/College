@@ -8,18 +8,18 @@
   box-sizing: border-box;
 }
 
-.discipline_info_wrapper {
+.group_info_wrapper {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.discipline_info_detail_heading {
+.group_info_detail_heading {
   margin-bottom: 16px;
 }
 
-.discipline_info_detail_title {
+.group_info_detail_title {
   font-size: 24px;
   font-weight: 500;
   line-height: 100%;
@@ -28,10 +28,10 @@
   padding: 0 8px 16px 8px;
 }
 
-.discipline_info_groups {
+.group_info_members {
   list-style-type: none;
   display: grid;
-  grid-template-columns: max-content max-content;
+  grid-template-columns: max-content max-content max-content;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
   grid-row-gap: 8px;
@@ -40,11 +40,11 @@
   padding: 0;
 }
 
-.discipline_groups_semester_ctrl {
+.group_members_semester_ctrl {
   align-self: center;
 }
 
-.discipline_groups_name {
+.group_members_name {
   color: var(--primary-text-color);
   font-size: 16px;
   font-weight: 600;
@@ -56,11 +56,11 @@
   padding: 0 21px;
 }
 
-.discipline_groups_ctrl {
+.group_members_ctrl {
   align-self: center;
 }
 
-.discipline_groups_ctrl .list_ctrl_trash_img {
+.group_members_ctrl .list_ctrl_trash_img {
   width: 16px;
   height: 16px;
 }
@@ -68,32 +68,6 @@
 /* Из list.css */
 .list_ctrl {
   justify-content: center;
-}
-
-.discipline_info_tutors_list {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  grid-auto-flow: row;
-  grid-auto-rows: max-content;
-  grid-row-gap: 8px;
-  grid-column-gap: 20px;
-}
-
-.tutors_item {
-  color: var(--primary-text-color);
-  background-color: var(--primary-backgroud-color);
-  border-radius: var(--primary-border-radius);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 100%;
-  letter-spacing: 1px;
-  text-align: left;
-  white-space: nowrap;
-  text-align: center;
-  vertical-align: middle;
-
-  display: flex;
-  padding: 8px;
 }
 
 .semester_number_controller {
@@ -116,4 +90,35 @@
 
 .hidden {
   display: none;
+}
+
+.discipline_info_groups {
+  display: flex;
+  flex-direction: column;
+}
+
+.group_info_curriculum {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.curriculum_discipline {
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 0 0 21px;
+}
+
+.curriculum_discipline_tutor {
+  color: rgb(0, 0, 0);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 0 0 42px;
 }

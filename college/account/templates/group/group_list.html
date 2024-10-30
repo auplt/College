@@ -19,7 +19,7 @@
         {% include "page_heading.html" with back_url="account:group_list" page_title="Список групп" %}
         {# Including add button #}
         {% url 'account:group_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url  add_txt="группу" %}
+        {% include "add_button.html" with add_link=add_url add_txt="Группа" %}
     </div>
 
     {% include "success_msg.html" %}
@@ -36,7 +36,13 @@
                             {% if prev_max_sem != -1 %}
             </div>
                             {% endif %}
-            <h2 class="items_list_sem_heading">Семестр {{ group.max_sem }}</h2>
+            <h2 class="items_list_sem_heading">
+                {% if group.max_sem == 0 %}
+                    Семестр не указан
+                {% else %}
+                    Семестр {{ group.max_sem }}
+                {% endif %}
+            </h2>
             <div class="items_list_sem_items">
                         {% endif %}
                 <div class="list_item">

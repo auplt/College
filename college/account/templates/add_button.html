@@ -11,10 +11,15 @@
         {% else %}
             {% update_variable add_link as full_add_link %}
         {% endif %}
+        {% if not add_txt %}
+            {% update_variable "Добавить" as add_txt %}
+        {% endif %}
 
         <div class="list_ctrl_add" onclick="window.location = '{{ full_add_link }}'">
+            {% if not no_img or no_img != "Y" %}
             <img class="list_ctrl_add_img" src="{% static 'images/add.svg' %}"/>
-                <div class="list_ctrl_add_txt">Добавить {{add_txt}}</div>
+            {% endif %}
+                <div class="list_ctrl_add_txt">{{add_txt}}</div>
             <span class="tooltiptext">Добавить</span>
         </div>
     {%endwith %}

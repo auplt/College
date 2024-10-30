@@ -9,7 +9,7 @@
   <script src="{% static 'js/list.js' %}"></script>
 {% endblock %}
 
-{% block title %}информация о дисциплине{% endblock %}
+{% block title %}Информация о дисциплине{% endblock %}
 
 {% block content %}
   {# Including page title #}
@@ -36,39 +36,41 @@
         {# Including add button #}
         {% url 'account:curriculum_register' as add_url %}
         {% url 'account:discipline_details' discipline.discipline_id as next_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:next_url add_txt="группу" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:next_url add_txt="Группа" %}
       </div>
       <div class="discipline_info_groups">
         {% if groups %}
           {# Grouping groups by semester number #}
-          {% with prev_semester_num_std=-1 is_hidden=None %}
+          {% with prev_semester_num_std=-1 is_hidden="" %}
             {% for group in groups %}
               {# Check weather semester number is changed #}
               {% if prev_semester_num_std != group.group_semester_id__semester_num %}
-                <div class="discipline_groups_semester_number">
+                <div class="item_semester_number">
                   <div class="semester_number_controller">
                     <img class="semester_number_controller_img" src="{% static 'images/back.svg' %}"/>
                   </div>
                   Семестр {{group.group_semester_id__semester_num}}
+                  {% if is_hidden == "" and prev_semester_num_std != -1 %}
+                    {% update_variable "hidden" as is_hidden %}
+                  {% endif %}
                 </div>
                 <div class="discipline_groups_semester_ctrl">
                   {# Including add button #}
                   {% url 'account:curriculum_register' as add_url %}
                   {% url 'account:discipline_details' discipline.discipline_id as next_url %}
-                  {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&semester_num="|add_str:group.group_semester_id__semester_num|add_str:"&next="|add_str:next_url add_txt="дисциплину" %}
+                  {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&semester_num="|add_str:group.group_semester_id__semester_num|add_str:"&next="|add_str:next_url add_txt="Дисциплина" %}
                 </div>
               {% endif %}
               {% if group.group_semester_id__group_id__name %}
-                <a class="discipline_groups_name {{is_hidden}}" href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}?next={% url 'account:discipline_details' discipline.discipline_id %}">
+                <a class="discipline_groups_name toggle_name {{is_hidden}}" href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}?next={% url 'account:discipline_details' discipline.discipline_id %}">
                   <span>{{group.group_semester_id__group_id__name}}</span>
                 </a>
-                <div class="discipline_groups_ctrl {{is_hidden}}">
+                <div class="discipline_groups_ctrl toggle_ctrl {{is_hidden}}">
                   {# Including control buttons delete #}
                   {% url 'account:discipline_details' discipline.discipline_id as next_url %}
                   {% url 'account:curriculum_delete' group.curriculum_id as del_link %}
                   {% include "buttons_controllers.html" with del_link=del_link next_del_link=next_url %}
                 </div>
-                {% update_variable "hidden" as is_hidden %}
               {% endif %}
               {% update_variable group.group_semester_id__semester_num as prev_semester_num_std %}
             {% endfor %}
@@ -82,7 +84,7 @@
         {# Including add button #}
         {% url 'account:curriculum_lesson_register' as add_url %}
         {% url 'account:discipline_details' discipline.discipline_id as next_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:next_url add_txt="преподавателя" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:next_url add_txt="Преподаватель" %}
       </div>
       {% if tutors %}
         <div class="discipline_info_tutors">
