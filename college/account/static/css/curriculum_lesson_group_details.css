@@ -1,6 +1,8 @@
 :root {
   --primary-text-color: #000000;
   --primary-backgroud-color: #e4e4e4;
+  --secondary-text-color: #ffffff;
+  --button-edit-color: #0055bb;
   --primary-border-radius: 6px;
 }
 
@@ -8,61 +10,17 @@
   box-sizing: border-box;
 }
 
-.group_info_wrapper {
+.curriculum_info_wrapper {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
-.group_info_detail_heading {
-  margin-bottom: 16px;
-}
-
-.group_info_detail_title {
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 100%;
-  letter-spacing: 1px;
-  text-align: left;
-  padding: 0 8px 16px 8px;
-}
-
-.group_info_members {
-  list-style-type: none;
-  display: grid;
-  grid-template-columns: max-content max-content max-content;
-  grid-auto-flow: row;
-  grid-auto-rows: max-content;
-  grid-row-gap: 8px;
-  grid-column-gap: 20px;
-  align-items: center;
-  padding: 0;
-}
-
-.group_members_semester_ctrl {
-  align-self: center;
-}
-
-.group_members_name {
-  color: var(--primary-text-color);
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 100%;
-  letter-spacing: 1px;
-  text-align: left;
-  vertical-align: middle;
-
-  padding: 0 21px;
-}
-
-.group_members_ctrl {
-  align-self: center;
-}
-
-.group_members_ctrl .list_ctrl_trash_img {
-  width: 16px;
-  height: 16px;
+.curriculum_info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* Из list.css */
@@ -92,18 +50,31 @@
   display: none;
 }
 
-.discipline_info_groups {
+.item_semester_number_info {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 35px;
+  align-items: center;
 }
 
-.group_info_curriculum {
+.item_semester_number_info__ctrl {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.curriculum_discipline {
+.item_semester_number .list_ctrl {
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.curriculum_discipline_item {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+
   color: var(--primary-text-color);
   font-size: 16px;
   font-weight: 600;
@@ -113,7 +84,26 @@
   padding: 0 0 0 21px;
 }
 
+.curriculum_discipline_item .list_ctrl_trash_img {
+  width: 16px;
+  height: 16px;
+}
+
+.curriculum_discipline {
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+}
+
 .curriculum_discipline_tutor_item {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+
   color: var(--primary-text-color);
   font-size: 16px;
   font-weight: 600;
@@ -121,6 +111,12 @@
   letter-spacing: 1px;
   text-align: left;
   padding: 0 0 0 42px;
+}
+
+.curriculum_discipline_tutor_item .list_ctrl_edit_img,
+.curriculum_discipline_tutor_item .list_ctrl_trash_img {
+  width: 16px;
+  height: 16px;
 }
 
 .curriculum_discipline_tutor {

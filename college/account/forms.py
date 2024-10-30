@@ -431,10 +431,7 @@ class CurriculumRegisterForm(forms.ModelForm):
 
 
 class CurriculumLessonRegisterForm(forms.ModelForm):
-    lesson_type = forms.ChoiceField(label=False, choices=TypesOfLesson.choices,
-                                    widget=forms.NumberInput(attrs={
-                                        'placeholder': 'Тип урока'
-                                    }))
+    lesson_type = forms.ChoiceField(label=False, choices=TypesOfLesson.choices)
     duration = forms.IntegerField(label=False,
                                   widget=forms.NumberInput(attrs={
                                       'placeholder': 'Продолжительность'

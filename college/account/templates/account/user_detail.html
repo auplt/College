@@ -18,15 +18,15 @@
 
   {% include "success_msg.html" %}
   <div class="details_description">
-    {% if student %}
+    {% if student and tutor %}
+    Студент и преподаватель <br/>
+    Дата рождения: {{ student.date_of_birth }}
+    {% elif student %}
     Студент <br/>
     Дата рождения: {{ student.date_of_birth }}
     {% elif tutor %}
     Преподаватель <br/>
     Дата рождения: {{ tutor.date_of_birth }}
-    {% elif student and tutor %}
-    Студент и преподаватель <br/>
-    Дата рождения: {{ student.date_of_birth }}
     {% else %}
     Пользователь не является студентом или преподавателем
     {% endif %}

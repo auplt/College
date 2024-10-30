@@ -1464,6 +1464,8 @@ def curriculum_lesson_group_details(request, group_id):
     group_lessons_obj.query.alias_map['tutors'].join_type = "FULL OUTER JOIN"
     group_lessons_obj.query.alias_map['timetable_customuser'].join_type = "FULL OUTER JOIN"
 
+    max_semester = max([gm.get('curriculum_id__group_semester_id__semester_num') for gm in group_lessons_obj])
+
     print(group_lessons_obj.query)
     print(group_lessons_obj)
 
@@ -1471,7 +1473,8 @@ def curriculum_lesson_group_details(request, group_id):
 
     context = {'group': group_obj,
                'group_lessons': group_lessons_obj,
-               'lesson_types': dict(TypesOfLesson.choices)}
+               'lesson_types': dict(TypesOfLesson.choices),
+               'max_semester': max_semester}
     obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
     if obj_stats:
         for obj_stat in obj_stats:

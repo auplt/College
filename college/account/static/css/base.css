@@ -691,13 +691,13 @@ select:hover {
 }
 
 .msg_title {
-  font-weight: 700;
+  font-weight: 500;
   line-height: 14px;
   margin: 0;
 }
 
 .msg_text {
-  font-weight: 400;
+  font-weight: 600;
   padding-left: 19px;
 }
 

@@ -104,7 +104,7 @@
       </div>
       {% if group_lessons %}
         <div class="group_info_curriculum">
-          {% with prev_semester_num=-1 prev_dis_name='' is_hidden="" %}
+          {% with prev_semester_num=-1 prev_dis_name='' is_hidden='' %}
             {% for group_lesson in group_lessons %}
               {% if prev_semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
                 <div class="item_semester_number">
@@ -126,12 +126,14 @@
                 {% endif %}
               {% endif %}
               {% if group_lesson.tutor_id__user_id__id %}
-                <a class="curriculum_discipline_tutor toggle_detail {{is_hidden}}" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}?next={% url 'account:group_details' group.group_id %}">
+                <div class="curriculum_discipline_tutor_item toggle_detail {{is_hidden}}">
                   {% get_value lesson_types group_lesson.lesson_type %}
-                  {{ group_lesson.tutor_id__user_id__last_name }}
-                  {{ group_lesson.tutor_id__user_id__first_name }}
-                  {{ group_lesson.tutor_id__user_id__second_name }}
-                </a>
+                  <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}?next={% url 'account:group_details' group.group_id %}">
+                    {{ group_lesson.tutor_id__user_id__last_name }}
+                    {{ group_lesson.tutor_id__user_id__first_name }}
+                    {{ group_lesson.tutor_id__user_id__second_name }}
+                  </a>
+                </div>
               {% endif %}
               {% update_variable group_lesson.curriculum_id__group_semester_id__semester_num as prev_semester_num %}
               {% update_variable group_lesson.curriculum_id__discipline_id__name as prev_dis_name %}

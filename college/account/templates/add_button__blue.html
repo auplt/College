@@ -1,0 +1,26 @@
+{# Template for blue add button #}
+
+{% load static %}
+{% load group_extras %}
+<link href="{% static 'css/add_button__blue.css' %}" rel="stylesheet">
+
+<div class="title_add_button__blue">
+    {% with None as full_add_link %}
+        {% if next_add_link %}
+            {% update_variable add_link|add:"?next="|add:next_add_link as full_add_link %}
+        {% else %}
+            {% update_variable add_link as full_add_link %}
+        {% endif %}
+        {% if not add_txt %}
+            {% update_variable "Добавить" as add_txt %}
+        {% endif %}
+
+        <div class="list_ctrl_add__blue" onclick="window.location = '{{ full_add_link }}'">
+            {% if not no_img or no_img != "Y" %}
+            <img class="list_ctrl_add_img__blue" src="{% static 'images/add.svg' %}"/>
+            {% endif %}
+                <div class="list_ctrl_add_txt__blue">{{add_txt}}</div>
+            <span class="tooltiptext">Добавить</span>
+        </div>
+    {%endwith %}
+</div>
