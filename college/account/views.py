@@ -1739,6 +1739,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                 'date': list(key)[0],
                 'day_name': list(key)[1],
                 'week_type': list(key)[2],
+                'lesson_time_id': list(key)[3].lesson_id,
                 'start_time': list(key)[3].start_time,
                 'end_time': list(key)[3].end_time,
                 'classroom_id': list(key)[4].classroom_id,
@@ -1788,6 +1789,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                 {
                     'start_time': item['start_time'],
                     'end_time': item['end_time'],
+                    'lesson_time_id': item['lesson_time_id'],
                     'classroom_id': item['classroom_id'],
                     'classroom_number': item['classroom_number'],
                     'lesson_type': item['lesson_type'],
@@ -1798,6 +1800,8 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
             ]
         } for key, grp in groupby(tt_lesson_objs, key=lambda x: (x['date'], x['day_name'], x['week_type']))
     ]
+
+    print(tt_lesson_obj)
 
     # Sort lessons inside one day by the time they start
     for tt_lesson in tt_lesson_obj:
@@ -1856,9 +1860,22 @@ def tt_lesson_register(request):
                 else:
                     tt_lesson_form.add_error(None, ex.__cause__)
     else:
+        initial = {}
+        if 'date' in request.GET.dict():
+            print(request.GET.get('date'))
+            initial['date'] = request.GET.get('date')
+        if 'lesson_time_id' in request.GET.dict():
+            print(request.GET.get('lesson_time_id'))
+            initial['lesson_time_id'] = request.GET.get('lesson_time_id')
+        if initial:
+            tt_lesson_form = TTLessonRegisterForm(initial=initial)
+        else:
+            tt_lesson_form = TTLessonRegisterForm()
         if 'classroom_id' in request.GET.dict():
             classroom_obj = get_object_or_404(Classroom, classroom_id=request.GET.get('classroom_id'))
-            tt_lesson_form = TTLessonRegisterForm(initial={'classroom_id': classroom_obj})
+            # tt_lesson_form = TTLessonRegisterForm(initial={'classroom_id': classroom_obj})
+            initial['classroom_id'] = classroom_obj
+            tt_lesson_form = TTLessonRegisterForm(initial=initial)
         elif 'tutor_id' in request.GET.dict():
             curriculum_lesson_objects = (CurriculumLesson.objects
                                          .filter(tutor_id=request.GET.get('tutor_id'))
@@ -1866,7 +1883,7 @@ def tt_lesson_register(request):
                                                    'curriculum_id__group_semester_id__group_id__name',
                                                    '-curriculum_id__group_semester_id__semester_num',
                                                    'lesson_type'))
-            tt_lesson_form = TTLessonRegisterForm()
+            # tt_lesson_form = TTLessonRegisterForm()
             if curriculum_lesson_objects is not None:
                 tt_lesson_form.set_initial_curriculum_lesson_ids(curriculum_lesson_objects.all())
         elif 'student_id' in request.GET.dict():
@@ -1878,18 +1895,18 @@ def tt_lesson_register(request):
                                          .filter(curriculum_id__group_semester_id__in=group_semester_ids)
                                          .order_by('curriculum_id__group_semester_id__group_id__name',
                                                    '-curriculum_id__group_semester_id__semester_num'))
-            tt_lesson_form = TTLessonRegisterForm()
+            # tt_lesson_form = TTLessonRegisterForm()
             if curriculum_lesson_objects is not None:
                 tt_lesson_form.set_initial_curriculum_lesson_ids(curriculum_lesson_objects.all())
         elif 'group_id' in request.GET.dict():
             curriculum_lesson_objects = (CurriculumLesson.objects
                                          .filter(curriculum_id__group_semester_id__group_id=request.GET.get('group_id'))
                                          .order_by('-curriculum_id__group_semester_id__semester_num'))
-            tt_lesson_form = TTLessonRegisterForm()
+            # tt_lesson_form = TTLessonRegisterForm()
             if curriculum_lesson_objects is not None:
                 tt_lesson_form.set_initial_curriculum_lesson_ids(curriculum_lesson_objects.all())
-        else:
-            tt_lesson_form = TTLessonRegisterForm()
+        # else:
+        #     tt_lesson_form = TTLessonRegisterForm()
     context = {'tt_lesson_form': tt_lesson_form, 'action': 'C'}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')

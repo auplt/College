@@ -2,6 +2,7 @@ import copy
 
 from django import template
 import ast
+import datetime
 
 register = template.Library()
 
@@ -118,3 +119,13 @@ def add_str(arg1, arg2):
     :return: concatenated input strings
     """
     return str(arg1) + str(arg2)
+
+
+@register.simple_tag
+def date_convertor(date_str: datetime.date) -> str:
+    """
+    Simple tag that converts date to '%d.%m.%Y' format.
+    :param date_str: input date that should be converted
+    :return: formatted date string
+    """
+    return date_str.strftime('%d.%m.%Y')

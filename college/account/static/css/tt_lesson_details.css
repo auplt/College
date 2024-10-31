@@ -1,0 +1,204 @@
+:root {
+  --primary-text-color: #000000;
+  --secondary-text-color: #ffffff;
+  --primary-backgroud-color: #e4e4e4;
+  --tag-color: #12c064;
+  --primary-border-radius: 6px;
+  --secondary-border-radius: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.tt_lesson_content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.tt_lesson_content .list_ctrl_trash_img,
+.tt_lesson_content .list_ctrl_edit_img {
+  width: 16px;
+  height: 16px;
+}
+
+.tt_lesson_title {
+  margin-bottom: 10px;
+}
+
+.tt_lesson_date {
+  color: var(--primary-text-color);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+
+  margin: 0;
+  padding: 8px;
+}
+
+.tt_lesson_day {
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+}
+
+.tt_lesson_content_lessons {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tt_lesson_content_day {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tt_lesson_content_info_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tt_lesson_content_info {
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+  gap: 80px;
+}
+
+.info_time_lesson_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tt_lesson_info_time {
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 8px;
+}
+
+.tt_lesson_info_discipline {
+  border-radius: var(--primary-border-radius);
+  background: var(--primary-backgroud-color);
+
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 8px;
+}
+
+.tt_lesson_classroom_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.tt_lesson_classroom {
+  border-radius: var(--secondary-border-radius);
+  background: var(--tag-color);
+  padding: 4px 12px;
+}
+
+.tt_lesson_classroom_name {
+  color: var(--secondary-text-color);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0%;
+  text-align: center;
+}
+
+.info_discipline_name {
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+}
+
+.tt_lesson_info_group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info_group_title {
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  margin: 0;
+}
+
+.tt_lesson_info_group_item {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  align-items: center;
+}
+
+.group_item_name {
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 0 0 21px;
+}
+
+.tt_lesson_info_tutor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tt_lesson_info_tutor_item {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  align-items: center;
+}
+
+.tutor_item_name {
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 0 0 21px;
+}
+
+.tt_lesson_content__no_lessons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
+
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+}

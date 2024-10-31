@@ -1,124 +1,122 @@
+{# Template for timetable #}
+
 {% load group_extras %}
+{% load static %}
+{% block page_scripts %}
+  <link href="{% static 'css/tt_lesson_details.css' %}" rel="stylesheet">
+  <script src="{% static 'js/tt_lesson_details.js' %}"></script>
+{% endblock %}
 
-<!--{% include "back_button.html" with back_url="account:lesson_time_list" %}-->
-
-
-{% if tt_lessons %}
-{% for tt_lesson in tt_lessons %}
-<h3>{{ tt_lesson.date }} {% get_value week_types tt_lesson.week_type %}</h3>
-
-
-<div class="tt_lesson_day">
-{% get_value day_names tt_lesson.day_name %}
-</div>
-{% for entity in entities %}
-<a href="{% url 'account:tt_lesson_register' %}?{{entity.entity}}={{entity.entity_id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">{{entity.entity_name}} Добавить</a>
-{% endfor %}
-{% if tt_lesson.days_info %}
-{% for day_inf in tt_lesson.days_info %}
-
-<div class="tt_lesson_time">
-    {{day_inf.start_time}} - {{day_inf.end_time}}
-</div>
-<div class="tt_lesson_classroom">
-    <a href="{% url 'account:classroom_details' day_inf.classroom_id %}">
-        {{day_inf.classroom_number}}
-    </a>
-</div>
-<div class="tt_lesson_discipline">
-    {% get_value lesson_types day_inf.lesson_type %}
-    <a href="{% url 'account:discipline_details' day_inf.discipline_id %}">
-        {{day_inf.discipline_name}}
-    </a>
-</div>
-
-<div class="tt_lesson_group">
-    {% for lesson_inf in day_inf.lesson_info %}
-        <i>{{lesson_inf.group.tt_lesson_id}}</i>
-        <a href="{% url 'account:group_details' lesson_inf.group.group_id %}">
-            {{lesson_inf.group.name}}
-        </a>
-        <a href="{% url 'account:tt_lesson_edit' lesson_inf.group.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
-            Редактировать
-        </a>
-        <a href="{% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
-            Удалить
-        </a>
+<div class="tt_lesson_content">
+  {% if tt_lessons %}
+    {% for tt_lesson in tt_lessons %}
+      <div class="tt_lesson_content_item">
+        <div class="tt_lesson_title">
+          <h3 class="tt_lesson_date">
+            {% get_value day_names tt_lesson.day_name %} {{ tt_lesson.date }}
+          </h3>
+          <div class="tt_lesson_day">
+            {% get_value week_types tt_lesson.week_type %}
+          </div>
+        </div>
+        {% if tt_lesson.days_info %}
+          <div class="tt_lesson_content_lessons">
+            {% for day_inf in tt_lesson.days_info %}
+              <div class="tt_lesson_content_day">
+                <div class="tt_lesson_content_info_wrapper">
+                  <div class="tt_lesson_content_info">
+                    <div class="info_time_lesson_wrapper">
+                      <div class="tt_lesson_info_time">
+                        {{day_inf.start_time}} - {{day_inf.end_time}}
+                      </div>
+                      <div class="tt_lesson_info_discipline">
+                        {% get_value lesson_types day_inf.lesson_type %}
+                        <a class="info_discipline_name" href="{% url 'account:discipline_details' day_inf.discipline_id %}">
+                          {{day_inf.discipline_name}}
+                        </a>
+                      </div>
+                    </div>
+                    <div class="tt_lesson_classroom_wrapper">
+                      <div class="tt_lesson_classroom">
+                        <a class="tt_lesson_classroom_name" href="{% url 'account:classroom_details' day_inf.classroom_id %}">
+                          {{day_inf.classroom_number}}
+                        </a>
+                      </div>
+                      {# Including add button #}
+                      {% url 'account:tt_lesson_register' as add_url %}
+                      {% change_query_string request.GET.urlencode as change_url %}
+                      {% date_convertor tt_lesson.date as conv_date %}
+                      {% include "add_button__blue.html" with add_link=add_url|add_str:"?date="|add_str:conv_date|add_str:"&lesson_time_id="|add_str:day_inf.lesson_time_id|add_str:"&classroom_id="|add_str:day_inf.classroom_id|add_str:"&next="|add_str:request.path|add_str:"?"|add_str:change_url add_txt="Занятие" %}
+                    </div>
+                  </div>
+                </div>
+                <div class="tt_lesson_info_group">
+                  <h4 class="info_group_title">Группы</h4>
+                  {% for lesson_inf in day_inf.lesson_info %}
+                    <div class="tt_lesson_info_group_item">
+                      <a class="group_item_name" href="{% url 'account:group_details' lesson_inf.group.group_id %}">
+                        {{lesson_inf.group.name}}
+                      </a>
+                      {# Including control buttons edit and delete #}
+                      {% url 'account:tt_lesson_edit' lesson_inf.group.tt_lesson_id as edit_link %}
+                      {% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id as del_link %}
+                      {% change_query_string request.GET.urlencode as change_url %}
+                      {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=request.path|add_str:"?"|add_str:change_url del_link=del_link next_del_link=request.path|add_str:"?"|add_str:change_url %}
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="tt_lesson_info_tutor">
+                  <h4 class="info_group_title">Преподаватели</h4>
+                  {% for lesson_inf in day_inf.lesson_info %}
+                    {% ifchanged lesson_inf.tutor.id %}
+                      <div class="tt_lesson_info_tutor_item">
+                        <a class="tutor_item_name" href="{% url 'account:user_details' lesson_inf.tutor.id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
+                          {{lesson_inf.tutor.last_name}}
+                          {{lesson_inf.tutor.first_name}}
+                          {{lesson_inf.tutor.second_name}}
+                        </a>
+                        {# Including control buttons edit and delete #}
+                        {% url 'account:tt_lesson_edit' lesson_inf.tutor.tt_lesson_id as edit_link %}
+                        {% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id as del_link %}
+                        {% change_query_string request.GET.urlencode as change_url %}
+                        {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=request.path|add_str:"?"|add_str:change_url del_link=del_link next_del_link=request.path|add_str:"?"|add_str:change_url %}
+                      </div>
+                    {% endifchanged %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="tt_lesson_content__no_lessons">
+            Занятий не найдено
+            {% for entity in entities %}
+              {# Including add button #}
+              {% url 'account:tt_lesson_register' as add_url %}
+              {% change_query_string request.GET.urlencode as change_url %}
+              {% date_convertor tt_lesson.date as conv_date %}
+              {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:request.path|add_str:"?"|add_str:change_url add_txt=entity.entity_name %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
     {% endfor %}
-</div>
 
-<div class="tt_lesson_tutor">
-    {% for lesson_inf in day_inf.lesson_info %}
-        {% ifchanged lesson_inf.tutor.id %}
-            <i>{{lesson_inf.tutor.tt_lesson_id}}</i>
+    {# Include pagination #}
+    {% if is_week %}
+      {% include "tt_lesson/tt_lesson_pagination.html" with page=week_delta iter="week_delta" week=is_week %}
+    {% else %}
+      {% include "tt_lesson/tt_lesson_pagination.html" with page=day_delta iter="day_delta" week=is_week %}
+    {% endif %}
 
-            <a href="{% url 'account:user_details' lesson_inf.tutor.id %}">
-                {{lesson_inf.tutor.last_name}}
-                {{lesson_inf.tutor.first_name}}
-                {{lesson_inf.tutor.second_name}}
-            </a>
-            <a href="{% url 'account:tt_lesson_edit' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
-                Редактировать
-            </a>
-            <a href="{% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id %}?next={{request.path}}?{% change_query_string request.GET.urlencode %}">
-                Удалить
-            </a>
-        {% endifchanged %}
+  {% else %}
+    Занятий не найдено
+    {% for entity in entities %}
+      {# Including add button #}
+      {% url 'account:tt_lesson_register' as add_url %}
+      {% change_query_string request.GET.urlencode as change_url %}
+      {% date_convertor tt_lesson.date as conv_date %}
+      {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:request.path|add_str:"?"|add_str:change_url add_txt=entity.entity_name %}
     {% endfor %}
+  {% endif %}
 </div>
-
-{% endfor %}
- {% else %}
-Занятий не найдено
-{% endif %}
-{% endfor %}
-
-{% if is_week %}
-{% include "tt_lesson/tt_lesson_pagination.html" with page=week_delta iter="week_delta" week=is_week %}
-{% else %}
-{% include "tt_lesson/tt_lesson_pagination.html" with page=day_delta iter="day_delta" week=is_week %}
-{% endif %}
-
-{% else %}
-Занятий не найдено
-{% for entity in entities %}
-<a href="{% url 'account:tt_lesson_register' %}?{{entity.entity}}={{entity.entity_id}}&next={{request.path}}?{% change_query_string request.GET.urlencode %}">{{entity.entity_name}} Добавить</a>
-{% endfor %}
-{% endif %}
-
-<!--{% if 1 == 0 %}-->
-<!--{% for ttl in tt_lesson %}-->
-<!--<h2>{{ ttl.date }}{{ttl.week_type}}неделя</h2>-->
-<!--<div class="tt_lesson_day">-->
-
-<!--{{ttl.day_name}}-->
-<!--</div>-->
-<!--<div class="tt_lesson_time">-->
-<!--{{ttl.lesson_time_id__start_time}} - {{ttl.lesson_time_id__end_time}}-->
-<!--</div>-->
-<!--<div class="tt_lesson_classroom">-->
-<!--{{ttl.classroom_id.name}}-->
-<!--</div>-->
-<!--<div class="tt_lesson_discipline">-->
-<!-- {{ttl.curriculum_lesson_id.lesson_type}}-->
-<!--{{ttl.curriculum_lesson_id.curriculum_id.discipline_id.discipline_id}}-->
-<!--{{ttl.curriculum_lesson_id.curriculum_id.discipline_id.name}}-->
-<!--</div>-->
-<!--<div class="tt_lesson_group">-->
-<!--    {{ttl.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.group_id}}-->
-<!--    {{ttl.group_names}}-->
-<!--</div>-->
-<!--<div class="tt_lesson_tutor">-->
-<!--    {{ttl.curriculum_lesson_id.tutor_id.user_id.id}}-->
-<!--{{ttl.curriculum_lesson_id.tutor_id.user_id.last_name}}-->
-<!--{{ttl.curriculum_lesson_id.tutor_id.user_id.first_name}}-->
-<!--{{ttl.curriculum_lesson_id.tutor_id.user_id.second_name}}-->
-<!--</div>-->
-
-
-
-<!--{% endfor %}-->
-<!--{% endif %}-->
-
-
-<a href="">Вернуться к списку</a>
