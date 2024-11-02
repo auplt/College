@@ -1,0 +1,13 @@
+{# Template for navigation item #}
+
+{% load static %}
+<link href="{% static 'css/navigation.css' %}" rel="stylesheet">
+
+<a class="nav_item {% if request.path == redirect_link %}clicked{% endif %}" href="{{redirect_link}}">
+  <img
+    class="nav_item_img"
+    src="{{src_link}}"/>
+  <span class="nav_item_txt">
+    {{nav_txt}}
+  </span>
+</a>

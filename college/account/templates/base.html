@@ -68,8 +68,29 @@
   {% endif %}
   <div class="main_content">
       <nav class="navigation">
-НАВИГАЦИЯ...
-    </nav>
+        {% static 'images/home.svg' as src_link %}
+
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Личная страница" redirect_link="#" %}
+            {% static 'images/user.svg' as src_link %}
+                {% url 'account:user_list' as redirect_link %}
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Пользователи" redirect_link=redirect_link %}
+                {% static 'images/discipline.svg' as src_link %}
+                {% url 'account:discipline_list' as redirect_link %}
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}
+                {% static 'images/group.svg' as src_link %}
+        {% url 'account:group_list' as redirect_link %}
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Группы" redirect_link=redirect_link %}
+                {% static 'images/classroom.svg' as src_link %}
+        {% url 'account:classroom_list' as redirect_link %}
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Аудитории" redirect_link=redirect_link %}
+                {% static 'images/mark.svg' as src_link %}
+
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Оценки" redirect_link="#" %}
+                {% static 'images/hw.svg' as src_link %}
+
+      {% include "navigation_item.html" with src_link=src_link nav_txt="Домашние задания" redirect_link="#" %}
+
+      </nav>
     <div id="content">
     {% block content %}
     {% endblock %}

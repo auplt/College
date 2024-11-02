@@ -144,18 +144,13 @@
     </div>
   </div>
   <div class="group_info_wrapper">
-    <div class="classroom_info_detail">
+    <div class="group_info_detail">
       <h2 class="group_info_detail_title">Расписание занятий</h2>
-      <a href="{% url 'account:group_details' group.group_id %}">
-          День
-      </a>
-      <a href="{% url 'account:group_details' group.group_id %}?week=True">
-          Неделя
-      </a>
+      {# Include lesson timetable template #}
+      {% url 'account:group_details' group.group_id as day_url %}
       {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}
       {% add_to_list add_group as entities %}
-
-      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities %}
+      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url %}
     </div>
   </div>
 {% endblock %}

@@ -99,6 +99,8 @@
 }
 
 :root {
+  --primary-backgroud-color: #e4e4e4;
+
   --secondary-text-color: #808082;
   --secondary-text-filter: brightness(0) saturate(100%) invert(21%) sepia(8%)
     saturate(62%) hue-rotate(202deg) brightness(93%) contrast(92%);
@@ -235,13 +237,15 @@ ol {
 }
 
 .navigation {
-  flex: 1 1 auto;
-  background-color: fuchsia;
+  width: 300px;
+  padding: 8px;
+  /* flex: 1 1 auto; */
+  background-color: var(--primary-backgroud-color);
 }
 
 #content {
   padding-top: 30px;
-  flex: 2 1 auto;
+  /* flex: 2 1 auto; */
 }
 
 /* forms */

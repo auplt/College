@@ -1,0 +1,29 @@
+{# Template for lesson timetable pagination #}
+
+{% load static %}
+<link href="{% static 'css/tt_lesson_controllers.css' %}" rel="stylesheet">
+
+{% load group_extras %}
+
+<div class="pagination">
+  <span class="step-links">
+    <a class="change_page" href="?week={{week}}&{{iter}}={% increment page -1 %}">
+      <img
+        class="change_page_img"
+        src="{% static 'images/prev_page.svg' %}"/>
+    </a>
+    <div class="detail_timetable">
+      <a class="controller_button details_controller_button__delete" href="{{day_url}}">
+        День
+      </a>
+      <a class="controller_button details_controller_button__edit" href="{{week_url}}">
+        Неделя
+      </a>
+    </div>
+    <a class="change_page" href="?week={{week}}&{{iter}}={% increment page 1 %}">
+      <img
+        class="change_page_img"
+        src="{% static 'images/next_page.svg' %}"/>
+    </a>
+  </span>
+</div>
