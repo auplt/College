@@ -1,8 +1,15 @@
+// JS Scripts specially for curriculum form template
+
+/*
+ * Function for deleting additional form field
+ */
 function deleteItem(element) {
-  console.log(element.parent());
   element.parent();
 }
 
+/*
+ * Function for dadding new additional field for discipline information
+ */
 $(document).ready(function () {
   $("#discipline_list_add_button").click(function (e) {
     e.preventDefault();
@@ -21,6 +28,9 @@ $(document).ready(function () {
   });
 });
 
+/*
+ * Function for dadding new additional field for group information
+ */
 $(document).ready(function () {
   $("#group_list_add_button").click(function (e) {
     e.preventDefault();

@@ -1,21 +1,11 @@
-:root {
-  --primary-text-color: #000000;
-  --secondary-tetx-color: #0061ae;
-  --primary-backgroud-color: #e4e4e4;
-  --primary-backgroup-color-hover: #dad7d7;
-  --primary-border-radius: 6px;
-}
-
-* {
-  box-sizing: border-box;
-}
+/* CSS file for navigation template */
 
 .nav_item {
   display: flex;
   flex-direction: row;
   align-items: center;
   border-radius: var(--primary-border-radius);
-  background-color: var(--primary-backgroud-color);
+  background-color: var(--primary-bg-color);
 }
 
 .nav_item_img {
@@ -24,7 +14,7 @@
 }
 
 .nav_item_txt {
-  color: var(--secondary-tetx-color);
+  color: var(--secondary-bg-color);
   font-size: 16px;
   font-weight: 500;
   line-height: 100%;
@@ -34,13 +24,13 @@
 }
 
 .nav_item:hover {
-  background-color: var(--primary-backgroup-color-hover);
+  background-color: var(--primary-bg-color-hover);
 }
 
 .nav_item:focus {
-  background-color: var(--primary-backgroup-color-hover);
+  background-color: var(--primary-bg-color-hover);
 }
 
 .clicked {
-  background-color: var(--primary-backgroup-color-hover);
+  background-color: var(--primary-bg-color-hover);
 }

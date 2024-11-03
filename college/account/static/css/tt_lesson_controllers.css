@@ -1,3 +1,5 @@
+/* CSS file for lesson timetable controllers template */
+
 .step-links {
   display: flex;
   flex-direction: row;
@@ -10,16 +12,6 @@
   flex-direction: row;
   gap: 16px;
 }
-
-/* .pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgb(217, 217, 217);
-  padding: 40px;
-  margin-top: 16px;
-} */
 
 .change_page {
   width: 32px;

@@ -1,11 +1,10 @@
+/* CSS file for pagination template */
+
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* background: rgb(217, 217, 217); */
-  padding: 40px;
-  margin-top: 16px;
+  padding: 40px 0 10px 0;
 }
 
 .step-links {
@@ -25,4 +24,16 @@
   letter-spacing: 1px;
   text-align: center;
   padding: 8px;
+}
+
+.change_page_next_img {
+  transform: rotate(180deg);
+}
+
+.change_page_back:hover .change_page_back_img {
+  filter: var(--primary-button-filter);
+}
+
+.change_page_next:hover .change_page_next_img {
+  filter: var(--primary-button-filter);
 }

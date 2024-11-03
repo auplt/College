@@ -1,13 +1,4 @@
-:root {
-  --button-edit-color: #0055bb;
-  --button-edit-color-hover: brightness(0) saturate(100%) invert(14%) sepia(89%)
-    saturate(1844%) hue-rotate(200deg) brightness(92%) contrast(105%);
-
-  --button-cancel-color: #c01512;
-  --button-cancel-color-hover: brightness(0) saturate(100%) invert(15%)
-    sepia(29%) saturate(6303%) hue-rotate(347deg) brightness(111%)
-    contrast(106%);
-}
+/* CSS file for buttons controller template */
 
 .list_ctrl {
   display: flex;
@@ -42,7 +33,7 @@
 }
 
 .list_ctrl_trash:hover .list_ctrl_trash_img {
-  filter: var(--button-cancel-color-hover);
+  filter: var(--secondary-bg-color-filter);
 }
 
 .list_ctrl_trash:hover .tooltiptext {
@@ -50,7 +41,7 @@
 }
 
 .list_ctrl_edit:hover .list_ctrl_edit_img {
-  filter: var(--button-edit-color-hover);
+  filter: var(--secondary-bg-color-filter);
 }
 
 .list_ctrl_edit:hover .tooltiptext {

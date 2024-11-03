@@ -6,9 +6,9 @@
 <div class="pagination">
     <span class="step-links">
         {% if page.has_previous %}
-        <div class="change_page" onclick="window.location = '?page={{page.previous_page_number}}'">
+        <div class="change_page change_page_back" onclick="window.location = '?page={{page.previous_page_number}}'">
             <img
-                class=""
+                class="change_page_back_img"
                 src="{% static 'images/prev_page.svg' %}"/>
         </div>
         {% endif %}
@@ -16,10 +16,10 @@
             Страница {{page.number}}/{{page.paginator.num_pages}}
         </span>
         {% if page.has_next %}
-        <div class="change_page" onclick="window.location = '?page={{page.next_page_number}}'">
+        <div class="change_page change_page_next" onclick="window.location = '?page={{page.next_page_number}}'">
             <img
-                class=""
-                src="{% static 'images/next_page.svg' %}"/>
+                class="change_page_next_img"
+                src="{% static 'images/prev_page.svg' %}"/>
         </div>
         {% endif %}
     </span>

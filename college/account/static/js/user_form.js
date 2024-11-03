@@ -1,5 +1,7 @@
+// JS Scripts specially for user form template
+
 /*
- * Отображение / скрытие блока доп. информации о студенте
+ * Display / hide additional student information
  */
 $(document).ready(function () {
   let studentInfo = $(".more_info__student");
@@ -20,7 +22,7 @@ $(document).ready(function () {
 });
 
 /*
- * Отображение / скрытие блока доп. информации о преподавателе
+ * Display / hide additional tutor information
  */
 $(document).ready(function () {
   let tutorInfo = $(".more_info__tutor");
@@ -28,7 +30,6 @@ $(document).ready(function () {
   let items = $("form p").length;
   $("#id_is_tutor")[0].addEventListener("change", (event) => {
     if (event.target.checked) {
-      console.log("2");
       tutorInfo.show();
       $("#id_tut-date_of_birth").prop("required", true);
       if ($("#id_std-date_of_birth").val()) {
@@ -42,33 +43,28 @@ $(document).ready(function () {
 });
 
 /*
- * Отображение / скрытие блока доп. информации при возврате на страницу в
- * случае ошибок в форме
+ * Display / hide additional information after reloading submited form
+ * with errors
  */
 $(document).ready(function () {
   if ($("#id_std-date_of_birth").val()) {
-    console.log("11");
     $(".more_info__student").show();
     $("#id_is_student").prop("checked", true);
   }
   if ($("#id_tut-date_of_birth").val()) {
-    console.log("12");
     $(".more_info__tutor").show();
     $("#id_is_tutor").prop("checked", true);
   }
   if ($("#id_is_tutor").is(":checked")) {
-    console.log("13");
     $(".more_info__tutor").show();
   }
   if ($("#id_is_student").is(":checked")) {
-    console.log("14");
     $(".more_info__student").show();
   }
 });
 
 /*
- * Установление одинаковых дат рожения при внесении информации о
- * дате рождения студента
+ * Setting the same dates of birth when entering student's birthday
  */
 $(document).ready(function () {
   $("#id_std-date_of_birth")
@@ -79,7 +75,6 @@ $(document).ready(function () {
       yearRange: "1900:2024",
     })
     .on("input change", (event) => {
-      console.log($("#id_is_tutor").val());
       if ($("#id_is_tutor").is(":checked")) {
         $("#id_tut-date_of_birth").val($("#id_std-date_of_birth").val());
       }
@@ -87,8 +82,7 @@ $(document).ready(function () {
 });
 
 /*
- * Установление одинаковых дат рожения при внесении информации о
- * дате рождения преподавателя
+ * Setting the same dates of birth when entering tutor's birthday
  */
 $(document).ready(function () {
   $("#id_tut-date_of_birth")
@@ -106,7 +100,7 @@ $(document).ready(function () {
 });
 
 /*
- * Добавление календаря при перезагрузке страницы
+ * Adding datepicker after page reload
  */
 $(document).ready(function () {
   $(".datepicker").datepicker({
@@ -117,10 +111,9 @@ $(document).ready(function () {
   });
 });
 
-console.log($("#id_is_tutor").val());
 /*
- * Отображение / скрытие блока доп. информации о студенте и преподавателе
- * при возврате на страницу
+ * Display / hide additional information about student and tuter after
+ * getting back to page
  */
 if ($("#id_is_tutor").is(":checked")) {
   $(".more_info__tutor").show();
@@ -133,7 +126,6 @@ if ($("#id_std-date_of_birth").val()) {
   $("#id_is_student").prop("checked", true);
 }
 if ($("#id_tut-date_of_birth").val()) {
-  console.log("1");
   $(".more_info__tutor").show();
   $("#id_is_tutor").prop("checked", true);
 }

@@ -1,12 +1,4 @@
-:root {
-  --primary-text--color: #000000;
-  --primary-backgroud-color: #e4e4e4;
-  --primary-border-radius: 6px;
-}
-
-* {
-  box-sizing: border-box;
-}
+/* CSS file for classroom details template */
 
 .classroom_info_wrapper {
   margin-top: 30px;

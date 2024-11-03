@@ -32,27 +32,16 @@
 
 </head>
 <body>
-
-
-
-  <div id="header">
-    <span class="logo">Колледж</span>
-  {% if request.user.is_authenticated %}
-      <ul class="menu">
-        <li {% if section == "dashboard" %}class="selected"{% endif %}>
-          <a href="{% url 'account:dashboard' %}">Заглушка</a>
-        </li>
-      </ul>
-    {% endif %}
-    <span class="user">
+  <div class="header">
+    <span class="header_logo">Колледж</span>
+    <span class="header_entrance">
       {% if request.user.is_authenticated %}
-        Здравствуйте, {{ request.user.first_name|default:request.user.username }},
-      <form action="{% url 'account:logout' %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
+        <form action="{% url 'account:logout' %}" method="post">
+          {% csrf_token %}
+          <button class="header_entrance_txt" type="submit">Выйти</button>
+        </form>
       {% else %}
-        <a href="{% url 'account:login' %}">Войти</a>
+        <a class="header_entrance_txt" href="{% url 'account:login' %}">Войти</a>
       {% endif %}
     </span>
   </div>
@@ -97,5 +86,10 @@
     </div>
   </div>
 
-</body>
+  </body>
+  <footer>
+    <div class="footer">
+      <span class="footer_txt">&#xA9; Разработано в НИЯУ МИФИ Александр Долгов, Машкова Ирина, 2024 г.</span>
+    </div>
+  </footer>
 </html>

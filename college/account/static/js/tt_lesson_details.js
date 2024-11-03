@@ -1,5 +1,7 @@
+// JS Scripts specially for lesson timetable details template
+
 /* Makes element width the same
- * For class curriculum_discipline_tutor_item_txt
+ * For class tt_lesson_info_time
  */
 $(document).ready(function () {
   min_width = 0;
@@ -16,7 +18,7 @@ $(document).ready(function () {
 });
 
 /* Makes element width the same
- * For class curriculum_discipline_tutor_item_txt
+ * For class tt_lesson_info_discipline
  */
 $(document).ready(function () {
   min_width = 0;
@@ -33,7 +35,7 @@ $(document).ready(function () {
 });
 
 /* Makes element width the same
- * For class curriculum_discipline_tutor_item_txt
+ * For class tt_lesson_classroom_name
  */
 $(document).ready(function () {
   min_width = 0;
@@ -50,7 +52,7 @@ $(document).ready(function () {
 });
 
 /* Makes element width the same
- * For class curriculum_discipline_tutor_item_txt
+ * For class group_item_name
  */
 $(document).ready(function () {
   min_width = 0;

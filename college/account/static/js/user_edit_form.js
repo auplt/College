@@ -1,5 +1,7 @@
+// JS Scripts specially for user edit form template
+
 /*
- * Выделение расхождений в датах рождения
+ * Highlighting date of birth differences
  */
 $(document).ready(function () {
   $("#id_tut-date_of_birth")
@@ -14,7 +16,6 @@ $(document).ready(function () {
         $("#id_std-date_of_birth").val() &&
         $("#id_tut-date_of_birth").val() != $("#id_std-date_of_birth").val()
       ) {
-        console.log("1");
         $("#id_std-date_of_birth").css("color", "red");
         $("#id_tut-date_of_birth").css("color", "red");
       } else if (
@@ -26,7 +27,7 @@ $(document).ready(function () {
     });
 });
 /*
- * Выделение расхождений в датах рождения
+ * Highlighting date of birth differences
  */
 $(document).ready(function () {
   $("#id_std-date_of_birth")
@@ -41,7 +42,6 @@ $(document).ready(function () {
         $("#id_tut-date_of_birth").val() &&
         $("#id_tut-date_of_birth").val() != $("#id_std-date_of_birth").val()
       ) {
-        console.log("1");
         $("#id_std-date_of_birth").css("color", "red");
         $("#id_tut-date_of_birth").css("color", "red");
       } else if (
@@ -53,7 +53,7 @@ $(document).ready(function () {
     });
 });
 /*
- * Установка datepicker для работы с календарем
+ * Adding datepicker after page reload
  */
 $(document).ready(function () {
   $(".datepicker").datepicker({

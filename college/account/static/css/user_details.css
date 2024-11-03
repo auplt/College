@@ -1,12 +1,4 @@
-:root {
-  --primary-text--color: #000000;
-  --primary-backgroud-color: #e4e4e4;
-  --primary-border-radius: 6px;
-}
-
-* {
-  box-sizing: border-box;
-}
+/* CSS file for user details template */
 
 .user_info_wrapper {
   margin-top: 30px;
@@ -52,8 +44,8 @@
 }
 
 .groups_item_group {
-  color: var(--primary-text--color);
-  background-color: var(--primary-backgroud-color);
+  color: var(--primary-text-color);
+  background-color: var(--primary-bg-color);
   border-radius: var(--primary-border-radius);
   font-size: 14px;
   font-weight: 600;
@@ -78,8 +70,8 @@
 }
 
 .disciplines_item {
-  color: var(--primary-text--color);
-  background-color: var(--primary-backgroud-color);
+  color: var(--primary-text-color);
+  background-color: var(--primary-bg-color);
   border-radius: var(--primary-border-radius);
   font-size: 14px;
   font-weight: 600;

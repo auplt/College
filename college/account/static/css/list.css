@@ -1,8 +1,4 @@
-:root {
-  --primary-backgroud-color: #f0f0f0;
-  --primary-backgroud-color-hover: #e4e4e4;
-  --primary-border-radius: 6px;
-}
+/* CSS fiel for add button template */
 
 .list_wrapper {
   display: flex;
@@ -31,19 +27,18 @@
   gap: 20px;
 }
 
-/* .list_item:hover {
-  background-color: var(--primary-backgroud-color-hover);
-} */
-
 .item_title {
   position: relative;
   display: inline-block;
   width: 100%;
 
   padding: 8px;
-  background: #e4e4e4;
-  background-color: var(--primary-backgroud-color);
+  background: var(--primary-bg-color);
   border-radius: var(--primary-border-radius);
+}
+
+.item_title:hover {
+  background: var(--primary-bg-color-hover);
 }
 
 .item_title:hover .tooltiptext {
@@ -57,8 +52,7 @@
 
 .item_title_heading {
   margin: 0;
-  color: rgb(0, 0, 0);
-  font-family: Circe Rounded;
+  color: var(--primary-text-color);
   font-size: 14px;
   font-weight: 600;
   line-height: 100%;

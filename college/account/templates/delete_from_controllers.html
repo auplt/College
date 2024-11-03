@@ -1,13 +1,16 @@
 {# Template for delete form controllers: confirm, cancel, back #}
 
 {% load static %}
+{% block page_scripts %}
+  <link href="{% static 'css/delete_form_controllers.css' %}" rel="stylesheet">
+{% endblock %}
 
 <div class="delete_form_controllers">
-    <div class="controllers_confirm_cancel">
-        <input class="controller_button delete_controllers_confirm" type="submit" value="Удалить">
-        <a class="controller_button delete_controllers_cancel"
-           href="{% if next_url %}{{next_url}}{% else %}{% url cancel_url cancel_id %}{% endif %}">
-            Отмена
-        </a>
-    </div>
+  <div class="controllers_confirm_cancel">
+    <input class="controller_button delete_controllers_confirm" type="submit" value="Удалить">
+      <a class="controller_button delete_controllers_cancel"
+        href="{% if next_url %}{{next_url}}{% else %}{% url cancel_url cancel_id %}{% endif %}">
+        Отмена
+      </a>
+  </div>
 </div>

@@ -305,7 +305,7 @@ class LessonTimeRegisterForm(forms.ModelForm):
         fields = ['name', 'start_time', 'end_time']
 
     class Media:
-        js = ('js/time_form.js',)
+        js = ('js/lesson_time_form.js',)
 
 
 # class LessonTimeEditForm(forms.ModelForm):
@@ -326,7 +326,7 @@ class LessonTimeRegisterForm(forms.ModelForm):
 #         fields = ['name', 'start_time', 'end_time']
 #
 #     class Media:
-#         js = ('js/time_form.js',)
+#         js = ('js/lesson_time_form.js',)
 
 
 class GroupSemesterRegisterForm(forms.ModelForm):

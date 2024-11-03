@@ -1,3 +1,5 @@
+/* CSS file for all pages with heading */
+
 .page_heading__content {
   display: flex;
   gap: 16px;
@@ -23,4 +25,8 @@
   width: 22px;
   display: block;
   cursor: pointer;
+}
+
+.page_heading_list:hover .page_heading_list_img {
+  filter: var(--secondary-bg-color-filter);
 }

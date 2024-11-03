@@ -1,3 +1,8 @@
+// JS Scripts specially for lesson timetable form template
+
+/*
+ * Adding datepicker
+ */
 $(document).ready(function () {
   $(".datepicker").datepicker({
     dateFormat: "dd.mm.yy",

@@ -1,0 +1,16 @@
+/* CSS file for delete form controllers template */
+
+.controllers_confirm_cancel {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.delete_controllers_confirm {
+  color: var(--header-text-color);
+  background: var(--secondary-bg-color);
+}
+
+.delete_controllers_cancel {
+  color: var(--secondary-bg-color);
+}
