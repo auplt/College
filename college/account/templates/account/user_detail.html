@@ -19,16 +19,22 @@
   {% include "success_msg.html" %}
   <div class="details_description">
     {% if student and tutor %}
-    Студент и преподаватель <br/>
-    Дата рождения: {{ student.date_of_birth }}
+      Студент и преподаватель <br/>
+      {% if request.user.is_authenticated %}
+        Дата рождения: {{ student.date_of_birth }}
+      {% endif %}
     {% elif student %}
-    Студент <br/>
-    Дата рождения: {{ student.date_of_birth }}
+      Студент <br/>
+      {% if request.user.is_authenticated %}
+        Дата рождения: {{ student.date_of_birth }}
+      {% endif %}
     {% elif tutor %}
-    Преподаватель <br/>
-    Дата рождения: {{ tutor.date_of_birth }}
+      Преподаватель <br/>
+      {% if request.user.is_authenticated %}
+        Дата рождения: {{ tutor.date_of_birth }}
+      {% endif %}
     {% else %}
-    Пользователь не является студентом или преподавателем
+      Пользователь не является студентом или преподавателем
     {% endif %}
   </div>
   <div class="details_controllers">

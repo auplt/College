@@ -145,7 +145,6 @@
 
 * {
   font-family: "Circe Rounded", sans-serif;
-  font-weight: 500;
   box-sizing: border-box;
 }
 
@@ -180,6 +179,7 @@ h6 {
 h1 {
   margin: 0;
   font-size: 24px;
+  font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
@@ -187,6 +187,7 @@ h1 {
 
 h2 {
   font-size: 16px;
+  font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
@@ -233,7 +234,7 @@ h2 {
 .navigation {
   width: 300px;
   padding: 8px;
-  background-color: var(----primary-bg-color-color);
+  background-color: var(--primary-bg-color);
   max-height: max-content;
   border-radius: var(--primary-border-radius);
 }

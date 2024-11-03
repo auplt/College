@@ -9,7 +9,7 @@
         <div class="change_page change_page_back" onclick="window.location = '?page={{page.previous_page_number}}'">
             <img
                 class="change_page_back_img"
-                src="{% static 'images/prev_page.svg' %}"/>
+                src="{% static 'images/next_page.svg' %}"/>
         </div>
         {% endif %}
         <span class="current_page">
@@ -19,7 +19,7 @@
         <div class="change_page change_page_next" onclick="window.location = '?page={{page.next_page_number}}'">
             <img
                 class="change_page_next_img"
-                src="{% static 'images/prev_page.svg' %}"/>
+                src="{% static 'images/next_page.svg' %}"/>
         </div>
         {% endif %}
     </span>

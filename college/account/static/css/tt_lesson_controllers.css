@@ -27,3 +27,7 @@
   text-align: center;
   padding: 8px;
 }
+
+.change_page_back_img {
+  transform: rotate(180deg);
+}

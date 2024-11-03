@@ -17,6 +17,8 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(_("first name"), max_length=128)
     last_name = models.CharField(_("last name"), max_length=128)
     second_name = models.CharField(_("second name"), max_length=128, null=True, blank=True)
+    email = models.EmailField(_("email address"), unique=True)
+
 
     # def __str__(self):
     #     return super().__str__

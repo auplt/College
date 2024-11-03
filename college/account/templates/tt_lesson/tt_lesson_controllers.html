@@ -9,8 +9,8 @@
   <span class="step-links">
     <a class="change_page" href="?week={{week}}&{{iter}}={% increment page -1 %}">
       <img
-        class="change_page_img"
-        src="{% static 'images/prev_page.svg' %}"/>
+        class="change_page_img change_page_back_img"
+        src="{% static 'images/next_page.svg' %}"/>
     </a>
     <div class="detail_timetable">
       <a class="controller_button details_controller_button__delete" href="{{day_url}}">
@@ -22,7 +22,7 @@
     </div>
     <a class="change_page" href="?week={{week}}&{{iter}}={% increment page 1 %}">
       <img
-        class="change_page_img"
+        class="change_page_img change_page_next_img"
         src="{% static 'images/next_page.svg' %}"/>
     </a>
   </span>

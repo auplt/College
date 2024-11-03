@@ -1,91 +1,91 @@
 <!DOCTYPE html>
 <html>
-<head>
-  {% load static %}
-  <title>{% block title %}{% endblock %}</title>
-  <link href="{% static 'css/base.css' %}" rel="stylesheet">
-<!--  <script-->
-<!--  src="https://code.jquery.com/jquery-3.4.1.min.js"-->
-<!--  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="-->
-<!--  crossorigin="anonymous"></script>-->
-<!--  <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">-->
-<!--  <script src="{% static 'jquery-ui-1.13.3/jquery-ui.min.js' %}"></script>-->
-<!--  <script src="{% static 'jquery-ui-1.13.3/external/jquery/jquery.js' %}"></script>-->
-<!--  -->
-<!--   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
-<!--  <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>-->
-<!--  <script src="{% static 'js/jquery-ui.min.js' %}"></script>-->
+  <head>
+    {% load static %}
+    {% load group_extras %}
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+  <!--  <script-->
+  <!--  src="https://code.jquery.com/jquery-3.4.1.min.js"-->
+  <!--  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="-->
+  <!--  crossorigin="anonymous"></script>-->
+  <!--  <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">-->
+  <!--  <script src="{% static 'jquery-ui-1.13.3/jquery-ui.min.js' %}"></script>-->
+  <!--  <script src="{% static 'jquery-ui-1.13.3/external/jquery/jquery.js' %}"></script>-->
+  <!--  -->
+  <!--   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
+  <!--  <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>-->
+  <!--  <script src="{% static 'js/jquery-ui.min.js' %}"></script>-->
 
-  <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
-  <script src="{% static 'js/jquery-ui.js' %}"></script>
-  <script src="{% static 'js/base.js' %}"></script>
-  <script src="{% static 'js/jquery-ui-timepicker-addon.js' %}"></script>
-  <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
-  <link href="{% static 'css/jquery-ui-timepicker-addon.css' %}" rel="stylesheet">
-
-
-
-  {% block page_scripts %}
-  {% endblock %}
+    <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/jquery-ui-timepicker-addon.js' %}"></script>
+    <link href="{% static 'css/jquery-ui.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery-ui-timepicker-addon.css' %}" rel="stylesheet">
 
 
 
-</head>
-<body>
-  <div class="header">
-    <span class="header_logo">Колледж</span>
-    <span class="header_entrance">
-      {% if request.user.is_authenticated %}
-        <form action="{% url 'account:logout' %}" method="post">
-          {% csrf_token %}
-          <button class="header_entrance_txt" type="submit">Выйти</button>
-        </form>
-      {% else %}
-        <a class="header_entrance_txt" href="{% url 'account:login' %}">Войти</a>
-      {% endif %}
-    </span>
-  </div>
-  {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li class="{{ message.tags }}">
-          {{ message|safe }}
-          <a href="#" class="close">x</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  <div class="main_content">
-      <nav class="navigation">
-        {% static 'images/home.svg' as src_link %}
-
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Личная страница" redirect_link="#" %}
-            {% static 'images/user.svg' as src_link %}
-                {% url 'account:user_list' as redirect_link %}
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Пользователи" redirect_link=redirect_link %}
-                {% static 'images/discipline.svg' as src_link %}
-                {% url 'account:discipline_list' as redirect_link %}
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}
-                {% static 'images/group.svg' as src_link %}
-        {% url 'account:group_list' as redirect_link %}
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Группы" redirect_link=redirect_link %}
-                {% static 'images/classroom.svg' as src_link %}
-        {% url 'account:classroom_list' as redirect_link %}
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Аудитории" redirect_link=redirect_link %}
-                {% static 'images/mark.svg' as src_link %}
-
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Оценки" redirect_link="#" %}
-                {% static 'images/hw.svg' as src_link %}
-
-      {% include "navigation_item.html" with src_link=src_link nav_txt="Домашние задания" redirect_link="#" %}
-
-      </nav>
-    <div id="content">
-    {% block content %}
+    {% block page_scripts %}
     {% endblock %}
-    </div>
-  </div>
 
+
+
+  </head>
+  <body>
+    <div class="header">
+      <span class="header_logo">Колледж</span>
+      <span class="header_entrance">
+        {% if request.user.is_authenticated %}
+          <form action="{% url 'account:logout' %}" method="post">
+            {% csrf_token %}
+            <button class="header_entrance_txt" type="submit">Выйти</button>
+          </form>
+        {% else %}
+          <a class="header_entrance_txt" href="{% url 'account:login' %}?next={{request.path}}{% if request.GET.urlencode %}?{% change_query_string request.GET.urlencode %}{% endif %}">Войти</a>
+        {% endif %}
+      </span>
+    </div>
+    <div class="main_content">
+      <nav class="navigation">
+        {# Include navigation templates #}
+        {% static 'images/home.svg' as src_link %}
+        {% if request.user.is_authenticated %}
+          {% url 'account:user_details' request.user.id as redirect_link %}
+        {% else %}
+          {% url 'account:login' as redirect_link %}
+        {% endif %}
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Личная страница" redirect_link=redirect_link %}
+
+        {% static 'images/user.svg' as src_link %}
+        {% url 'account:user_list' as redirect_link %}
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Пользователи" redirect_link=redirect_link %}
+
+        {% static 'images/discipline.svg' as src_link %}
+        {% url 'account:discipline_list' as redirect_link %}
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}
+
+        {% static 'images/group.svg' as src_link %}
+        {% url 'account:group_list' as redirect_link %}
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Группы" redirect_link=redirect_link %}
+
+        {% static 'images/classroom.svg' as src_link %}
+        {% url 'account:classroom_list' as redirect_link %}
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Аудитории" redirect_link=redirect_link %}
+
+        {% static 'images/mark.svg' as src_link %}
+
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Оценки" redirect_link="#" %}
+
+        {% static 'images/hw.svg' as src_link %}
+
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Домашние задания" redirect_link="#" %}
+      </nav>
+      <div id="content">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
   </body>
   <footer>
     <div class="footer">

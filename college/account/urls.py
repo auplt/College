@@ -6,12 +6,14 @@ from django.contrib.auth import views as auth_views
 from . import views
 from .converters import DateConverter
 from .forms import CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm, CustomPasswordChangeForm
+from .views import home
 
 app_name = 'account'
 
 register_converter(DateConverter, 'date')
 
 urlpatterns = [
+    re_path(r'^home/$', views.home, name='home'),
     # path('', include('django.contrib.auth.urls')),
     re_path(r'^login/$', auth_views.LoginView.as_view(form_class=CustomAuthenticationForm), name='login'),
     re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),

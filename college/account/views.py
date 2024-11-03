@@ -54,6 +54,26 @@ from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, Lesso
 #         form = LoginForm()
 #     return render(request, 'account/login.html', {'form': form})
 
+@login_required
+def home(request):
+    if 'next' in request.GET.keys():
+        try:
+            next_url = request.GET.get('next')
+            if ':' in next_url:
+                next_url = next_url.replace(':', '&')
+            print(next_url)
+            resolve_match = resolve(next_url)
+
+            return redirect(next_url)
+
+        except Resolver404 or KeyError:
+            return HttpResponseRedirect(reverse('account:user_details', args = [request.user.id]))
+
+        # resolve_match = resolve(request.GET.get('next'))
+        # return redirect(request.GET.get('next'))
+    else:
+        return HttpResponseRedirect(reverse('account:user_details', args = [request.user.id]))
+
 
 @login_required
 def dashboard(request):

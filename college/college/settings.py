@@ -30,10 +30,23 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_REDIRECT_URL = 'account:dashboard'
+# LOGIN_REDIRECT_URL = 'account:details'
+LOGIN_REDIRECT_URL = 'account:home'
 # LOGOUT_REDIRECT_URL = 'account:login'
 LOGIN_URL = 'account:login'
 LOGOUT_URL = 'account:logout'
+
+# from django.contrib.auth.models import User
+
+# ACCOUNT_ADAPTER = 'college.users.adapter.UserAccountAdapter'
+
+# def get_login_redirect_url(user):
+#     if user.is_superuser:
+#         return '/account/dashboard'
+#     else:
+#         return '/account/dashboard'
+
+# LOGIN_REDIRECT_URL = get_login_redirect_url
 
 
 
