@@ -121,7 +121,7 @@
   --primary-button-filter: brightness(0) saturate(100%) invert(47%) sepia(0%)
     saturate(999%) hue-rotate(55deg) brightness(91%) contrast(83%);
 
-  /* Mostly unused colors. May be useful */
+  /* Useful colors */
   --red-color: #c01512;
   --red-color-hover: #aa0202;
   --green-color: #12c064;
@@ -149,6 +149,9 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
 }
@@ -242,6 +245,7 @@ h2 {
 /* Subblock footer */
 
 .footer {
+  flex-shrink: 0;
   padding: 20px 200px;
   font-size: 14px;
   background: var(--secondary-bg-color);
@@ -258,6 +262,7 @@ h2 {
 /* Subblock page content */
 
 .main_content {
+  flex-grow: 1;
   display: flex;
   padding: 30px 200px 30px 200px;
   gap: 30px;
@@ -284,15 +289,6 @@ label {
   font-weight: 200;
 }
 
-form div {
-  display: flex;
-  flex-direction: column;
-}
-
-form input {
-  max-width: max-content;
-}
-
 form .errorlist {
   display: inline-block;
   font-size: 13px;
@@ -309,14 +305,39 @@ input:focus {
   outline-offset: -2px;
 }
 
+input[type="checkbox"]:focus {
+  outline: none;
+}
+
 input[type="submit"] {
   margin: 0;
   cursor: pointer;
+  max-width: max-content;
 }
 
 input[type="submit"]:hover {
   background-color: var(--secondary-bg-color-hover);
   border-color: var(--secondary-bg-color-hover);
+}
+
+input[type="password"]::placeholder {
+  font-family: "Circe Rounded", sans-serif;
+}
+
+input[type="password"] {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+input[name="std-date_of_birth"],
+input[name="tut-date_of_birth"] {
+  max-width: max-content;
+}
+
+.user_main_form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: max-content;
 }
 
 .register_form {
@@ -326,7 +347,12 @@ input[type="submit"]:hover {
   max-width: max-content;
 }
 
+.register_form div {
+  width: 100%;
+}
+
 .register_form input {
+  width: 100%;
   display: block;
   font-size: 13px;
   font-weight: 200;
@@ -367,6 +393,7 @@ input[type="submit"]:hover {
 /* Subblock for choices inputs in form */
 
 .choice_input {
+  width: 100%;
   display: block;
   font-size: 13px;
   font-weight: 200;
@@ -414,7 +441,10 @@ option {
 
 .register_form_checkbox {
   display: flex;
+  flex-direction: row;
   gap: 5px;
+  padding-right: 30px;
+  max-width: max-content;
 }
 
 .more_info_heading {

@@ -2,11 +2,14 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}Discipline delete{% endblock %}
 
 {% block content %}
     {# Including page title #}
-    {% include "page_heading.html" with back_url="account:discipline_list" page_title="Удаление дисциплины" list_url="account:discipline_list" %}
+  {% original_query_string next_url as next_url %}
+    {% include "page_heading.html" with back_url="account:discipline_list" page_title="Удаление дисциплины" list_url="account:discipline_list" next_url=next_url %}
 
     <div class="delete_object">
         <h2 class="delete_object_name">{{ discipline.name }}</h2>

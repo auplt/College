@@ -14,14 +14,12 @@ $(document).ready(function () {
  */
 $(document).ready(function () {
   min_width = 0;
-  $(".items_list .items_list_sem_items .item_title .item_title_heading").each(
-    function () {
-      var this_width = $(this)[0].getBoundingClientRect().width;
-      if (this_width > min_width) {
-        min_width = this_width;
-      }
+  $(".items_list .items_list_sem_items .item_title").each(function () {
+    var this_width = $(this)[0].getBoundingClientRect().width;
+    if (this_width > min_width) {
+      min_width = this_width;
     }
-  );
+  });
   if (min_width > 300) {
     min_width = 300;
   }

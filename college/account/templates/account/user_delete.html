@@ -2,11 +2,15 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}User delete{% endblock %}
 
 {% block content %}
     {# Including page title #}
-    {% include "page_heading.html" with back_url="account:user_list" page_title="Удаление пользователя" list_url="account:user_list" %}
+    {% original_query_string next_url as next_url %}
+
+    {% include "page_heading.html" with back_url="account:user_list" page_title="Удаление пользователя" list_url="account:user_list" next_url=next_url %}
     <div class="delete_object">
         <h2 class="delete_object_name">{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
         <div class="delete_object_description">Логин {{ user.username }}</div>

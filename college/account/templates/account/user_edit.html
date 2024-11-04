@@ -2,6 +2,8 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block page_scripts %}
 {% load static %}
 <script src="{% static 'js/user_edit_form.js' %}"></script>
@@ -11,14 +13,17 @@
 
 {% block content %}
     {# Including page title #}
-    {% include 'page_heading.html' with back_url='account:user_list' page_title="Изменение информации о пользователе" list_url='account:user_list' %}
+    {% original_query_string next_url as next_url %}
+    {% include 'page_heading.html' with back_url='account:user_list' page_title="Изменение информации о пользователе" list_url='account:user_list' next_url=next_url %}
 
     {% include "form_success.html" with form=user_form %}
     <form class="register_form edit_user" method="post">
+                <div class="user_main_form">
         {{ user_form.as_div }}
+                            </div>
             <div class="register_user__student">
                 <div class="register_form_checkbox">
-                    {{user_form.is_student.label_tag}} {{user_form.is_student}}
+                    {{user_form.is_student.label_tag}}
                 </div>
                 <div class="more_info__student">
                     <div class="more_info_heading">
@@ -26,11 +31,12 @@
                     </div>
                     <div class="more_info_content">
                         {{ student_form.as_div }}
-
+                        {% if student %}
                         {# Including control buttons delete #}
                         {% url 'account:user_edit' user.id as next_url %}
                         {% url 'account:user_delete_student' user.id as del_url %}
                         {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -44,12 +50,13 @@
                     </div>
                     <div class="more_info_content">
                         {{ tutor_form.as_div }}
-
+                        {% if tutor %}
                         {# Including control buttons delete #}
                         {% url 'account:user_edit' user.id as next_url %}
                         {% url 'account:user_delete_tutor' user.id as del_url %}
 
                         {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+                        {% endif %}
                     </div>
                 </div>
             </div>

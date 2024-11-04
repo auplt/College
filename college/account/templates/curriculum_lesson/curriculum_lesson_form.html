@@ -7,6 +7,13 @@
 {% block title %}Create curriculum lesson{% endblock %}
 
 {% block content %}
+        {% with request.path as this_url %}
+    {% get_url_params request as url_params %}
+    {% if url_params %}
+    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+    {% endif %}
+  {# Including page title #}
+  {% original_query_string next_url as next_url %}
   {% with "Занятие" as page_title %}
     {% if action == 'C' %}
       {% update_variable "Добавление занятия в план" as page_title %}
@@ -17,27 +24,32 @@
     {% endif %}
 
     {% if group %}
-      {% include 'page_heading.html' with back_url='account:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url='account:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% elif discipline %}
-      {% include 'page_heading.html' with back_url='account:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url='account:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% elif tutor %}
-      {% include 'page_heading.html' with back_url='account:user_details' back_id=tutor.user_id.id page_title=page_title list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url='account:user_details' back_id=tutor.user_id.id page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% else %}
-       {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title list_url='account:group_list' %}
+       {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% endif %}
   {% endwith %}
 
   {% include 'form_success.html' with form=curriculum_lesson_form %}
-  <form class="register_form register_curriculum_lesson" method="post">
+  <form class="register_form register_curriculum_lesson" method="post" novalidate>
     {% for field in curriculum_lesson_form %}
       <div>
-        {{field}}
+        {% if curriculum_lesson_form.errors %}
+            {% for error in field.errors %}
+                <div class="errorlist"> {{ error }} </div>
+            {% endfor %}
+        {% endif %}
+        {{ field }}
         {# Links to redirect to another page #}
         {% if field.auto_id == "id_curriculum_id" %}
           {% if group %}
-            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}">Нужной группы нет в списке</a>
+            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
           {% elif discipline %}
-            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}">Нужной группы нет в списке</a>
+            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
         {% endif %}
       {% endif %}
       </div>
@@ -49,4 +61,5 @@
         value="{% if action == 'C' %}Создать{% elif action == 'U' %}Изменить{% else %}Подтвердить{% endif %}" />
     </div>
   </form>
+{% endwith %}
 {% endblock %}

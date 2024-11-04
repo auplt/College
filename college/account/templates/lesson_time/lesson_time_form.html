@@ -2,6 +2,8 @@
 
 {% extends 'base.html' %}
 
+{% load group_extras %}
+
 {% block page_scripts %}
   {% load static %}
   <script src="{% static 'js/lesson_time_form.js' %}"></script>
@@ -13,17 +15,18 @@
 
 {% block content %}
   {# Including page title #}
+{% original_query_string next_url as next_url %}
   {% if action == 'C' %}
     {% with page_title='Добавление времени занятия' %}
-      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' %}
+      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' next_url=next_url %}
     {% endwith %}
   {% elif action == 'U' %}
     {% with page_title='Изменение времени занятия' %}
-      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' %}
+      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' next_url=next_url %}
     {% endwith %}
   {% else %}
     {% with page_title='Форма времени занятия' %}
-      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' %}
+      {% include 'page_heading.html' with back_url='account:lesson_time_list' page_title=page_title list_url='account:lesson_time_list' next_url=next_url %}
     {% endwith %}
   {% endif %}
 

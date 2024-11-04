@@ -2,15 +2,17 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
 {% load static %}
 
 {% block title %}Classroom form{% endblock %}
 
 {% block content %}
   {# Including page title #}
+  {% original_query_string next_url as next_url %}
   {% if action == 'C' %}
     {% with page_title='Добавление аудитории' %}
-      {% include 'page_heading.html' with back_url='account:classroom_list' page_title=page_title list_url='account:classroom_list' %}
+      {% include 'page_heading.html' with back_url='account:classroom_list' page_title=page_title list_url='account:classroom_list' next_url=next_url %}
     {% endwith %}
   {% elif action == 'U' %}
     {% with page_title='Изменение аудитории' %}

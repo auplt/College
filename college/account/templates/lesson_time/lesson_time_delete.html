@@ -2,12 +2,15 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
 {% load static %}
+
 {% block title %}Lesson time delete{% endblock %}
 
 {% block content %}
     {# Including page title #}
-    {% include "page_heading.html" with back_url="account:lesson_time_list" page_title="Удаление времени занятия" list_url="account:lesson_time_list" %}
+{% original_query_string next_url as next_url %}
+    {% include "page_heading.html" with back_url="account:lesson_time_list" page_title="Удаление времени занятия" list_url="account:lesson_time_list" next_url=next_url %}
 
     <div class="delete_object">
         <h2 class="delete_object_name">{{ lesson_time.name }}</h2>

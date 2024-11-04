@@ -2,6 +2,8 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block page_scripts %}
 {% load static %}
 <script src="{% static 'js/group_semester_form.js' %}"></script>
@@ -10,24 +12,35 @@
 {% block title %}Add new semester{% endblock %}
 
 {% block content %}
+        {% with request.path as this_url %}
+    {% get_url_params request as url_params %}
+    {% if url_params %}
+    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+    {% endif %}
   {# Including page title #}
+{% original_query_string next_url as next_url %}
   {% if group %}
     {% if group.group_id %}
-      {% include 'page_heading.html' with back_url="account:group_details" back_id=group.group_id page_title="Добавление нового семестра" list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url="account:group_details" back_id=group.group_id page_title="Добавление нового семестра" list_url='account:group_list' next_url=next_url %}
     {% endif %}
   {% else %}
-     {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление нового семестра" list_url='account:group_list' %}
+     {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление нового семестра" list_url='account:group_list' next_url=next_url %}
   {% endif %}
 
   {% include 'form_success.html' with form=group_semester_form %}
-  <form class="register_form register_group_semester" method="post">
+  <form class="register_form register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}?group_id={{group.group_id}}" novalidate>
     {% for field in group_semester_form %}
     <div>
-      {{field}}
+      {% if group_semester_form.errors %}
+          {% for error in field.errors %}
+              <div class="errorlist"> {{ error }} </div>
+          {% endfor %}
+      {% endif %}
+      {{ field }}
       {# Links to redirect to another page #}
       {% if field.auto_id == "id_group_id" %}
         {% if group %}
-          <a class="register_form_link" href="{% url 'account:group_register' %}?next={% url 'account:group_semester_register' %}?group_id={{ group.group_id }}">Нужной группы нет в списке</a>
+          <a class="register_form_link" href="{% url 'account:group_register' %}?group_id={{ group.group_id }}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
         {% endif %}
       {% endif %}
     </div>
@@ -39,4 +52,5 @@
         value="Добавить" />
     </div>
   </form>
+{% endwith %}
 {% endblock %}

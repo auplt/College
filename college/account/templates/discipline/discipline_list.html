@@ -13,12 +13,18 @@
 {% block title %}Discipline list{% endblock %}
 
 {% block content %}
+        {% with request.path as this_url %}
+    {% get_url_params request as url_params %}
+    {% if url_params %}
+    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+    {% endif %}
     <div class="page_title">
         {# Including page title #}
-        {% include "page_heading.html" with back_url="account:discipline_list" page_title="Список дисциплин" %}
+          {% original_query_string next_url as next_url %}
+        {% include "page_heading.html" with back_url="account:discipline_list" page_title="Список дисциплин" next_url=next_url %}
         {# Including add button #}
         {% url 'account:discipline_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url add_txt="Дисциплина" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Дисциплина" %}
     </div>
 
     {% include "success_msg.html" %}
@@ -26,7 +32,7 @@
         {% for discipline in disciplines %}
             <div class="list_item">
                 <div class="item_title">
-                    <a href="{{ discipline.get_absolute_url }}">
+                    <a href="{{ discipline.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
                         <h2 class="item_title_heading">
                             {{ discipline.name }}
                         </h2>
@@ -34,10 +40,10 @@
                     <span class="tooltiptext tooltiptext_more">Подробнее</span>
                 </div>
                 {# Including control buttons edit and delete #}
-                {% url 'account:discipline_list' as next_url %}
-                {% include "buttons_controllers.html" with edit_link=discipline.get_edit_url next_edit_link=next_url del_link=discipline.get_delete_url next_del_link=next_url %}
+                {% include "buttons_controllers.html" with edit_link=discipline.get_edit_url next_edit_link=this_url del_link=discipline.get_delete_url next_del_link=this_url %}
             </div>
         {% endfor %}
     </div>
     {% include "pagination.html" with page=disciplines %}
+{% endwith %}
 {% endblock %}

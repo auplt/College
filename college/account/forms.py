@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
 from formset.widgets import DateCalendar
 from django.forms.utils import ErrorList, ErrorDict
+from django.utils.translation import gettext_lazy as _
 from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, \
     Curriculum, CurriculumLesson, TypesOfLesson, TTLesson
 
@@ -25,6 +26,13 @@ class CustomAuthenticationForm(AuthenticationForm):
     """
     Form for user data to log in.
     """
+    error_messages = {
+        "invalid_login": _(
+            "Имя пользователя или пароль неверны. Повторите попытку входа"
+        ),
+        "inactive": _("Аккаунт неактивен"),
+    }
+
     username = forms.CharField(label=False, widget=forms.TextInput(attrs={
         'placeholder': 'Логин'
     }))
@@ -165,8 +173,8 @@ class UserRegistrationForm(forms.ModelForm):
         fields = ['last_name', 'first_name', 'second_name', 'username', 'first_name', 'email', 'password', 'password2',
                   'is_student', 'is_tutor']
 
-    class Media:
-        js = ('js/user_form.js',)
+    # class Media:
+    #     js = ('js/user_form.js',)
 
     def user_fields(self):
         # Set of invisible fields
@@ -230,8 +238,8 @@ class UserEditForm(forms.ModelForm):
         model = User
         fields = ['last_name', 'first_name', 'second_name', 'username', 'first_name', 'email']
 
-    class Media:
-        js = ('js/user_edit_form.js',)
+    # class Media:
+    #     js = ('js/user_edit_form.js',)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -304,8 +312,8 @@ class LessonTimeRegisterForm(forms.ModelForm):
         model = LessonTime
         fields = ['name', 'start_time', 'end_time']
 
-    class Media:
-        js = ('js/lesson_time_form.js',)
+    # class Media:
+    #     js = ('js/lesson_time_form.js',)
 
 
 # class LessonTimeEditForm(forms.ModelForm):

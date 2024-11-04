@@ -112,6 +112,8 @@ def user_list(request):
             del request.session[obj_stat]
     context = {'users': users}
     context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'account/user_list.html', context=context)
 
 
@@ -129,7 +131,8 @@ def user_details(request, id):
 
     groups = GroupMember.objects.select_related('student_id__user_id',
                                                 'group_semester_id__group_id') \
-        .values('group_semester_id__group_id__name',
+        .values('group_member_id',
+                'group_semester_id__group_id__name',
                 'group_semester_id__semester_num',
                 'group_semester_id__group_id__group_id') \
         .filter(student_id__user_id__id=id) \
@@ -137,7 +140,8 @@ def user_details(request, id):
 
     disciplines = CurriculumLesson.objects.select_related('tutor_id__user_id',
                                                           'curriculum_id__discipline_id') \
-        .values('curriculum_id__discipline_id__name',
+        .values('curriculum_lesson_id',
+                'curriculum_id__discipline_id__name',
                 'curriculum_id__discipline_id__discipline_id') \
         .filter(tutor_id__user_id__id=id) \
         .all()
@@ -228,6 +232,9 @@ def user_register(request):
                'student_form': student_form,
                'tutor_form': tutor_form,
                'action': 'C'}
+    print(user_form)
+    print(student_form)
+    print(tutor_form)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     return render(request, 'account/user_register.html', context=context)
@@ -337,6 +344,8 @@ def user_edit(request, id):
                'student_form': student_form,
                'tutor_form': tutor_form,
                'user': user_obj,
+               'student': student_obj,
+               'tutor': tutor_obj,
                'action': 'U'}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
@@ -481,6 +490,8 @@ def group_list(request):
             del request.session[obj_stat]
     context = {'groups': groups}
     context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'group/group_list.html', context=context)
 
 
@@ -591,6 +602,9 @@ def group_details(request, group_id):
             del request.session[obj_stat]
     context.update(obj_stats)
     context.update(tt_lesson_details(request, group_id=group_id))
+
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     # print(context)
     return render(request, 'group/group_detail.html', context=context)
 
@@ -713,6 +727,8 @@ def discipline_list(request):
             del request.session[obj_stat]
     context = {'disciplines': disciplines}
     context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'discipline/discipline_list.html', context=context)
 
 
@@ -870,6 +886,8 @@ def classroom_list(request):
             del request.session[obj_stat]
     context = {'classrooms': classrooms}
     context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'classroom/classroom_list.html', context=context)
 
 
@@ -889,6 +907,8 @@ def classroom_details(request, classroom_id):
     context.update(obj_stats)
     context.update(tt_lesson_details(request, classroom_id=classroom_id))
     print(context)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'classroom/classroom_detail.html', context=context)
 
 
@@ -994,6 +1014,8 @@ def lesson_time_list(request):
             del request.session[obj_stat]
     context = {'lesson_times': lesson_times}
     context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'lesson_time/lesson_time_list.html', context=context)
 
 
@@ -1012,6 +1034,8 @@ def lesson_time_details(request, lesson_id):
             del request.session[obj_stat]
     context.update(obj_stats)
     print(context)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'lesson_time/lesson_time_detail.html', context=context)
 
 
@@ -1143,13 +1167,15 @@ def group_semester_register(request):
             except Resolver404 or KeyError:
                 return redirect(reverse('account:group_details',
                                         kwargs={'group_id': new_group_semester.group_id.group_id}))
-    if 'group_id' in request.GET.dict():
-        group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
-        group_semester_form = GroupSemesterRegisterForm(initial={'group_id': group_obj})
     else:
-        group_semester_form = GroupSemesterRegisterForm()
+        if 'group_id' in request.GET.dict():
+            group_obj = get_object_or_404(Group, group_id=request.GET.get('group_id'))
+            group_semester_form = GroupSemesterRegisterForm(initial={'group_id': group_obj})
+        else:
+            group_semester_form = GroupSemesterRegisterForm()
     context = {'group_semester_form': group_semester_form,
                'group': group_obj}
+
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     return render(request, 'group_semester/group_semester_register.html', context)
@@ -1369,6 +1395,7 @@ def curriculum_register(request):
             curriculum_form = CurriculumRegisterForm()
     context = {'curriculum_form': curriculum_form,
                'group': group_obj}
+    print(context)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     return render(request, 'curriculum/curriculum_from.html', context)
@@ -1501,6 +1528,8 @@ def curriculum_lesson_group_details(request, group_id):
             del request.session[obj_stat]
     context.update(obj_stats)
     # print(context)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
     return render(request, 'curriculum_lesson/curriculum_lesson_group_detail.html', context=context)
 
 

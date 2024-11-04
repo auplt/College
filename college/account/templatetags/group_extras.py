@@ -50,13 +50,16 @@ def get_value(dictionary: dict, data: str):
 
 
 @register.simple_tag
-def change_query_string(query_string: str):
+def change_query_string(query_string: str) -> str | None:
     """
     Simple tag that changes & in query string on :.
     :param query_string: input query string
     :return: variable with new value
     """
-    return query_string.replace('&', ':')
+    if not query_string:
+        return None
+    new_query_string = query_string.replace('&', ':')
+    return new_query_string[:-1] if new_query_string[-1] == ':' else new_query_string
 
 
 @register.simple_tag
@@ -129,3 +132,21 @@ def date_convertor(date_str: datetime.date) -> str:
     :return: formatted date string
     """
     return date_str.strftime('%d.%m.%Y')
+
+
+@register.simple_tag
+def get_url_params(request) -> str | None:
+    """
+    Simple tag that returns parameters from input url without 'next' parameter.
+    :param request: input request
+    :return: string of url parameters without 'next' parameter
+    """
+    res_url = ""
+    for key, value in request.GET.items():
+        if res_url:
+            res_url = res_url + '&'
+        if key not in ('next', 'next_url'):
+            res_url = res_url + key + '=' + value
+    if res_url == "":
+        return None
+    return res_url

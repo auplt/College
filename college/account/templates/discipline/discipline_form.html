@@ -2,26 +2,29 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}Discipline form{% endblock %}
 
 {% block content %}
   {# Including page title #}
+  {% original_query_string next_url as next_url %}
   {% if action == 'C' %}
     {% with page_title='Добавление дисциплины' %}
-      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' %}
+      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' next_url=next_url %}
     {% endwith %}
   {% elif action == 'U' %}
     {% with page_title='Изменение дисциплины' %}
-      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' %}
+      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' next_url=next_url %}
     {% endwith %}
   {% else %}
     {% with page_title='Форма дисциплины' %}
-      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' %}
+      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' next_url=next_url %}
     {% endwith %}
   {% endif %}
 
   {% include 'form_success.html' with form=discipline_form %}
-  <form class="register_form register_discipline" method="post">
+  <form class="register_form register_discipline" method="post" novalidate>
     {{ discipline_form.as_div }}
     {% csrf_token %}
     <div>

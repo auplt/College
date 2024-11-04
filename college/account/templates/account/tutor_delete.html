@@ -2,11 +2,14 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}Tutor delete{% endblock %}
 
 {% block content %}
     {# Including page title #}
-    {% include "page_heading.html" with back_url="account:user_edit" back_id=user.id page_title="Удаление дополнительной информации о преподавателе" list_url="account:user_list" %}
+  {% original_query_string next_url as next_url %}
+    {% include "page_heading.html" with back_url="account:user_edit" back_id=user.id page_title="Удаление дополнительной информации о преподавателе" list_url="account:user_list" next_url=next_url %}
 
     <div class="delete_object">
         <h2 class="delete_object_name">{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>

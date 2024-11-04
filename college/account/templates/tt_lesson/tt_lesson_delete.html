@@ -9,7 +9,7 @@
 {% block content %}
     {# Including page title #}
     {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url=next_url page_title="Удаление занятия из расписания" %}
+    {% include "page_heading.html" with back_url=next_url page_title="Удаление занятия из расписания" next_url=next_url %}
 
     <div class="delete_object">
         <h2 class="delete_object_name">{{ tt_lesson.curriculum_lesson_id.discipline_id.name }}</h2>

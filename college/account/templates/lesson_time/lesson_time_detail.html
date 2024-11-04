@@ -2,19 +2,29 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
 {% load static %}
+
 {% block title %}Lesson time detail{% endblock %}
 
 {% block content %}
+        {% with request.path as this_url %}
+    {% get_url_params request as url_params %}
+    {% if url_params %}
+    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+    {% endif %}
+{{this_url}}
     {# Including page title #}
-    {% include "page_heading.html" with back_url="account:lesson_time_list" page_title=lesson_time.name list_url="account:lesson_time_list" %}
+{% original_query_string next_url as next_url %}
+    {% include "page_heading.html" with back_url="account:lesson_time_list" page_title=lesson_time.name list_url="account:lesson_time_list" next_url=next_url %}
 
     {% include "success_msg.html" %}
     <div class="details_description">Начало в {{ lesson_time.start_time }} окончание в {{ lesson_time.end_time }}</div>
     <div class="details_controllers">
         <a class="controller_button details_controller_button__delete"
-           href="{{ lesson_time.get_delete_url }}?next={% url 'account:lesson_time_details' lesson_time.lesson_id %}">Удалить</a>
+           href="{{ lesson_time.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">Удалить</a>
         <a class="controller_button details_controller_button__edit"
-           href="{{ lesson_time.get_edit_url }}?next={% url 'account:lesson_time_details' lesson_time.lesson_id %}">Редактировать</a>
+           href="{{ lesson_time.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">Редактировать</a>
     </div>
+{% endwith %}
 {% endblock %}

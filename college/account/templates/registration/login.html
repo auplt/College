@@ -2,6 +2,8 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block page_scripts %}
   {% load static %}
   <link href="{% static 'css/page_heading.css' %}" rel="stylesheet">
@@ -10,18 +12,15 @@
 {% block title %}Вход{% endblock %}
 
 {% block content %}
-  <h1 class="page_heading_title page_heading_wrapper">Вход</h1>
-   {% if form.errors %}
-      <p class="form_object_description">
-        Имя пользователя или пароль не верные.<br/>
-        Попробуйте еще раз.
-      </p>
-  {% endif %}
+  {# Including page title #}
+  {% original_query_string next as next_url %}
+  {% include "page_heading.html" with back_url="account:login" page_title="Вход" next_url=next_url %}
+
   <form class="register_form register_lesson_time" action="{% url 'account:login' %}" method="post">
     {{ form.as_div }}
     {% csrf_token %}
     <div>
-      <input type="hidden" name="next" value="{{ next }}" />
+      <input type="hidden" name="next" value="{% original_query_string next %}" />
       <input class="controller_button form_submit_button__reg" type="submit" value="Войти">
     </div>
   </form>

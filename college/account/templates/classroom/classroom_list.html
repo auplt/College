@@ -13,12 +13,18 @@
 {% block title %}Classroom list{% endblock %}
 
 {% block content %}
+        {% with request.path as this_url %}
+    {% get_url_params request as url_params %}
+    {% if url_params %}
+    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+    {% endif %}
     <div class="page_title">
         {# Including page title #}
-        {% include "page_heading.html" with back_url="account:classroom_list" page_title="Список аудиторий" %}
+          {% original_query_string next_url as next_url %}
+        {% include "page_heading.html" with back_url="account:classroom_list" page_title="Список аудиторий" next_url=next_url %}
         {# Including add button #}
         {% url 'account:classroom_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url add_txt="Аудитория" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Аудитория" %}
     </div>
 
     {% include "success_msg.html" %}
@@ -26,7 +32,7 @@
         {% for classroom in classrooms %}
             <div class="list_item">
                 <div class="item_title">
-                    <a href="{{ classroom.get_absolute_url }}">
+                    <a href="{{ classroom.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
                         <h2 class="item_title_heading">
                             {{ classroom.number }}
                         </h2>
@@ -34,9 +40,9 @@
                     <span class="tooltiptext tooltiptext_more">Подробнее</span>
                 </div>
                 {# Including control buttons edit and delete #}
-                {% url 'account:classroom_list' as next_url %}
-                {% include "buttons_controllers.html" with edit_link=classroom.get_edit_url next_edit_link=next_url del_link=classroom.get_delete_url next_del_link=next_url %}
+                {% include "buttons_controllers.html" with edit_link=classroom.get_edit_url next_edit_link=this_url del_link=classroom.get_delete_url next_del_link=this_url %}
             </div>
         {% endfor %}
     </div>
+{% endwith %}
 {% endblock %}

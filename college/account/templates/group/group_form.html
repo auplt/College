@@ -2,21 +2,24 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block title %}Create a group{% endblock %}
 
 {% block content %}
   {# Including page title #}
+          {% original_query_string next_url as next_url %}
   {% if action == 'C' %}
     {% with page_title='Добавление группы' %}
-      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% endwith %}
   {% elif action == 'U' %}
     {% with page_title='Изменение группы' %}
-      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% endwith %}
   {% else %}
     {% with page_title='Форма группы' %}
-      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' %}
+      {% include 'page_heading.html' with back_url='account:group_list' page_title=page_title list_url='account:group_list' next_url=next_url %}
     {% endwith %}
   {% endif %}
 

@@ -4,6 +4,7 @@
 
 {% load static %}
 {% load group_extras %}
+
 {% block page_scripts %}
   <link href="{% static 'css/group_details.css' %}" rel="stylesheet">
   <script src="{% static 'js/list.js' %}"></script>
@@ -12,8 +13,14 @@
 {% block title %}Информация о группе{% endblock %}
 
 {% block content %}
+        {% with request.path as this_url %}
+    {% get_url_params request as url_params %}
+    {% if url_params %}
+    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+    {% endif %}
   {# Including page title #}
-  {% include "page_heading.html" with back_url="account:group_list" page_title=group.name list_url="account:group_list" %}
+  {% original_query_string next_url as next_url %}
+  {% include "page_heading.html" with back_url="account:group_list" page_title=group.name list_url="account:group_list" next_url=next_url %}
 
   {% include "success_msg.html" %}
   <div class="details_description">
@@ -21,11 +28,11 @@
   </div>
   <div class="details_controllers">
     <a class="controller_button details_controller_button__delete"
-       href="{{ group.get_delete_url }}?next={% url 'account:group_details' group.group_id %}">
+       href="{{ group.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">
       Удалить
     </a>
     <a class="controller_button details_controller_button__edit"
-       href="{{ group.get_edit_url }}?next={% url 'account:group_details' group.group_id %}">
+       href="{{ group.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">
       Редактировать
     </a>
   </div>
@@ -36,8 +43,7 @@
         <h2 class="group_info_detail_title">Студенты</h2>
         {# Including add button #}
         {% url 'account:group_semester_register' as add_url %}
-        {% url 'account:group_semester_register' group.group_id as next_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:next_url add_txt="Семестр" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
       </div>
       <div class="group_info_members">
         {% if group_members %}
@@ -58,18 +64,16 @@
                 <div class="group_members_semester_ctrl">
                   {# Including add button #}
                   {% url 'account:group_member_register' as add_url %}
-                  {% url 'account:group_details' group.group_id as next_url %}
-                  {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:next_url add_txt="Студент" %}
+                  {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Студент" %}
                 </div>
                 <div class="group_members_semester_delete">
                   {# Including control buttons delete #}
-                  {% url 'account:group_details' group.group_id as next_url %}
                   {% url 'account:group_semester_delete' as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group_member.group_semester_id__group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:next_url %}
+                  {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group_member.group_semester_id__group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
                 </div>
               {% endif %}
               {% if group_member.student_id__user_id__id %}
-                <a class="group_members_name toggle_name {{is_hidden}}" href="{% url 'account:user_details' group_member.student_id__user_id__id %}?next={% url 'account:group_details' group.group_id %}">
+                <a class="group_members_name toggle_name {{is_hidden}}" href="{% url 'account:user_details' group_member.student_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">
                   <span>
                     {{group_member.student_id__user_id__last_name}}
                     {{group_member.student_id__user_id__first_name}}
@@ -78,9 +82,8 @@
                 </a>
                 <div class="group_members_ctrl toggle_ctrl {{is_hidden}}">
                   {# Including control buttons delete #}
-                  {% url 'account:group_details' group.group_id as next_url %}
                   {% url 'account:group_member_delete' group_member.group_member_id as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=next_url %}
+                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
                 </div>
                 {# Extra div needed for correct grid work #}
                 <div class="group_members_additional toggle_additional {{is_hidden}}">
@@ -99,8 +102,7 @@
         <h2 class="group_info_detail_title">План занятий</h2>
         {# Including add button #}
         {% url 'account:curriculum_lesson_group_details' group.group_id as add_url %}
-        {% url 'account:group_semester_register' group.group_id as next_url %}
-        {% include "add_button.html" with add_link=add_url add_txt="Подробнее" no_img="Y" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Подробнее" no_img="Y" %}
       </div>
       {% if group_lessons %}
         <div class="group_info_curriculum">
@@ -120,7 +122,7 @@
               {% endif %}
               {% if prev_dis_name != group_lesson.curriculum_id__discipline_id__name %}
                 {% if group_lesson.curriculum_id__discipline_id__name %}
-                  <a class="curriculum_discipline toggle_name {{is_hidden}}" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}?next={% url 'account:group_details' group.group_id %}">
+                  <a class="curriculum_discipline toggle_name {{is_hidden}}" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
                     {{ group_lesson.curriculum_id__discipline_id__name }}
                   </a>
                 {% endif %}
@@ -128,7 +130,7 @@
               {% if group_lesson.tutor_id__user_id__id %}
                 <div class="curriculum_discipline_tutor_item toggle_detail {{is_hidden}}">
                   {% get_value lesson_types group_lesson.lesson_type %}
-                  <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}?next={% url 'account:group_details' group.group_id %}">
+                  <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">
                     {{ group_lesson.tutor_id__user_id__last_name }}
                     {{ group_lesson.tutor_id__user_id__first_name }}
                     {{ group_lesson.tutor_id__user_id__second_name }}
@@ -150,7 +152,8 @@
       {% url 'account:group_details' group.group_id as day_url %}
       {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}
       {% add_to_list add_group as entities %}
-      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url %}
+      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}
     </div>
   </div>
+{% endwith %}
 {% endblock %}

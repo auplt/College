@@ -80,6 +80,10 @@
         {% static 'images/hw.svg' as src_link %}
 
         {% include "navigation_item.html" with src_link=src_link nav_txt="Домашние задания" redirect_link="#" %}
+
+        {% static 'images/clock.svg' as src_link %}
+        {% url 'account:lesson_time_list' as redirect_link %}
+        {% include "navigation_item.html" with src_link=src_link nav_txt="Время занятий" redirect_link=redirect_link %}
       </nav>
       <div id="content">
         {% block content %}

@@ -2,6 +2,8 @@
 
 {% extends "base.html" %}
 
+{% load group_extras %}
+
 {% block page_scripts %}
 {% load static %}
 <script src="{% static 'js/user_form.js' %}"></script>
@@ -11,16 +13,25 @@
 
 {% block content %}
     {# Including page title #}
-    {% include 'page_heading.html' with back_url='account:user_list' page_title="Создание аккаунта" list_url='account:user_list' %}
+  {% original_query_string next_url as next_url %}
+    {% include 'page_heading.html' with back_url='account:user_list' page_title="Создание аккаунта" list_url='account:user_list' next_url=next_url %}
 
     {% include "form_success.html" with form=user_form %}
     <form class="register_form register_user" method="post" novalidate>
+        <div class="user_main_form">
+
+
         {% for field in user_form.user_fields %}
             <div>
+                {% if user_form.errors %}
+                    {% for error in field.errors %}
+                        <div class="errorlist"> {{ error }} </div>
+                    {% endfor %}
+                {% endif %}
                 {{ field }}
             </div>
         {% endfor %}
-
+        </div>
         <div class="register_user__student">
             <div class="register_form_checkbox">
                 {{user_form.is_student.label_tag}} {{user_form.is_student}}
