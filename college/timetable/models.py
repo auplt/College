@@ -507,8 +507,8 @@ class TTLesson(models.Model):
     class Meta:
         db_table = 'tt_lessons'
         constraints = [
-            models.UniqueConstraint(fields=['day_name', 'week_type', 'curriculum_lesson_id', 'lesson_time_id'],
-                                    name='tt_lesson_day_week_time_curriculum_les_unique')
+            models.UniqueConstraint(fields=['date', 'lesson_time_id', 'curriculum_lesson_id'],
+                                    name='tt_lesson_date_time_curriculum_lesson_unique')
         ]
 
 

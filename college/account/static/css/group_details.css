@@ -106,25 +106,29 @@
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
+}
+.curriculum_discipline_tutor_item_wrapper {
   padding: 0 0 0 21px;
 }
 
 .curriculum_discipline_tutor_item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
   /* display: grid;
   grid-template-columns: repeat(auto-fill, max-content);
   grid-template-rows: repeat(2, max-content);
   grid-auto-flow: column dense; */
   /* align-items: start; */
+  /* justify-content: space-between; */
+  align-items: center;
   color: var(--primary-text-color);
   font-size: 16px;
   font-weight: 600;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
-  padding: 0 0 0 42px;
+
   /* width: fit-content; */
 }
 
@@ -140,8 +144,9 @@
 .discipline_tutor {
   display: flex;
   flex-direction: row;
-
   gap: 10px;
+
+  padding-left: 21px;
 }
 
 .curriculum_discipline_tutor {
