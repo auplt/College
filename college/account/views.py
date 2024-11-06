@@ -1496,9 +1496,11 @@ def curriculum_lesson_group_details(request, group_id):
                          .filter(curriculum_id__group_semester_id__group_id__group_id=group_id)
                          .order_by('-curriculum_id__group_semester_id__semester_num',
                                    'curriculum_id__discipline_id__name',
+                                   'lesson_type',
                                    'tutor_id__user_id__last_name',
                                    'tutor_id__user_id__first_name',
-                                   'tutor_id__user_id__second_name')
+                                   'tutor_id__user_id__second_name',
+                                   'tutor_id__user_id__id')
                          .all())
 
     # print(group_lessons_obj.query)

@@ -1,0 +1,61 @@
+{# Template for tags #}
+
+{% load group_extras %}
+{% load static %}
+
+{% block page_scripts %}
+  <link href="{% static 'css/tags.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% with None as tag_color_class %}
+  {% if tag_txt == "лек" %}
+    {% update_variable "tag__green" as tag_color_class %}
+  {% elif tag_txt == "экз" %}
+    {% update_variable "tag__red" as tag_color_class %}
+  {% elif tag_txt == "сем" or tag_txt == "пра" %}
+    {% update_variable "сем" as tag_txt %}
+    {% update_variable "tag__orange" as tag_color_class %}
+  {% elif tag_txt == "зач" %}
+    {% update_variable "tag__purple" as tag_color_class %}
+  {% elif tag_txt == "лаб" %}
+    {% update_variable "tag__turquoise" as tag_color_class %}
+  {% elif tag_txt == "чет" or tag_txt == "нечет" %}
+    {% update_variable "tag__grey" as tag_color_class %}
+  {% else %}
+    {% update_variable "tag__grey" as tag_color_class %}
+  {% endif %}
+
+{% if not tag_color_class %}
+    {% if tag_color == "green" %}
+      {% update_variable "tag__green" as tag_color_class %}
+    {% elif tag_color == "red" %}
+      {% update_variable "tag__red" as tag_color_class %}
+    {% elif tag_color == "orange" %}
+      {% update_variable "tag__orange" as tag_color_class %}
+    {% elif tag_color == "purple" %}
+      {% update_variable "tag__purple" as tag_color_class %}
+    {% elif tag_color == "turquoise" %}
+      {% update_variable "tag__turquoise" as tag_color_class %}
+    {% elif tag_color == "grey" %}
+      {% update_variable "tag__grey" as tag_color_class %}
+    {% else %}
+      {% update_variable "tag__grey" as tag_color_class %}
+    {% endif %}
+
+{% endif %}
+
+{% if not tag_url %}
+<div class="tag {{tag_color_class}}">
+  <span class="tag_txt">
+    {{tag_txt}}
+  </span>
+</div>
+{% else %}
+
+<div class="tt_lesson_classroom">
+  <a class="tt_lesson_classroom_name" href="{% url 'account:classroom_details' day_inf.classroom_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+    {{day_inf.classroom_number}}
+  </a>
+</div>
+{% endif %}
+  {% endwith %}

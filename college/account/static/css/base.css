@@ -128,7 +128,11 @@
   --green-color-hover: #109950;
   --grey-color: #808082;
   --grey-color-hover: #717175;
-  --turquolse-color: #dcfff1;
+  --turquoise-color: #dcfff1;
+
+  /* Additional tag colors */
+  --purple-tag-color: #ad09ca;
+  --turquoise-tag-color: #00be9f;
 
   /* Colors for pop-up messages */
   --msg-success-bg-color: #dcfff1;
@@ -528,16 +532,18 @@ option {
 
 .tooltiptext {
   visibility: hidden;
-  width: 120px;
+  /* width: 120px; */
   background-color: var(--primary-text-color);
   color: var(--header-text-color);
   text-align: center;
   border-radius: 6px;
-  padding: 5px 0;
+  padding: 5px 10px;
   position: absolute;
   z-index: 1;
   top: -20px;
   right: 105%;
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .tooltiptext_more {

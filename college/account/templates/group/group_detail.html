@@ -8,16 +8,17 @@
 {% block page_scripts %}
   <link href="{% static 'css/group_details.css' %}" rel="stylesheet">
   <script src="{% static 'js/list.js' %}"></script>
+  <script src="{% static 'js/group_details.js' %}"></script>
 {% endblock %}
 
 {% block title %}Информация о группе{% endblock %}
 
 {% block content %}
-        {% with request.path as this_url %}
-    {% get_url_params request as url_params %}
-    {% if url_params %}
-    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
-    {% endif %}
+  {% with request.path as this_url %}
+  {% get_url_params request as url_params %}
+  {% if url_params %}
+  {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+  {% endif %}
   {# Including page title #}
   {% original_query_string next_url as next_url %}
   {% include "page_heading.html" with back_url="account:group_list" page_title=group.name list_url="account:group_list" next_url=next_url %}
@@ -75,9 +76,9 @@
               {% if group_member.student_id__user_id__id %}
                 <a class="group_members_name toggle_name {{is_hidden}}" href="{% url 'account:user_details' group_member.student_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">
                   <span>
-                    {{group_member.student_id__user_id__last_name}}
-                    {{group_member.student_id__user_id__first_name}}
-                    {{group_member.student_id__user_id__second_name}}
+                    {{ group_member.student_id__user_id__last_name }}
+                    {{ group_member.student_id__user_id__first_name }}
+                    {{ group_member.student_id__user_id__second_name }}
                   </span>
                 </a>
                 <div class="group_members_ctrl toggle_ctrl {{is_hidden}}">
@@ -106,7 +107,7 @@
       </div>
       {% if group_lessons %}
         <div class="group_info_curriculum">
-          {% with prev_semester_num=-1 prev_dis_name='' is_hidden='' %}
+          {% with prev_semester_num=-1 prev_dis_name='' is_hidden='' lesson_type_lst=None previous_discip=None tutor_lst=None tutor_last_name='' tutor_first_name='' tutor_second_name='' tutor_full_name='' %}
             {% for group_lesson in group_lessons %}
               {% if prev_semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
                 <div class="item_semester_number">
@@ -125,24 +126,88 @@
                   <a class="curriculum_discipline toggle_name {{is_hidden}}" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
                     {{ group_lesson.curriculum_id__discipline_id__name }}
                   </a>
+          {% update_variable None as lesson_type_lst %}
+          {% update_variable None as tutor_lst %}
+                        {% if group_lesson.tutor_id__user_id__id %}
+          <div class="curriculum_discipline_tutor_item_wrapper toggle_detail {{is_hidden}}">
+<div class="curriculum_discipline_tutor_item ">
+  {% endif %}
                 {% endif %}
               {% endif %}
               {% if group_lesson.tutor_id__user_id__id %}
-                <div class="curriculum_discipline_tutor_item toggle_detail {{is_hidden}}">
-                  {% get_value lesson_types group_lesson.lesson_type %}
-                  <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">
-                    {{ group_lesson.tutor_id__user_id__last_name }}
-                    {{ group_lesson.tutor_id__user_id__first_name }}
-                    {{ group_lesson.tutor_id__user_id__second_name }}
-                  </a>
-                </div>
+
+
+
+
+                                          {% update_variable group_lessons|previous:forloop.counter0 as previous_discip %}
+            {% if previous_discip.lesson_type != group_lesson.lesson_type or previous_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num or previous_discip.curriculum_id__discipline_id__discipline_id != group_lesson.curriculum_id__discipline_id__discipline_id %}
+<!-- <span class="discipline_type">-->
+                    {% get_value lesson_types group_lesson.lesson_type as lesson_type %}
+                    {% comment %}{{ lesson_type }}{% endcomment %}
+                    {% add_to_list lesson_type lesson_type_lst as lesson_type_lst %}
+
+
+
+<!--                  </span>-->
+  {% endif %}
+
+
+            {% if previous_discip.tutor_id__user_id__id != group_lesson.tutor_id__user_id__id or previous_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num or previous_discip.curriculum_id__discipline_id__discipline_id != group_lesson.curriculum_id__discipline_id__discipline_id %}
+
+
+<!--  <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">-->
+                    {% update_variable group_lesson.tutor_id__user_id__last_name|add_str:" " as tutor_last_name %}
+                    {% update_variable group_lesson.tutor_id__user_id__first_name|slicestring:"0:1"|add_str:"." as tutor_first_name %}
+
+                    {% comment %}  {{ group_lesson.tutor_id__user_id__last_name }}
+                    {{ group_lesson.tutor_id__user_id__first_name|slicestring:"0:1" }}.
+                    {% endcomment %}
+                    {% if group_lesson.tutor_id__user_id__second_name %}
+    {% comment %}
+                      {{ group_lesson.tutor_id__user_id__second_name|slicestring:"0:1" }}.
+    {% endcomment %}
+                      {% update_variable group_lesson.tutor_id__user_id__second_name|slicestring:"0:1"|add_str:"." as tutor_second_name %}
+                    {% endif %}
+
+                    {% update_variable tutor_last_name|add_str:tutor_first_name|add_str:tutor_second_name as tutor_full_name %}
+
+    {% create_tutors_dict name=tutor_full_name link=group_lesson.tutor_id__user_id__id as tutor_dict %}
+                {% add_to_list tutor_dict tutor_lst as tutor_lst %}
+<!--                  </a>-->
+  {% endif %}
+
+                      {% with group_lessons|next:forloop.counter0 as next_discip %}
+            {% if next_discip.curriculum_id__discipline_id__name != group_lesson.curriculum_id__discipline_id__name or next_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
+  {% if  lesson_type_lst %}
+  <div class="discipline_type">
+  {% for lesson_type in lesson_type_lst %}
+	                    {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
+            {% endfor %}
+                       </div>
+  {% endif %}
+   {% if  tutor_lst %} <div class="discipline_tutor">
+  {% for tutor in tutor_lst %}
+
+
+
+ <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' tutor.link %}{% if this_url %}?next={{this_url}}{% endif %}">
+ {{tutor.name}}
+ </a>
+              {% endfor %}  </div>
+    {% endif %}
+
+
+          </div>
+            </div>
+          {% endif %}
+          {% endwith %}
               {% endif %}
               {% update_variable group_lesson.curriculum_id__group_semester_id__semester_num as prev_semester_num %}
               {% update_variable group_lesson.curriculum_id__discipline_id__name as prev_dis_name %}
             {% endfor %}
           {% endwith %}
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
     </div>
   </div>
   <div class="group_info_wrapper">

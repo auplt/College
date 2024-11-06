@@ -4,6 +4,8 @@ from django import template
 import ast
 import datetime
 
+from django.template.defaultfilters import stringfilter
+
 register = template.Library()
 
 
@@ -90,6 +92,24 @@ def create_tt_conf_dict(entity: str, entity_id: str, entity_name: str) -> dict |
 
 
 @register.simple_tag
+def create_tutors_dict(name: str, link: str) -> dict | None:
+    """
+    Simple tag that creates configuration dict for tt_lesson_details template.
+    :param entity: input string with entity identifier name
+    :param entity_id: input string with entity identifier value
+    :param entity_name: input string with entity display name
+    :except ValueError when string cannot be converted to dict
+    :return: pyton dict ot None
+    """
+    print(name)
+    try:
+        return ast.literal_eval(
+            f"{{'name': '{name}', 'link': '{str(link)}'}}")
+    except ValueError:
+        return None
+
+
+@register.simple_tag
 def add_to_list(item, lst=None) -> list:
     """
     Simple tag that adds item to list if there is no list, it creates the new one.
@@ -97,9 +117,11 @@ def add_to_list(item, lst=None) -> list:
     :param lst: input list where item should be added
     :return: list with new item
     """
+    print(lst)
     if lst is None:
         lst = list()
     lst.append(copy.deepcopy(item))
+    print(lst)
     return lst
 
 
@@ -150,3 +172,37 @@ def get_url_params(request) -> str | None:
     if res_url == "":
         return None
     return res_url
+
+
+@register.filter
+@stringfilter
+def slicestring(value, arg):
+    """usage: "mylongstring"|slicestring:"2:4" """
+    els = list(map(int, arg.split(':')))
+    # print(els)
+    return value[els[0]:els[1]]
+
+@register.filter
+def next(some_list, current_index):
+    """
+    Returns the next element of the list using the current index if it exists.
+    Otherwise returns an empty string.
+    """
+    try:
+        print(some_list[int(current_index)])
+        print(some_list[int(current_index) + 1])
+        return some_list[int(current_index) + 1] # access the next element
+    except:
+        return '' # return empty string in case of exception
+
+
+@register.filter
+def previous(some_list, current_index):
+    """
+    Returns the previous element of the list using the current index if it exists.
+    Otherwise returns an empty string.
+    """
+    try:
+        return some_list[int(current_index) - 1] # access the previous element
+    except:
+        return '' # return empty string in case of exception
