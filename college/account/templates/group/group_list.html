@@ -56,7 +56,6 @@
                         <a href="{{ group.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
                             <h3 class="item_title_heading">{{ group.name }}</h3>
                         </a>
-                        <span class="tooltiptext tooltiptext_more">Подробнее</span>
                     </div>
                     {# Including control buttons edit and delete #}
                     {% include "buttons_controllers.html" with edit_link=group.get_edit_url next_edit_link=this_url del_link=group.get_delete_url next_del_link=this_url %}

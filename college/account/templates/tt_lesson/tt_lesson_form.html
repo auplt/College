@@ -17,15 +17,15 @@
 
   {% if action == 'C' %}
     {% with page_title='Добавление занятия в расписание' %}
-      {% include 'page_heading.html' with back_url=next_url page_title=page_title next_url=next_url %}
+      {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title next_url=next_url %}
     {% endwith %}
   {% elif action == 'U' %}
     {% with page_title='Изменение занятия в расписание' %}
-      {% include 'page_heading.html' with back_url=next_url page_title=page_title next_url=next_url %}
+      {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title next_url=next_url %}
     {% endwith %}
   {% else %}
     {% with page_title='Форма занятие в расписании' %}
-      {% include 'page_heading.html' with back_url=next_url page_title=page_title next_url=next_url %}
+      {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title next_url=next_url %}
     {% endwith %}
   {% endif %}
 

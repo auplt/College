@@ -88,12 +88,24 @@
               {% endif %}
               {% if group_lesson.tutor_id__user_id__id %}
                 <div class="curriculum_discipline_tutor_item toggle_detail {{is_hidden}}">
-                  <div class="curriculum_discipline_tutor_item_txt">
-                    {% get_value lesson_types group_lesson.lesson_type %} {{group_lesson.duration}}
+                  <div class="curriculum_discipline_tutor_item_general">
+                    {% get_value lesson_types group_lesson.lesson_type as lesson_type %}
+                    {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
+                    <div class="tutor_item_general_hours">
+                      <div class="tutor_item_general_hours_icon">
+                        <img
+                            class="tutor_item_general_hours_icon_img"
+                            src="{% static 'images/clock.svg' %}"/>
+                        <span class="tooltiptext">Учебные часы</span>
+                      </div>
+                      <span class="tutor_item_general_hours_txt">{{group_lesson.duration}} ак/ч</span>
+                    </div>
                     <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}">
                       {{group_lesson.tutor_id__user_id__last_name}}
-                      {{group_lesson.tutor_id__user_id__first_name}}
-                      {{group_lesson.tutor_id__user_id__second_name}}
+                      {{ group_lesson.tutor_id__user_id__first_name|slicestring:"0:1"|add_str:"." }}
+                      {% if group_lesson.tutor_id__user_id__second_name %}
+                        {{ group_lesson.tutor_id__user_id__second_name|slicestring:"0:1"|add_str:"." }}
+                      {% endif %}
                     </a>
                   </div>
                   {# Including control buttons edit and delete #}

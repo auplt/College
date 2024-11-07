@@ -107,6 +107,41 @@
   padding: 0 0 0 42px;
 }
 
+.curriculum_discipline_tutor_item_general {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.tutor_item_general_hours {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tutor_item_general_hours_icon {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tutor_item_general_hours_icon:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tutor_item_general_hours_icon_img {
+  height: 24px;
+  width: 24px;
+}
+
+.tutor_item_general_hours_txt {
+  font-weight: 500;
+  white-space: nowrap;
+  text-wrap: nowrap;
+}
+
 .curriculum_discipline_tutor_item .list_ctrl_edit_img,
 .curriculum_discipline_tutor_item .list_ctrl_trash_img {
   width: 16px;
@@ -120,4 +155,6 @@
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
+
+  text-wrap: nowrap;
 }

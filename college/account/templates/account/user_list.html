@@ -39,7 +39,6 @@
                         {{ user.last_name }} {{ user.first_name }} {{ user.second_name }}
                     </h2>
                 </a>
-                <span class="tooltiptext tooltiptext_more">Подробнее</span>
             </div>
             {# Including control buttons edit and delete #}
             {% include "buttons_controllers.html" with edit_link=user.get_edit_url next_edit_link=this_url del_link=user.get_delete_url next_del_link=this_url %}

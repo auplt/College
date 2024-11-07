@@ -144,7 +144,7 @@ class GroupSemester(models.Model):
         self.group_id = group_id
 
     def __str__(self):
-        return f'{self.group_id} {self.semester_num}'
+        return f'{self.group_id} сем. {self.semester_num}'
 
     class Meta:
         db_table = 'group_semesters'
@@ -185,7 +185,7 @@ class Curriculum(models.Model):
         self.group_semester_id = group_semester_id
 
     def __str__(self):
-        return f'{self.discipline_id.name} {self.group_semester_id.group_id.name} {self.group_semester_id.semester_num}'
+        return f'{self.discipline_id} гр. {self.group_semester_id}'
 
     # def clean_discipline_id(self):
     #     cd = self.cleaned_data.get('discipline_id')
@@ -338,7 +338,7 @@ class LessonTime(models.Model):
     end_time = models.TimeField()
 
     def __str__(self):
-        return f'{self.name} {self.start_time} {self.end_time}'
+        return f'{self.name}: {datetime.time.strftime(self.start_time, "%H:%M")} - {datetime.time.strftime(self.end_time, "%H:%M")}'
 
     class Meta:
         db_table = 'lessons_times'

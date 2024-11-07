@@ -42,7 +42,6 @@
                             {{ lesson_time.name }}
                         </h2>
                     </a>
-                    <span class="tooltiptext tooltiptext_more">Подробнее</span>
                 </div>
                 {# Including control buttons edit and delete #}
                 {% include "buttons_controllers.html" with edit_link=lesson_time.get_edit_url next_edit_link=this_url del_link=lesson_time.get_delete_url next_del_link=this_url %}

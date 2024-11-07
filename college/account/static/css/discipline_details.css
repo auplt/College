@@ -8,6 +8,10 @@
 }
 
 .discipline_info_detail_heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
   margin-bottom: 16px;
 }
 
@@ -17,7 +21,7 @@
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
-  padding: 0 8px 16px 8px;
+  padding: 0 8px 0 8px;
 }
 
 .discipline_info_groups {

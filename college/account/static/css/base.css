@@ -544,10 +544,7 @@ option {
   right: 105%;
   font-weight: 600;
   font-size: 13px;
-}
-
-.tooltiptext_more {
-  right: 80%;
+  white-space: nowrap;
 }
 
 /* Description pages */

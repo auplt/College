@@ -103,7 +103,7 @@
         <h2 class="group_info_detail_title">План занятий</h2>
         {# Including add button #}
         {% url 'account:curriculum_lesson_group_details' group.group_id as add_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Подробнее" no_img="Y" %}
+        {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Подробнее" no_tip="Y" no_img="Y" %}
       </div>
       {% if group_lessons %}
         <div class="group_info_curriculum">
@@ -174,7 +174,7 @@
                 {% if next_discip.curriculum_id__discipline_id__name != group_lesson.curriculum_id__discipline_id__name or next_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
                   {% if lesson_type_lst %}
                     <div class="discipline_type">
-                      {% for lesson_type in lesson_type_lst %}
+                      {% for lesson_type in lesson_type_lst reversed %}
                         {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
                       {% endfor %}
                     </div>
@@ -182,17 +182,23 @@
                   </div>
                   {% if tutor_lst %}
                     <div class="discipline_tutor">
-                      {% for tutor in tutor_lst %}
+                      <div class="discipline_tutor_icon">
+                        <img
+                            class="discipline_tutor_icon_img"
+                            src="{% static 'images/user.svg' %}"/>
+                        <span class="tooltiptext">Преподаватели</span>
+                      </div>
+                      {% for tutor in tutor_lst reversed %}
                         <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' tutor.link %}{% if this_url %}?next={{this_url}}{% endif %}">
                           {{tutor.name}}
                         </a>
                       {% endfor %}
-                    </div>
+                    </div> {# for curriculum_discipline_tutor_item #}
                   {% endif %}
                 {% endif %}
               {% endif %}
-              {% if next_discip.curriculum_id__discipline_id__name != group_lesson.curriculum_id__discipline_id__name or next_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
-                </div>
+              {% if group_lesson.curriculum_id__discipline_id__name and next_discip.curriculum_id__discipline_id__name != group_lesson.curriculum_id__discipline_id__name or group_lesson.curriculum_id__discipline_id__name and next_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
+                </div> {# for curriculum_discipline_tutor_item_wrapper #}
               {% endif %}
               {% update_variable group_lesson.curriculum_id__group_semester_id__semester_num as prev_semester_num %}
               {% update_variable group_lesson.curriculum_id__discipline_id__name as prev_dis_name %}
@@ -204,7 +210,7 @@
   </div>
   <div class="group_info_wrapper">
     <div class="group_info_detail">
-      <h2 class="group_info_detail_title">Расписание занятий</h2>
+      <h2 class="group_info_detail_title timetable_title">Расписание занятий</h2>
       {# Include lesson timetable template #}
       {% url 'account:group_details' group.group_id as day_url %}
       {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}

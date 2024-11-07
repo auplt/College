@@ -5,7 +5,7 @@
  */
 $(document).ready(function () {
   min_width = 0;
-  $(".curriculum_discipline_tutor_item_txt").each(function () {
+  $(".curriculum_discipline_tutor_item_general").each(function () {
     var this_width = $(this)[0].getBoundingClientRect().width;
     if (this_width > min_width) {
       min_width = this_width;
@@ -14,7 +14,7 @@ $(document).ready(function () {
   if (min_width > 300) {
     min_width = 300;
   }
-  $(".curriculum_discipline_tutor_item_txt").css("width", min_width + "px");
+  $(".curriculum_discipline_tutor_item_general").css("width", min_width + "px");
 });
 
 /* Makes element width the same

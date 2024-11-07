@@ -296,16 +296,16 @@ class LessonTimeRegisterForm(forms.ModelForm):
                            })
                            )
     start_time = forms.TimeField(label=False,
-                                 widget=forms.TextInput(attrs={
+                                 widget=forms.TimeInput(attrs={
                                      'class': 'timepicker',
                                      'placeholder': 'Начало занятия'
-                                 })
+                                 }, format='%H:%M')
                                  )
     end_time = forms.TimeField(label=False,
-                               widget=forms.TextInput(attrs={
+                               widget=forms.TimeInput(attrs={
                                    'class': 'timepicker',
                                    'placeholder': 'Окончание занятия'
-                               })
+                               }, format='%H:%M')
                                )
 
     class Meta:
