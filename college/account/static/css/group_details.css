@@ -15,14 +15,14 @@
   margin-bottom: 16px;
 }
 
-.group_info_detail_title {
+/* .group_info_detail_title {
   font-size: 24px;
   font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
   padding: 0 8px 0 8px;
-}
+} */
 
 .group_info_members {
   list-style-type: none;
@@ -88,10 +88,6 @@
   align-items: center;
 }
 
-.hidden {
-  display: none;
-}
-
 .discipline_info_groups {
   display: flex;
   flex-direction: column;
@@ -103,6 +99,10 @@
   gap: 8px;
 }
 
+.curriculum_discipline_wrapper {
+  display: flex;
+}
+
 .curriculum_discipline {
   color: var(--primary-text-color);
   font-size: 16px;
@@ -110,6 +110,7 @@
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
+  display: block;
 }
 .curriculum_discipline_tutor_item_wrapper {
   padding: 0 0 0 21px;
@@ -180,8 +181,4 @@
 
   /* padding-right: 10px; */
   /* max-width: max-content; */
-}
-
-.timetable_title {
-  margin-bottom: 16px;
 }

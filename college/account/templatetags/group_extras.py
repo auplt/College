@@ -206,3 +206,26 @@ def previous(some_list, current_index):
         return some_list[int(current_index) - 1] # access the previous element
     except:
         return '' # return empty string in case of exception
+
+
+@register.filter
+def get_nth_week_day(date: datetime.date, day_number: int, week: int = 0) -> datetime.date:
+    """
+    Filter that returns weekday's date on the given week day number (1 - MON, 7 - SUN). Week delta can be specified
+    :param date: input date
+    :param day_number: weekday number
+    :param week: week delta (default 0)
+    :return: calculated day's date
+    """
+    return date + datetime.timedelta(days=-date.weekday() + day_number - 1, weeks=week)
+
+
+@register.filter
+def date_convert(date: datetime.date, date_format: str = "%d.%m.%Y") -> str:
+    """
+    Filter that converts date to string of specified format
+    :param date: input date
+    :param date_format: input format (default "%d.%m.%Y")
+    :return: date string in specified format
+    """
+    return date.strftime(date_format)

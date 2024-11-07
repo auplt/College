@@ -1,6 +1,7 @@
 """
 Views for account app.
 """
+from ast import literal_eval
 from datetime import datetime, timedelta, date
 
 import django.db.transaction
@@ -1881,6 +1882,146 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
     }
     return context
 
+
+def tt_lesson_details_edit(request):
+    # if 'dt' in request.GET.keys():
+
+    is_week = False
+    week_delta = None
+    day_delta=None
+    tt_lesson_objs = []
+    try:
+        # request.GET.get('dt')))
+        tt_lesson_ids = request.GET.get('tt_lesson_ids')
+        print(literal_eval(tt_lesson_ids))
+        tt_lesson_ids_lst = literal_eval(tt_lesson_ids)
+
+        # tt_lesson_ids_lst = [-1, 32, 34]
+
+        obj = (TTLesson.objects
+               .filter(tt_lesson_id__in=tt_lesson_ids_lst)
+               .order_by('date', 'lesson_time_id__start_time'))
+
+        print(obj)
+
+        # Grouping tt_lesson_objects by curriculum_lesson
+        tt_lesson_obj = [
+            {
+                'date': list(key)[0],
+                'day_name': list(key)[1],
+                'week_type': list(key)[2],
+                'lesson_time_id': list(key)[3].lesson_id,
+                'start_time': list(key)[3].start_time,
+                'end_time': list(key)[3].end_time,
+                'classroom_id': list(key)[4].classroom_id,
+                'classroom_number': list(key)[4].number,
+                'lesson_type': list(key)[5],
+                'discipline_id': list(key)[6],
+                'discipline_name': list(key)[7],
+                'lesson_info': [
+                    {
+                        'tutor':
+                            {
+                                'tt_lesson_id': item.tt_lesson_id,
+                                'id': item.curriculum_lesson_id.tutor_id.user_id.id,
+                                'last_name': item.curriculum_lesson_id.tutor_id.user_id.last_name,
+                                'first_name': item.curriculum_lesson_id.tutor_id.user_id.first_name,
+                                'second_name': item.curriculum_lesson_id.tutor_id.user_id.second_name
+                            },
+                        'group':
+                            {
+                                'tt_lesson_id': item.tt_lesson_id,
+                                'group_id': item.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.group_id,
+                                'name': item.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.name
+                            }
+                    } for item in grp
+                ]
+            } for key, grp in
+            groupby(obj, key=lambda x: (x.date,
+                                        x.day_name,
+                                        x.week_type,
+                                        x.lesson_time_id,
+                                        x.classroom_id,
+                                        x.curriculum_lesson_id.lesson_type,
+                                        x.curriculum_lesson_id.curriculum_id.discipline_id.discipline_id,
+                                        x.curriculum_lesson_id.curriculum_id.discipline_id.name,
+                                        ))
+        ]
+
+        tt_lesson_objs.extend(tt_lesson_obj)
+
+        # Grouping list of tt_lesson_objects by days
+        tt_lesson_obj = [
+            {
+                'date': list(key)[0],
+                'day_name': list(key)[1],
+                'week_type': list(key)[2],
+                'days_info': [
+                    {
+                        'start_time': item['start_time'],
+                        'end_time': item['end_time'],
+                        'lesson_time_id': item['lesson_time_id'],
+                        'classroom_id': item['classroom_id'],
+                        'classroom_number': item['classroom_number'],
+                        'lesson_type': item['lesson_type'],
+                        'discipline_id': item['discipline_id'],
+                        'discipline_name': item['discipline_name'],
+                        'lesson_info': item['lesson_info']
+                    } for item in grp
+                ]
+            } for key, grp in groupby(tt_lesson_objs, key=lambda x: (x['date'], x['day_name'], x['week_type']))
+        ]
+
+        print(tt_lesson_obj)
+
+        # Sort lessons inside one day by the time they start
+        for tt_lesson in tt_lesson_obj:
+            tt_lesson['days_info'].sort(key=lambda d: d['start_time'])
+
+
+        print(tt_lesson_obj)
+
+        # Inserting missing dates to the list of dates with empty lessons list
+        # for n in range(day_count):
+        #     dt = start_dt + timedelta(n)
+        #     if len(tt_lesson_obj) <= n or tt_lesson_obj[n]['date'] != dt:
+        #         elem = {
+        #             'date': dt,
+        #             'day_name': dt.strftime('%a').upper(),
+        #             'week_type': TTLesson.get_week_type(dt),
+        #             'days_info': []
+        #         }
+        #         tt_lesson_obj.insert(n, elem)
+        #
+        context = {
+            'tt_lessons': tt_lesson_obj,
+            'lesson_types': dict(TypesOfLesson.choices),
+            'week_types': dict(TTLesson.TYPE_OF_WEEK_CHOICES),
+            'day_names': dict(TTLesson.DAY_OF_WEEK_CHOICES),
+            'is_week': is_week,
+            'week_delta': week_delta,
+            'day_delta': day_delta
+        }
+
+
+        obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
+        if obj_stats:
+            for obj_stat in obj_stats:
+                del request.session[obj_stat]
+        context.update(obj_stats)
+        print(context)
+        if 'next' in request.GET.keys():
+            context['next_url'] = request.GET.get('next')
+
+        print(1123)
+
+        return render(request, 'tt_lesson/tt_lesson_detail_edit.html', context=context)
+        # return render(request, 'group/group_list.html', context=context)
+
+
+    except TypeError:
+        raise Http404
+        # print(18)
 
 def tt_lesson_register(request):
     """

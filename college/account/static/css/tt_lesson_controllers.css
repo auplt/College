@@ -1,13 +1,21 @@
 /* CSS file for lesson timetable controllers template */
 
+.pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
 .step-links {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 16px;
-  margin-bottom: 22px;
 }
 
 .detail_timetable {
+  align-self: flex-start;
   display: flex;
   flex-direction: row;
   gap: 16px;
@@ -19,9 +27,10 @@
   cursor: pointer;
 }
 
-.current_page {
-  font-size: 16px;
-  font-weight: 400;
+.step-links_week {
+  color: var(--primary-text-color);
+  font-size: 32px;
+  font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: center;

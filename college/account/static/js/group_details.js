@@ -11,10 +11,17 @@ $(document).ready(function () {
       min_width = this_width;
     }
   });
-
   if (min_width > 300) {
     min_width = 300;
   }
-
   $(".curriculum_discipline").css("width", min_width + "px");
+});
+
+/*
+ * Hides elements of hidden class
+ */
+$(document).ready(function () {
+  $(".hidden").each(function () {
+    $(this)[0].style.display = "none";
+  });
 });

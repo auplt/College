@@ -40,10 +40,6 @@
   align-items: center;
 }
 
-.hidden {
-  display: none;
-}
-
 .item_semester_number_info {
   display: flex;
   flex-direction: row;

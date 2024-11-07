@@ -1,9 +1,27 @@
 /* CSS file for lesson timetable template */
 
+.timetable_heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.timetable_title {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 8px 0 8px;
+}
+
 .tt_lesson_content {
   display: flex;
   flex-direction: column;
   gap: 30px;
+  min-width: 600px;
 }
 
 .tt_lesson_content .list_ctrl_trash_img,
@@ -13,6 +31,10 @@
 }
 
 .tt_lesson_title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -40,45 +62,64 @@
 .tt_lesson_content_lessons {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  /* gap: 24px; */
 }
 
 .tt_lesson_content_day {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-direction: row;
+  /* gap: 8px; */
+  padding: 8px;
+  /* min-width: max-content; */
 }
 
-.tt_lesson_content_info_wrapper {
+.tt_lesson_content_day:nth-child(odd) {
+  background-color: var(--primary-bg-color);
+  border-radius: var(--primary-border-radius);
+}
+
+/* .tt_lesson_content_info_wrapper {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
+} */
 
-.tt_lesson_content_info {
+/* .tt_lesson_content_info {
   display: flex;
   flex-direction: row;
   gap: 80px;
-}
-
+} */
+/* 
 .info_time_lesson_wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
-}
+} */
 
 .tt_lesson_info_time {
   color: var(--primary-text-color);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
   padding: 8px;
 }
 
+.tt_lesson_info_content {
+  /* min-width: max-content; */
+  /* flex: 0 0 100%; */
+  flex: 1;
+}
+.tt_lesson_info_discipline_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .tt_lesson_info_discipline {
-  border-radius: var(--primary-border-radius);
+  /* border-radius: var(--primary-border-radius);
   background: var(--primary-bg-color);
 
   color: var(--primary-text-color);
@@ -87,53 +128,112 @@
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
-  padding: 8px;
-}
-
-.tt_lesson_classroom_wrapper {
+  padding: 8px; */
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  /* justify-content: space-between; */
 }
 
-.tt_lesson_classroom {
-  border-radius: var(--secondary-border-radius);
-  background: var(--green-color);
-  padding: 4px 12px;
-  text-align: center;
+.tt_lesson_info_discipline_wrapper .list_ctrl_edit_img {
+  height: 24px;
+  width: 24px;
 }
 
-.tt_lesson_classroom:hover {
-  background-color: var(--green-color-hover);
-}
-
-.tt_lesson_classroom_name:hover {
-  color: var(--header-text-color);
-}
-
-.tt_lesson_classroom_name {
-  color: var(--header-text-color);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 0%;
-  text-align: center;
+.info_discipline_type {
+  margin: 0 8px;
 }
 
 .info_discipline_name {
   color: var(--primary-text-color);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
+  padding: 8px;
+}
+
+.tt_lesson_classroom_tutors {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* .tt_lesson_classroom_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+} */
+
+.tt_lesson_classroom {
+  /* border-radius: var(--secondary-border-radius);
+  background: var(--green-color); */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* gap: 5px; */
+  /* padding: 4px 12px;
+  text-align: center; */
+}
+
+/* .tt_lesson_classroom:hover {
+  background-color: var(--green-color-hover);
+} */
+
+.tt_lesson_classroom_icon {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tt_lesson_classroom_icon:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tt_lesson_classroom_icon_img {
+  height: 32px;
+  width: 32px;
+}
+
+/* .tt_lesson_classroom_name:hover {
+  color: var(--header-text-color);
+} */
+
+.tt_lesson_classroom_name {
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: left;
+  padding: 8px;
 }
 
 .tt_lesson_info_group {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  /* gap: 5px;
+  padding: 0 0 0 21px; */
+}
+
+.tt_lesson_info_group_icon {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tt_lesson_info_group_icon:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tt_lesson_info_group_icon_img {
+  height: 32px;
+  width: 32px;
 }
 
 .info_group_title {
@@ -146,44 +246,78 @@
   margin: 0;
 }
 
-.tt_lesson_info_group_item {
-  display: flex;
+.tt_lesson_info_group_list {
+  /* display: flex;
   flex-direction: row;
   gap: 50px;
-  align-items: center;
+  align-items: center; */
 }
 
 .group_item_name {
   color: var(--primary-text-color);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
-  padding: 0 0 0 21px;
+  padding: 8px 0;
+  /* display: inline; */
+  /* max-width: min-content;
+  word-break: break-all;
+  clear: both; */
 }
+
+.tt_lesson_info_group_list .group_item_name:first-child {
+  padding-left: 8px;
+}
+
+.tt_lesson_info_group_list .group_item_name:last-child {
+  padding-right: 8px;
+}
+
+/* ul li {
+    float: left;
+ } */
 
 .tt_lesson_info_tutor {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  /* gap: 5px; */
+  /* padding: 0 0 0 21px; */
 }
 
-.tt_lesson_info_tutor_item {
+.tt_lesson_info_tutor_icon {
+  position: relative;
   display: flex;
   flex-direction: row;
-  gap: 50px;
   align-items: center;
 }
 
+.tt_lesson_info_tutor_icon:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tt_lesson_info_tutor_icon_img {
+  height: 32px;
+  width: 32px;
+}
+
+/* .tt_lesson_info_tutor_list {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+} */
+
 .tutor_item_name {
   color: var(--primary-text-color);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
-  padding: 0 0 0 21px;
+  padding: 8px;
 }
 
 .tt_lesson_content__no_lessons {

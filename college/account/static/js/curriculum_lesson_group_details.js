@@ -110,3 +110,12 @@ $(document).ready(function () {
       }
     });
 });
+
+/*
+ * Hides elements of hidden class
+ */
+$(document).ready(function () {
+  $(".hidden").each(function () {
+    $(this)[0].style.display = "none";
+  });
+});

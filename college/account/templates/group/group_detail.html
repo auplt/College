@@ -6,9 +6,10 @@
 {% load group_extras %}
 
 {% block page_scripts %}
-  <link href="{% static 'css/group_details.css' %}" rel="stylesheet">
-  <script src="{% static 'js/list.js' %}"></script>
   <script src="{% static 'js/group_details.js' %}"></script>
+  <script src="{% static 'js/list.js' %}"></script>
+  <link href="{% static 'css/group_details.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 {% block title %}Информация о группе{% endblock %}
@@ -125,15 +126,18 @@
                 {% if group_lesson.curriculum_id__discipline_id__name %}
                   <div class="curriculum_discipline_tutor_item_wrapper toggle_detail {{is_hidden}}">
                   {% if group_lesson.tutor_id__user_id__id %}
-                    <div class="curriculum_discipline_tutor_item ">
+                    <div class="curriculum_discipline_tutor_item">
                   {% endif %}
-                  <a class="curriculum_discipline " href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
-                    {{ group_lesson.curriculum_id__discipline_id__name }}
-                  </a>
+                  <div class="curriculum_discipline_wrapper">
+                    <a class="curriculum_discipline" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                      {{ group_lesson.curriculum_id__discipline_id__name }}
+                    </a>
+                  </div>
                   {% update_variable None as lesson_type_lst %}
                   {% update_variable None as tutor_lst %}
                 {% endif %}
-              {% endif %}{% update_variable group_lessons|previous:forloop.counter0 as previous_discip %}
+              {% endif %}
+                {% update_variable group_lessons|previous:forloop.counter0 as previous_discip %}
                 {% update_variable group_lessons|next:forloop.counter0 as next_discip %}
               {% if group_lesson.tutor_id__user_id__id %}
 
@@ -210,7 +214,6 @@
   </div>
   <div class="group_info_wrapper">
     <div class="group_info_detail">
-      <h2 class="group_info_detail_title timetable_title">Расписание занятий</h2>
       {# Include lesson timetable template #}
       {% url 'account:group_details' group.group_id as day_url %}
       {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}
