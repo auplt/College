@@ -1,23 +1,34 @@
 --ALTER SEQUENCE seq RESTART WITH 1;
 --UPDATE table SET column_id=nextval('seq');
 
-UPDATE curriculum_lessons SET duration = 2*duration;
-
 DELETE FROM tt_lessons WHERE date > '14.12.2024';
 
+UPDATE tt_lessons SET lesson_time_id = 1 WHERE tt_lesson_id IN (
+select tt_lesson_id from tt_lessons tl
+	inner join curriculum_lessons cl on tl.curriculum_lesson_id = cl.curriculum_lesson_id 
+	inner join curriculums c on cl.curriculum_id = c.curriculum_id  
+where day_name = 'MON'and c.group_semester_id = 6 and lesson_type = 'LEC' and lesson_time_id = 6
+);
+
+UPDATE curriculum_lessons cll SET duration = (
+select 2*count(*) from tt_lessons tl 
+	inner join curriculum_lessons cl on tl.curriculum_lesson_id = cl.curriculum_lesson_id 
+where cl.curriculum_lesson_id = cll.curriculum_lesson_id 
+);
+
 INSERT INTO curriculum_lessons (curriculum_lesson_id,curriculum_id,tutor_id,lesson_type,duration) VALUES
-(nextval('curriculum_lessons_curriculum_lesson_id_seq'), 1, 8, 'EXM', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 2, 12, 'EXM', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 3, 10, 'CRD', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 4, 3, 'EXM', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 5, 11, 'CRD', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 6, 6, 'CRD', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 7, 5, 'EXM', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 8, 3, 'EXM', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 9, 6, 'CRD', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 10, 8, 'EXM', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 11, 4, 'CRD', 2)
-, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 12, 9, 'CRD', 2)
+(nextval('curriculum_lessons_curriculum_lesson_id_seq'), 1, 8, 'EXM', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 2, 12, 'EXM', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 3, 10, 'CRD', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 4, 3, 'EXM', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 5, 11, 'CRD', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 6, 6, 'CRD', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 7, 5, 'EXM', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 8, 3, 'EXM', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 9, 6, 'CRD', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 10, 8, 'EXM', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 11, 4, 'CRD', 4)
+, (nextval('curriculum_lessons_curriculum_lesson_id_seq'), 12, 9, 'CRD', 4)
 ;
 
 INSERT INTO tt_lessons (tt_lesson_id,date,day_name,week_type,classroom_id,curriculum_lesson_id,lesson_time_id) VALUES
@@ -46,4 +57,5 @@ INSERT INTO tt_lessons (tt_lesson_id,date,day_name,week_type,classroom_id,curric
 , (nextval('tt_lesson_tt_lesson_id_seq'), '17.12.2024', 'TUE', 'CW', 11, 39, 5)
 , (nextval('tt_lesson_tt_lesson_id_seq'), '17.12.2024', 'TUE', 'CW', 5, 40, 6)
 ;
+
 
