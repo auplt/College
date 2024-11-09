@@ -25,6 +25,10 @@ INSERT INTO coefficients (coefficient_id,coef_num,description) VALUES
 , (nextval('coefficient_coefficient_id_seq'), 1, 'Домашнее задание')
 , (nextval('coefficient_coefficient_id_seq'), 1, 'Работа на семинаре')
 , (nextval('coefficient_coefficient_id_seq'), 1, 'Выступление с докладом')
+, (nextval('coefficient_coefficient_id_seq'), 5, 'Экзамен')
+, (nextval('coefficient_coefficient_id_seq'), 5, 'Зачёт')
+, (nextval('coefficient_coefficient_id_seq'), 3, 'Коллоквиум')
+, (nextval('coefficient_coefficient_id_seq'), 2, 'Сдача нормативов')
 ;
 
 INSERT INTO disciplines (discipline_id,"name",description) VALUES

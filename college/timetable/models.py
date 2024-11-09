@@ -574,5 +574,45 @@ class Grade(models.Model):
     coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id')
     progress_id = models.ForeignKey(StudentProgress, on_delete=models.PROTECT, db_column='progress_id')
 
+    @property
+    def calc_scale_5(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return 5
+            case grade if 89 >= grade >= 70:
+                return 4
+            case grade if 69 >= grade >= 60:
+                return 3
+            case _:
+                return 2
+
+    @property
+    def calc_scale_word(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return GradesScaleWord.EXCELLENT
+            case grade if 89 >= grade >= 70:
+                return GradesScaleWord.GOOD
+            case grade if 69 >= grade >= 60:
+                return GradesScaleWord.SATISFYING
+            case _:
+                return GradesScaleWord.UNSATISFYING
+
+    @property
+    def calc_scale_letter(self):
+        match self.scale_100:
+            case grade if 100 >= grade >= 90:
+                return "A"
+            case grade if 89 >= grade >= 85:
+                return "B"
+            case grade if 84 >= grade >= 75:
+                return "C"
+            case grade if 74 >= grade >= 65:
+                return "D"
+            case grade if 64 >= grade >= 60:
+                return "E"
+            case _:
+                return "F"
+
     class Meta:
         db_table = 'grades'
