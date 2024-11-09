@@ -545,15 +545,6 @@ class StudentAttendance(models.Model):
         db_table = 'students_attendances'
 
 
-class StudentProgress(models.Model):
-    progress_id = models.AutoField(primary_key=True)
-    tt_lesson_id = models.ForeignKey(TTLesson, on_delete=models.PROTECT, db_column='tt_lesson_id')
-    student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
-
-    class Meta:
-        db_table = 'students_progresses'
-
-
 class Coefficient(models.Model):
     coefficient_id = models.AutoField(primary_key=True)
     coef_num = models.PositiveSmallIntegerField()
@@ -572,7 +563,6 @@ class Grade(models.Model):
     coef_num = models.PositiveSmallIntegerField()
     coef_description = models.CharField(max_length=64)
     coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id')
-    progress_id = models.ForeignKey(StudentProgress, on_delete=models.PROTECT, db_column='progress_id')
 
     @property
     def calc_scale_5(self):
@@ -616,3 +606,14 @@ class Grade(models.Model):
 
     class Meta:
         db_table = 'grades'
+
+
+class StudentProgress(models.Model):
+    progress_id = models.AutoField(primary_key=True)
+    tt_lesson_id = models.ForeignKey(TTLesson, on_delete=models.PROTECT, db_column='tt_lesson_id')
+    student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
+    grade_id = models.ForeignKey(Grade, on_delete=models.PROTECT, db_column='grade_id')
+
+    class Meta:
+        db_table = 'students_progresses'
+

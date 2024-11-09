@@ -807,20 +807,25 @@ INSERT INTO students_attendances (attendance_id,is_present,student_id,tt_lesson_
 
 
 INSERT INTO students_progresses (progress_id,student_id,tt_lesson_id,grade_id) VALUES
+nextval('students_progress_progress_id_seq')
 ;
 
 INSERT INTO grades (grade_id,scale_5,scale_word,scale_100,scale_letter,coef_num,coef_description,coefficient_id) VALUES
+nextval('grades_grade_id_seq')
 ;
 
-INSERT INTO final_grades () VALUES
+INSERT INTO final_grades (final_grade_id,is_final,scale_100,scale_5,scale_word,scale_letter,curriculum_id,student_id) VALUES
+nextval('final_grades_final_grade_id_seq')
 ;
 
 
 /* Домашки */
 
 INSERT INTO files () VALUES
+nextval('files_file_id_seq')
 ;
 
-INSERT INTO homeworks () VALUES
+INSERT INTO homeworks (hw_id,description,hw_type,student_id,day_due,day_given) VALUES
+nextval('homework_hw_id_seq')
 ;
 

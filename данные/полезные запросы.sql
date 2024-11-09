@@ -21,3 +21,10 @@ where gm.group_semester_id = 3
 order by gm.group_semester_id, tc.last_name, tc.first_name, tc.second_name;
 
 
+-- удаление любимой БДшки :((
+SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity
+	WHERE pg_stat_activity.datname = 'college' 
+AND pid <> pg_backend_pid();
+DROP DATABASE IF EXISTS college;
+
+CREATE DATABASE college;
