@@ -28,3 +28,6 @@ AND pid <> pg_backend_pid();
 DROP DATABASE IF EXISTS college;
 
 CREATE DATABASE college;
+
+
+delete from django_migrations;

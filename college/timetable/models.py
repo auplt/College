@@ -560,8 +560,6 @@ class Grade(models.Model):
     scale_word = models.CharField(max_length=32)
     scale_100 = models.PositiveSmallIntegerField()
     scale_letter = models.CharField(max_length=1)
-    coef_num = models.PositiveSmallIntegerField()
-    coef_description = models.CharField(max_length=64)
     coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id')
 
     @property
