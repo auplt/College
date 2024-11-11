@@ -313,7 +313,7 @@ class CurriculumLesson(models.Model):
     tutor_id = models.ForeignKey(Tutor, on_delete=models.PROTECT, db_column='tutor_id')
 
     def __str__(self):
-        return f'{self.curriculum_id} {self.get_lesson_type_display()}'
+        return f'{self.curriculum_id} {self.get_lesson_type_display()} Преп. {self.tutor_id}'
 
     class Meta:
         db_table = 'curriculum_lessons'

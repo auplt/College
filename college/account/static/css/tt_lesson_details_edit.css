@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  min-width: 600px;
 }
 
 .tt_lesson_content .list_ctrl_trash_img,
@@ -13,6 +14,10 @@
 }
 
 .tt_lesson_title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -90,41 +95,43 @@
   padding: 8px;
 }
 
-.tt_lesson_classroom_wrapper {
+.tt_lesson_info_classroom {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
 }
 
-.tt_lesson_classroom {
-  border-radius: var(--secondary-border-radius);
-  background: var(--green-color);
-  padding: 4px 12px;
-  text-align: center;
+.tt_lesson_info_classroom_ctrl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
-.tt_lesson_classroom:hover {
-  background-color: var(--green-color-hover);
-}
-
-.tt_lesson_classroom_name:hover {
-  color: var(--header-text-color);
+.info_classroom_title {
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  margin: 0;
 }
 
 .tt_lesson_classroom_name {
-  color: var(--header-text-color);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 0%;
-  text-align: center;
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 0 0 0 21px;
 }
 
 .info_discipline_name {
   color: var(--primary-text-color);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 100%;
   letter-spacing: 1px;
   text-align: left;
@@ -134,6 +141,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.tt_lesson_info_group_ctrl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
 .info_group_title {
@@ -167,6 +181,13 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.tt_lesson_info_tutor_ctrl {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
 .tt_lesson_info_tutor_item {

@@ -19,26 +19,31 @@
       </a>
     </div>
 </div>
+
 {# Include pagination #}
 {% if tt_lessons %}
-    {% if is_week %}
-      {% include "tt_lesson/tt_lesson_controllers.html" with page=week_delta iter="week_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=True" %}
-    {% else %}
-      {% include "tt_lesson/tt_lesson_controllers.html" with page=day_delta iter="day_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=True" %}
-    {% endif %}
+  {% if is_week %}
+    {% include "tt_lesson/tt_lesson_controllers.html" with page=week_delta iter="week_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=True" %}
+  {% else %}
+    {% include "tt_lesson/tt_lesson_controllers.html" with page=day_delta iter="day_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=True" %}
+  {% endif %}
 {% endif %}
-
-
-
-
 
 <div class="tt_lesson_content">  {% if tt_lessons %}
     {% for tt_lesson in tt_lessons %}
       <div class="tt_lesson_content_item">
         <div class="tt_lesson_title">
-          <h3 class="tt_lesson_date">
-            {% get_value day_names tt_lesson.day_name %} {{ tt_lesson.date }}
-          </h3>
+          <div class="tt_lesson_title_ctrl">
+            <h3 class="tt_lesson_date">
+              {% get_value day_names tt_lesson.day_name %} {{ tt_lesson.date|date_convert }}
+            </h3>
+            {% if tt_lesson.days_info %}
+              {# Including add button #}
+              {% url 'account:tt_lesson_register' as add_url %}
+              {% date_convertor tt_lesson.date as conv_date %}
+              {% include "add_button__blue.html" with add_link=add_url|add_str:"?date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
+            {% endif %}
+          </div>
           <div class="tt_lesson_day">
             {% get_value week_types tt_lesson.week_type as week_type %}
             {% include "tags.html" with tag_txt=week_type|lower|slicestring:"0:3" %}
@@ -48,48 +53,35 @@
           <div class="tt_lesson_content_lessons">
             {% for day_inf in tt_lesson.days_info %}
               <div class="tt_lesson_content_day">
-<!--                <div class="tt_lesson_content_info_wrapper">-->
-<!--                  <div class="tt_lesson_content_info">-->
-<!--                    <div class="info_time_lesson_wrapper">-->
-                      <div class="tt_lesson_info_time">
-                        {{day_inf.start_time}} - {{day_inf.end_time}}
+                <div class="tt_lesson_info_time">
+                  {{day_inf.start_time}} - {{day_inf.end_time}}
+                </div>
+                <div class="tt_lesson_info_content">
+                  <div class="tt_lesson_info_discipline_wrapper">
+                    <div class="tt_lesson_info_discipline">
+                      <div class="info_discipline_type">
+                        {% get_value lesson_types day_inf.lesson_type as lesson_type %}
+                        {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
                       </div>
-                      <div class="tt_lesson_info_content">
-                        <div class="tt_lesson_info_discipline_wrapper">
-                      <div class="tt_lesson_info_discipline">
-                        <div class="info_discipline_type">
-                          {% get_value lesson_types day_inf.lesson_type as lesson_type %}
-                          {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
-                        </div>
-                        <a class="info_discipline_name" href="{% url 'account:discipline_details' day_inf.discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
-                          {{day_inf.discipline_name}}
-                        </a>
+                      <a class="info_discipline_name" href="{% url 'account:discipline_details' day_inf.discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                        {{day_inf.discipline_name}}
+                      </a>
+                    </div>
+                    {% with None as tt_lesson_ids %}
+                      {% add_to_list -1 tt_lesson_ids as tt_lesson_ids %}
+                      {% for lesson_info in day_inf.lesson_info %}
+                        {% add_to_list lesson_info.group.tt_lesson_id tt_lesson_ids as tt_lesson_ids %}
+                      {% endfor %}
 
-
-
-                      </div>
-                          {% with None as tt_lesson_ids %}
-                            {% add_to_list -1 tt_lesson_ids as tt_lesson_ids %}
-                            {% for lesson_info in day_inf.lesson_info %}
-                              {% add_to_list lesson_info.group.tt_lesson_id tt_lesson_ids as tt_lesson_ids %}
-                            {% endfor %}
-
-
-                          {# Including control buttons edit #}
-                        {% url 'account:tt_lesson_details_edit' as edit_link %}
-                        {% date_convertor tt_lesson.date as conv_date %}
-                        {% include "buttons_controllers.html" with edit_link=edit_link|add_str:"?date="|add_str:conv_date|add_str:"&lesson_time_id="|add_str:day_inf.lesson_time_id|add_str:"&tt_lesson_ids="|add_str:tt_lesson_ids|cut:" "|add_str:"&next="|add_str:this_url next_edit_link=None del_link=None %}
-                                   {% endwith %}
-                        </div>
-<!--                    </div>-->
-
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                                    <div class="tt_lesson_classroom_wrapper">-->
-                <div class="tt_lesson_content_details">
-                <div class="tt_lesson_classroom_tutors">
-                <div class="tt_lesson_classroom">
+                      {# Including control buttons edit #}
+                      {% url 'account:tt_lesson_details_edit' as edit_link %}
+                      {% date_convertor tt_lesson.date as conv_date %}
+                      {% include "buttons_controllers.html" with edit_link=edit_link|add_str:"?date="|add_str:conv_date|add_str:"&lesson_time_id="|add_str:day_inf.lesson_time_id|add_str:"&tt_lesson_ids="|add_str:tt_lesson_ids|cut:" "|add_str:"&next="|add_str:this_url next_edit_link=None del_link=None %}
+                    {% endwith %}
+                  </div>
+                  <div class="tt_lesson_content_details">
+                    <div class="tt_lesson_classroom_tutors">
+                      <div class="tt_lesson_classroom">
                         <div class="tt_lesson_classroom_icon">
                           <img
                               class="tt_lesson_classroom_icon_img"
@@ -100,88 +92,60 @@
                           {{day_inf.classroom_number}}
                         </a>
                       </div>
-                      {% comment %}
-                      {# Including add button #}
-                      {% url 'account:tt_lesson_register' as add_url %}
-                      {% date_convertor tt_lesson.date as conv_date %}
-                      {% include "add_button__blue.html" with add_link=add_url|add_str:"?date="|add_str:conv_date|add_str:"&lesson_time_id="|add_str:day_inf.lesson_time_id|add_str:"&classroom_id="|add_str:day_inf.classroom_id|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
-                      {% endcomment %}
-<!--                    </div>-->
-
-                                  <div class="tt_lesson_info_tutor">
-                  <div class="tt_lesson_info_tutor_icon">
-                    <img
-                        class="tt_lesson_info_tutor_icon_img"
-                        src="{% static 'images/user.svg' %}"/>
-                    <span class="tooltiptext">Преподаватели</span>
-                  </div>
-                                        <div class="tt_lesson_info_tutor_list">
-                                          {% for lesson_inf in day_inf.lesson_info %}
-                    {% ifchanged lesson_inf.tutor.id %}
-
-                        <a class="tutor_item_name" href="{% url 'account:user_details' lesson_inf.tutor.id %}{% if this_url %}?next={{this_url}}{% endif %}">
-                          {% update_variable group_lessons|next:forloop.counter0 as next_tutor %}
-
-                          {% if next_tutor.tutor.id != next_tutor.tutor.id %}
-                            {{ lesson_inf.tutor.last_name }}
-                            {{ lesson_inf.tutor.first_name|slicestring:"0:1"|add_str:"." }}
-                            {% if lesson_inf.tutor.second_name %}
-                              {{ lesson_inf.tutor.second_name|slicestring:"0:1"|add_str:"." }}
-                            {% endif %}
-                            ,
-                          {% else %}
-                            {{ lesson_inf.tutor.last_name }}
-                            {{ lesson_inf.tutor.first_name|slicestring:"0:1"|add_str:"." }}
-                            {% if lesson_inf.tutor.second_name %}
-                              {{ lesson_inf.tutor.second_name|slicestring:"0:1"|add_str:"." }}
-                            {% endif %}
-                          {% endif %}
-                        </a>
-                        {% comment %}
-                        {# Including control buttons edit and delete #}
-                        {% url 'account:tt_lesson_edit' lesson_inf.tutor.tt_lesson_id as edit_link %}
-                        {% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id as del_link %}
-                        {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}
-                        {% endcomment %}
-
-                    {% endifchanged %}
-                  {% endfor %}
-                                        </div>
-                  {% update_variable None as next_tutor %}
-                </div>
-
-
-
-                  </div>
-                <div class="tt_lesson_info_group">
-                    <div class="tt_lesson_info_group_icon">
-                      <img
+                      <div class="tt_lesson_info_tutor">
+                        <div class="tt_lesson_info_tutor_icon">
+                          <img
+                              class="tt_lesson_info_tutor_icon_img"
+                              src="{% static 'images/user.svg' %}"/>
+                          <span class="tooltiptext">Преподаватели</span>
+                        </div>
+                        <div class="tt_lesson_info_tutor_list">
+                          {% for lesson_inf in day_inf.lesson_info %}
+                            {% ifchanged lesson_inf.tutor.id %}
+                              <a class="tutor_item_name" href="{% url 'account:user_details' lesson_inf.tutor.id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                                {% update_variable group_lessons|next:forloop.counter0 as next_tutor %}
+                                {% if next_tutor.tutor.id != next_tutor.tutor.id %}
+                                  {{ lesson_inf.tutor.last_name }}
+                                  {{ lesson_inf.tutor.first_name|slicestring:"0:1"|add_str:"." }}
+                                  {% if lesson_inf.tutor.second_name %}
+                                    {{ lesson_inf.tutor.second_name|slicestring:"0:1"|add_str:"." }}
+                                  {% endif %}
+                                  ,
+                                {% else %}
+                                  {{ lesson_inf.tutor.last_name }}
+                                  {{ lesson_inf.tutor.first_name|slicestring:"0:1"|add_str:"." }}
+                                  {% if lesson_inf.tutor.second_name %}
+                                    {{ lesson_inf.tutor.second_name|slicestring:"0:1"|add_str:"." }}
+                                  {% endif %}
+                                {% endif %}
+                              </a>
+                            {% endifchanged %}
+                          {% endfor %}
+                        </div>
+                        {% update_variable None as next_tutor %}
+                      </div>
+                    </div>
+                    <div class="tt_lesson_info_group">
+                      <div class="tt_lesson_info_group_icon">
+                        <img
                           class="tt_lesson_info_group_icon_img"
                           src="{% static 'images/group.svg' %}"/>
-                      <span class="tooltiptext">Группы</span>
+                        <span class="tooltiptext">Группы</span>
+                      </div>
+                      <div class="tt_lesson_info_group_list">
+                        {% for lesson_inf in day_inf.lesson_info %}
+                          <a class="group_item_name" href="{% url 'account:group_details' lesson_inf.group.group_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                            {% if forloop.counter0 != day_inf.lesson_info|length|add:-1 %}
+                              {{ lesson_inf.group.name }},
+                            {% else %}
+                              {{ lesson_inf.group.name }}
+                            {% endif %}
+                          </a>
+                        {% endfor %}
+                      </div>
                     </div>
-                  <div class="tt_lesson_info_group_list">
-                    {% for lesson_inf in day_inf.lesson_info %}
-
-                      <a class="group_item_name" href="{% url 'account:group_details' lesson_inf.group.group_id %}{% if this_url %}?next={{this_url}}{% endif %}">
-                        {% if forloop.counter0 != day_inf.lesson_info|length|add:-1 %}
-                          {{ lesson_inf.group.name }},
-                        {% else %}
-                          {{ lesson_inf.group.name }}
-                        {% endif %}
-                      </a>
-
-                      {% comment %}
-                      {# Including control buttons edit and delete #}
-                      {% url 'account:tt_lesson_edit' lesson_inf.group.tt_lesson_id as edit_link %}
-                      {% url 'account:tt_lesson_delete' lesson_inf.tutor.tt_lesson_id as del_link %}
-                      {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}
-                      {% endcomment %}
-                    {% endfor %}
                   </div>
                 </div>
-</div>
-              </div>
               </div>
             {% endfor %}
           </div>
@@ -206,6 +170,6 @@
       {% date_convertor tt_lesson.date as conv_date %}
       {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt=entity.entity_name %}
     {% endfor %}
-{% endif %}
+  {% endif %}
 </div>
 
