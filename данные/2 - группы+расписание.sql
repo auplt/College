@@ -578,18 +578,3 @@ INSERT INTO tt_lessons (tt_lesson_id,date,day_name,week_type,classroom_id,curric
 , (nextval('tt_lesson_tt_lesson_id_seq'), '20.12.2024', 'FRI', 'EV', 5, 19, 2)
 , (nextval('tt_lesson_tt_lesson_id_seq'), '20.12.2024', 'FRI', 'EV', 11, 26, 6)
 ;
-
-
-INSERT INTO tt_lessons (tt_lesson_id,date,day_name,week_type,classroom_id,curriculum_lesson_id,lesson_time_id) VALUES
-
-;
-
---delete from tt_lessons;
---
---ALTER SEQUENCE tt_lesson_tt_lesson_id_seq RESTART WITH 1;
---UPDATE tt_lessons SET tt_lesson_id=nextval('tt_lesson_tt_lesson_id_seq');
-
-/* Оценки, посещения, домашки */
-
---INSERT INTO  () VALUES
---;
