@@ -512,6 +512,16 @@ class TTLesson(models.Model):
         ]
 
 
+class File(models.Model):
+    file_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=64)
+    description = models.CharField(max_length=2048, blank=True)
+    file = models.BinaryField()
+
+    class Meta:
+        db_table = 'files'
+
+
 class Homework(models.Model):
     hw_id = models.AutoField(primary_key=True)
     description = models.CharField(max_length=2048)
@@ -519,20 +529,10 @@ class Homework(models.Model):
     day_due = models.ForeignKey(TTLesson, on_delete=models.PROTECT, related_name='day_due', db_column='day_due')
     hw_type = models.PositiveSmallIntegerField()
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
+    file_id = models.ForeignKey(File, on_delete=models.PROTECT, db_column='file_id')
 
     class Meta:
         db_table = 'homeworks'
-
-
-class File(models.Model):
-    file_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=64)
-    description = models.CharField(max_length=2048, blank=True)
-    file = models.BinaryField()
-    hw_id = models.ForeignKey(Homework, on_delete=models.PROTECT, db_column='hw_id')
-
-    class Meta:
-        db_table = 'files'
 
 
 class StudentAttendance(models.Model):
@@ -604,6 +604,27 @@ class Grade(models.Model):
 
     class Meta:
         db_table = 'grades'
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(scale_5__lte=5),
+                name='%(app_label)s_%(class)s_mark_scale_5_lte_5'
+            ),
+            models.CheckConstraint(
+                check=models.Q(scale_100__lte=100),
+                name='%(app_label)s_%(class)s_mark_scale_100_lte_100'
+            ),
+            models.CheckConstraint(
+                check=models.Q(
+                    scale_word__in=[GradesScaleWord.EXCELLENT, GradesScaleWord.GOOD, GradesScaleWord.SATISFYING,
+                                    GradesScaleWord.UNSATISFYING]),
+                name='%(app_label)s_%(class)s_mark_scale_word_correct'
+            ),
+            models.CheckConstraint(
+                check=models.Q(
+                    scale_letter__in=["A", "B", "C", "D", "E", "F"]),
+                name='%(app_label)s_%(class)s_mark_scale_letter_correct'
+            )
+        ]
 
 
 class StudentProgress(models.Model):
