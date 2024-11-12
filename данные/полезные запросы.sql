@@ -30,4 +30,3 @@ DROP DATABASE IF EXISTS college;
 CREATE DATABASE college;
 
 
-delete from django_migrations;
