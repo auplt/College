@@ -114,7 +114,6 @@
       </div>
     {% endif %}
     <div class="user_info_detail">
-      <h2 class="user_info_detail_title timetable_title">Расписание занятий</h2>
       {# Include lesson timetable template #}
       {% url 'account:user_details' user.user_id as day_url %}
       {% update_variable None as entities %}

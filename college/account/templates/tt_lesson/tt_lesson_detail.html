@@ -14,7 +14,7 @@
       <a class="controller_button details_controller_button__delete" href="{{day_url}}">
         День
       </a>
-      <a class="controller_button details_controller_button__edit" href="{{week_url}}">
+      <a class="controller_button details_controller_button__edit" href="{{week_url}}?week=True">
         Неделя
       </a>
     </div>
@@ -25,7 +25,7 @@
   {% if is_week %}
     {% include "tt_lesson/tt_lesson_controllers.html" with page=week_delta iter="week_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=True" %}
   {% else %}
-    {% include "tt_lesson/tt_lesson_controllers.html" with page=day_delta iter="day_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=True" %}
+    {% include "tt_lesson/tt_lesson_controllers.html" with page=day_delta iter="day_delta" week=is_week day_url=day_url week_url=day_url|add_str:"?week=False" %}
   {% endif %}
 {% endif %}
 

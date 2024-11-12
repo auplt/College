@@ -140,40 +140,20 @@
                 {% update_variable group_lessons|previous:forloop.counter0 as previous_discip %}
                 {% update_variable group_lessons|next:forloop.counter0 as next_discip %}
               {% if group_lesson.tutor_id__user_id__id %}
-
                 {% if previous_discip.lesson_type != group_lesson.lesson_type or previous_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num or previous_discip.curriculum_id__discipline_id__discipline_id != group_lesson.curriculum_id__discipline_id__discipline_id %}
-                  <!-- <span class="discipline_type">-->
                   {% get_value lesson_types group_lesson.lesson_type as lesson_type %}
-                  {% comment %}{{ lesson_type }}{% endcomment %}
                   {% add_to_list lesson_type lesson_type_lst as lesson_type_lst %}
-                  <!--                  </span>-->
                 {% endif %}
                 {% if previous_discip.tutor_id__user_id__id != group_lesson.tutor_id__user_id__id or previous_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num or previous_discip.curriculum_id__discipline_id__discipline_id != group_lesson.curriculum_id__discipline_id__discipline_id %}
-                  <!--  <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">-->
                   {% update_variable group_lesson.tutor_id__user_id__last_name|add_str:" " as tutor_last_name %}
                   {% update_variable group_lesson.tutor_id__user_id__first_name|slicestring:"0:1"|add_str:"." as tutor_first_name %}
-
-                    {% comment %}
-                      {{ group_lesson.tutor_id__user_id__last_name }}
-                      {{ group_lesson.tutor_id__user_id__first_name|slicestring:"0:1" }}.
-                    {% endcomment %}
-
                   {% if group_lesson.tutor_id__user_id__second_name %}
-
-                    {% comment %}
-                      {{ group_lesson.tutor_id__user_id__second_name|slicestring:"0:1" }}.
-                    {% endcomment %}
-
                     {% update_variable group_lesson.tutor_id__user_id__second_name|slicestring:"0:1"|add_str:"." as tutor_second_name %}
-                    {% if next_discip.curriculum_id__discipline_id__name == group_lesson.curriculum_id__discipline_id__name and next_discip.curriculum_id__group_semester_id__semester_num == group_lesson.curriculum_id__group_semester_id__semester_num %}
-                      {% update_variable tutor_second_name|add_str:"," as tutor_second_name %}
-                    {% endif %}
                   {% endif %}
                   {% update_variable tutor_last_name|add_str:tutor_first_name|add_str:tutor_second_name as tutor_full_name %}
 
                   {% create_tutors_dict name=tutor_full_name link=group_lesson.tutor_id__user_id__id as tutor_dict %}
                   {% add_to_list tutor_dict tutor_lst as tutor_lst %}
-                  <!--                  </a>-->
                 {% endif %}
                 {% if next_discip.curriculum_id__discipline_id__name != group_lesson.curriculum_id__discipline_id__name or next_discip.curriculum_id__group_semester_id__semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
                   {% if lesson_type_lst %}
@@ -192,9 +172,13 @@
                             src="{% static 'images/user.svg' %}"/>
                         <span class="tooltiptext">Преподаватели</span>
                       </div>
-                      {% for tutor in tutor_lst reversed %}
+                      {% for tutor in tutor_lst %}
                         <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' tutor.link %}{% if this_url %}?next={{this_url}}{% endif %}">
-                          {{tutor.name}}
+                          {% if forloop.counter0 != tutor_lst|length|add:-1 %}
+                            {{ tutor.name|add_str:"," }}
+                          {% else %}
+                            {{tutor.name}}
+                          {% endif %}
                         </a>
                       {% endfor %}
                     </div> {# for curriculum_discipline_tutor_item #}

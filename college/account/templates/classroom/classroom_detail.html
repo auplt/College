@@ -34,7 +34,6 @@
   </div>
   <div class="classroom_info_wrapper">
     <div class="classroom_info_detail">
-      <h2 class="classroom_info_detail_title">Расписание занятий</h2>
         {# Include lesson timetable template #}
         {% url 'account:classroom_details' classroom.classroom_id as day_url %}
         {% create_tt_conf_dict entity="classroom_id" entity_id=classroom.classroom_id entity_name="Аудитория" as add_classroom %}
