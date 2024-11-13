@@ -142,10 +142,12 @@ def user_details(request, id):
 
     disciplines = CurriculumLesson.objects.select_related('tutor_id__user_id',
                                                           'curriculum_id__discipline_id') \
-        .values('curriculum_lesson_id',
-                'curriculum_id__discipline_id__name',
-                'curriculum_id__discipline_id__discipline_id') \
+        .values(
+        # 'curriculum_lesson_id',
+        'curriculum_id__discipline_id__name',
+        'curriculum_id__discipline_id__discipline_id') \
         .filter(tutor_id__user_id__id=id) \
+        .distinct() \
         .all()
     # print(groups.query)
 
@@ -753,16 +755,17 @@ def discipline_details(request, discipline_id):
                             'group_semester_id__group_id__name')
                   .all())
     tutors_obj = (CurriculumLesson.objects.select_related('tutor_id__user_id')
-                  .values('curriculum_lesson_id',
+                  .values(
+                          # 'curriculum_lesson_id',
                           'tutor_id__user_id__id',
                           'tutor_id__user_id__last_name',
                           'tutor_id__user_id__first_name',
                           'tutor_id__user_id__second_name')
-                  .distinct()
                   .filter(curriculum_id__discipline_id__discipline_id=discipline_id)
                   .order_by('tutor_id__user_id__last_name',
                             'tutor_id__user_id__first_name',
                             'tutor_id__user_id__second_name')
+                  .distinct()
                   .all())
 
     print(groups_obj.__dict__)

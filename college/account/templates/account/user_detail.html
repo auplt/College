@@ -104,9 +104,11 @@
                   <span>{{discipline.curriculum_id__discipline_id__name}}</span>
                 </a>
                 {# Including control buttons delete #}
-                  {% url 'account:curriculum_lesson_delete' discipline.curriculum_lesson_id as del_link %}
+                  {% comment %}
+                    {% url 'account:curriculum_lesson_delete' discipline.curriculum_lesson_id as del_link %}
+                  {% endcomment %}
+                  {% url 'account:user_details' user.id as del_link %}
                   {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
-
               {% endfor %}
             </div>
           {% endif %}
@@ -118,12 +120,12 @@
       {% url 'account:user_details' user.user_id as day_url %}
       {% update_variable None as entities %}
       {% if tutor.tutor_id %}
-      {% create_tt_conf_dict entity="tutor_id" entity_id=tutor.tutor_id entity_name="Преподаватель" as add_tutor %}
-      {% add_to_list add_tutor as entities %}
+        {% create_tt_conf_dict entity="tutor_id" entity_id=tutor.tutor_id entity_name="Преподаватель" as add_tutor %}
+        {% add_to_list add_tutor as entities %}
       {% endif %}
       {% if student.student_id %}
-      {% create_tt_conf_dict entity="student_id" entity_id=student.student_id entity_name="Студент" as add_student %}
-      {% add_to_list add_student entities as entities %}
+        {% create_tt_conf_dict entity="student_id" entity_id=student.student_id entity_name="Студент" as add_student %}
+        {% add_to_list add_student entities as entities %}
       {% endif %}
       {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}
     </div>

@@ -97,9 +97,11 @@
                 <span>{{tutor.tutor_id__user_id__last_name}} {{tutor.tutor_id__user_id__first_name}} {{tutor.tutor_id__user_id__second_name}}</span>
               </a>
               {# Including control buttons delete #}
-
+                {% comment %}
                   {% url 'account:curriculum_lesson_delete' tutor.curriculum_lesson_id as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
+                {% endcomment %}
+                {% url 'account:user_details' tutor.tutor_id__user_id__id as del_link %}
+                {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
             {% endfor %}
           </div>
         </div>
