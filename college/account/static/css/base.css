@@ -642,3 +642,32 @@ option {
   letter-spacing: 0%;
   text-align: left;
 }
+
+/* Error pages */
+
+.content_error {
+  color: var(--red-color);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.content_error_back {
+  color: var(--primary-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+}
+
+.content_error_back_link {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0%;
+  text-align: left;
+}

@@ -35,7 +35,7 @@
   {% endwith %}
 
   {% include 'form_success.html' with form=curriculum_lesson_form %}
-  <form class="register_form register_curriculum_lesson" method="post" novalidate>
+  <form class="register_form register_curriculum_lesson" method="post">
     {% for field in curriculum_lesson_form %}
       <div>
         {% if curriculum_lesson_form.errors %}

@@ -7,17 +7,17 @@
 {% block title %}Student delete{% endblock %}
 
 {% block content %}
-    {# Including page title #}
-  {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url="account:user_edit" back_id=user.id page_title="Удаление дополнительной информации о студенте" list_url="account:user_list" next_url=next_url %}
+	{# Including page title #}
+	{% original_query_string next_url as next_url %}
+	{% include "page_heading.html" with back_url="account:user_edit" back_id=user.id page_title="Удаление дополнительной информации о студенте" list_url="account:user_list" next_url=next_url %}
 
-    <div class="delete_object">
-        <h2 class="delete_object_name">{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
-        <div class="delete_object_description">Логин {{ user.username }}</div>
-    </div>
-    <form class="delete_form" method="POST">
-        <div class="delete_form_question">Вы действительно хотите удалить информацию о студенте?</div>
-        {% include "delete_from_controllers.html" with cancel_url="account:user_edit" cancel_id=user.id %}
-        {% csrf_token %}
-    </form>
+	<div class="delete_object">
+		<h2 class="delete_object_name">{{ user.last_name }} {{ user.first_name }} {{ user.second_name }}</h2>
+		<div class="delete_object_description">Логин {{ user.username }}</div>
+	</div>
+	<form class="delete_form" method="POST">
+		<div class="delete_form_question">Вы действительно хотите удалить информацию о студенте?</div>
+		{% include "delete_from_controllers.html" with cancel_url="account:user_edit" cancel_id=user.id %}
+		{% csrf_token %}
+	</form>
 {% endblock %}

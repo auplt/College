@@ -12,49 +12,49 @@
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-    {# Including page title #}
+  {# Including page title #}
   {% original_query_string next_url as next_url %}
-    {% include 'page_heading.html' with back_url='account:user_list' page_title="Создание аккаунта" list_url='account:user_list' next_url=next_url %}
+  {% include 'page_heading.html' with back_url='account:user_list' page_title="Создание аккаунта" list_url='account:user_list' next_url=next_url %}
 
-    {% include "form_success.html" with form=user_form %}
-    <form class="register_form register_user" method="post" novalidate>
-        <div class="user_main_form">
-
-
-        {% for field in user_form.user_fields %}
-            <div>
-                {% if user_form.errors %}
-                    {% for error in field.errors %}
-                        <div class="errorlist"> {{ error }} </div>
-                    {% endfor %}
-                {% endif %}
-                {{ field }}
-            </div>
-        {% endfor %}
-        </div>
-        <div class="register_user__student">
-            <div class="register_form_checkbox">
-                {{user_form.is_student.label_tag}} {{user_form.is_student}}
-            </div>
-            <div class="more_info__student">
-                <h2 class="more_info_title">Дополнительная информация о студенте</h2>
-                {{ student_form.as_div }}
-            </div>
-        </div>
-        <div class="register_user__tutor">
-            <div class="register_form_checkbox">
-                {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
-            </div>
-            <div class="more_info__tutor">
-                <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
-                {{ tutor_form.as_div }}
-            </div>
-        </div>
-        {% csrf_token %}
+  {% include "form_success.html" with form=user_form %}
+  <form class="register_form register_user" method="post">
+    <div class="user_main_form">
+      {% for field in user_form.user_fields %}
         <div>
-            <input class="controller_button form_submit_button__reg"
-                   type="submit"
-                   value="Зарегистрироваться">
+          {% if user_form.errors %}
+            {% for error in field.errors %}
+              <div class="errorlist"> {{ error }} </div>
+            {% endfor %}
+          {% endif %}
+          {{ field }}
         </div>
-    </form>
+      {% endfor %}
+    </div>
+    {% if perms.timetable.add_student %}
+      <div class="register_user__student">
+        <div class="register_form_checkbox">
+          {{user_form.is_student.label_tag}} {{user_form.is_student}}
+        </div>
+        <div class="more_info__student">
+          <h2 class="more_info_title">Дополнительная информация о студенте</h2>
+          {{ student_form.as_div }}
+        </div>
+      </div>
+    {% endif %}
+    {% if perms.timetable.add_tutor %}
+      <div class="register_user__tutor">
+        <div class="register_form_checkbox">
+          {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
+        </div>
+          <div class="more_info__tutor">
+            <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
+            {{ tutor_form.as_div }}
+          </div>
+      </div>
+    {% endif %}
+    {% csrf_token %}
+    <div>
+      <input class="controller_button form_submit_button__reg" type="submit" value="Зарегистрироваться">
+    </div>
+  </form>
 {% endblock %}

@@ -13,40 +13,47 @@
 {% block title %}Lesson time list{% endblock %}
 
 {% block content %}
-        {% with request.path as this_url %}
+  {% with request.path as this_url %}
     {% get_url_params request as url_params %}
     {% if url_params %}
     {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
     {% endif %}
     <div class="page_title">
-        {# Including page title #}
-        {% original_query_string next_url as next_url %}
-        {% include "page_heading.html" with back_url="account:lesson_time_list" page_title="Список времени занятий" next_url=next_url %}
-<!--        <div class="page_title_nav">-->
-<!--            {# Including back button #}-->
-<!--            {% include "back_button.html" with back_url="account:lesson_time_list" %}-->
-<!--            <h1>Список времени занятий</h1>-->
-<!--        </div>-->
-        {# Including add button #}
+      {# Including page title #}
+      {% original_query_string next_url as next_url %}
+      {% include "page_heading.html" with back_url="account:lesson_time_list" page_title="Список времени занятий" next_url=next_url %}
+      {# Including add button #}
+      {% if perms.timetable.add_lessontime %}
         {% url 'account:lesson_time_register' as add_url %}
         {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Время занятия" %}
+      {% endif %}
     </div>
 
     {% include "success_msg.html" %}
     <div class="items_list list_wrapper">
-        {% for lesson_time in lesson_times %}
-            <div class="list_item">
-                <div class="item_title">
-                    <a href="{{ lesson_time.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
-                        <h2 class="item_title_heading">
-                            {{ lesson_time.name }}
-                        </h2>
-                    </a>
-                </div>
-                {# Including control buttons edit and delete #}
-                {% include "buttons_controllers.html" with edit_link=lesson_time.get_edit_url next_edit_link=this_url del_link=lesson_time.get_delete_url next_del_link=this_url %}
-            </div>
-        {% endfor %}
+      {% for lesson_time in lesson_times %}
+        <div class="list_item">
+          <div class="item_title">
+            <a href="{{ lesson_time.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
+              <h2 class="item_title_heading">
+                {{ lesson_time.name }}
+              </h2>
+            </a>
+          </div>
+          {# Including control buttons edit and delete #}
+          {% if perms.timetable.change_lessontime or perms.timetable.delete_lessontime %}
+            {% with edit_link=None del_link=None %}
+              {% if perms.timetable.change_lessontime %}
+                {% update_variable lesson_time.get_edit_url as edit_link %}
+              {% endif %}
+              {% if perms.timetable.delete_lessontime %}
+                {% update_variable lesson_time.get_delete_url as del_link %}
+              {% endif %}
+              {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}
+            {% endwith %}
+          {% endif %}
+        </div>
+      {% endfor %}
     </div>
-{% endwith %}
+  {% endwith %}
 {% endblock %}

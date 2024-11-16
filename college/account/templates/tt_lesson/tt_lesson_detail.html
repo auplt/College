@@ -39,9 +39,11 @@
             </h3>
             {% if tt_lesson.days_info %}
               {# Including add button #}
-              {% url 'account:tt_lesson_register' as add_url %}
-              {% date_convertor tt_lesson.date as conv_date %}
-              {% include "add_button__blue.html" with add_link=add_url|add_str:"?date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
+	            {% if perms.timetable.add_ttlesson %}
+	              {% url 'account:tt_lesson_register' as add_url %}
+	              {% date_convertor tt_lesson.date as conv_date %}
+	              {% include "add_button__blue.html" with add_link=add_url|add_str:"?date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
+              {% endif %}
             {% endif %}
           </div>
           <div class="tt_lesson_day">
@@ -74,10 +76,12 @@
                       {% endfor %}
 
                       {# Including control buttons edit #}
-                      {% url 'account:tt_lesson_details_edit' as edit_link %}
-                      {% date_convertor tt_lesson.date as conv_date %}
-                      {% include "buttons_controllers.html" with edit_link=edit_link|add_str:"?date="|add_str:conv_date|add_str:"&lesson_time_id="|add_str:day_inf.lesson_time_id|add_str:"&tt_lesson_ids="|add_str:tt_lesson_ids|cut:" "|add_str:"&next="|add_str:this_url next_edit_link=None del_link=None %}
-                    {% endwith %}
+	                    {% if perms.timetable.change_ttlesson %}
+	                      {% url 'account:tt_lesson_details_edit' as edit_link %}
+	                      {% date_convertor tt_lesson.date as conv_date %}
+	                      {% include "buttons_controllers.html" with edit_link=edit_link|add_str:"?date="|add_str:conv_date|add_str:"&lesson_time_id="|add_str:day_inf.lesson_time_id|add_str:"&tt_lesson_ids="|add_str:tt_lesson_ids|cut:" "|add_str:"&next="|add_str:this_url next_edit_link=None del_link=None %}
+                      {% endif %}
+	                  {% endwith %}
                   </div>
                   <div class="tt_lesson_content_details">
                     <div class="tt_lesson_classroom_tutors">
@@ -89,7 +93,7 @@
                           <span class="tooltiptext">Аудитория</span>
                         </div>
                         <a class="tt_lesson_classroom_name" href="{% url 'account:classroom_details' day_inf.classroom_id %}{% if this_url %}?next={{this_url}}{% endif %}">
-                          {{day_inf.classroom_number}}
+                          {{ day_inf.classroom_number }}
                         </a>
                       </div>
                       <div class="tt_lesson_info_tutor">
@@ -152,24 +156,28 @@
         {% else %}
           <div class="tt_lesson_content__no_lessons">
             Занятий не найдено
-            {% for entity in entities %}
-              {# Including add button #}
-              {% url 'account:tt_lesson_register' as add_url %}
-              {% date_convertor tt_lesson.date as conv_date %}
-              {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt=entity.entity_name %}
-            {% endfor %}
+	          {% if perms.timetable.add_ttlesson %}
+	            {% for entity in entities %}
+	              {# Including add button #}
+	              {% url 'account:tt_lesson_register' as add_url %}
+	              {% date_convertor tt_lesson.date as conv_date %}
+	              {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt=entity.entity_name %}
+	            {% endfor %}
+	          {% endif %}
           </div>
         {% endif %}
       </div>
     {% endfor %}
   {% else %}
     Занятий не найдено
-    {% for entity in entities %}
-      {# Including add button #}
-      {% url 'account:tt_lesson_register' as add_url %}
-      {% date_convertor tt_lesson.date as conv_date %}
-      {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt=entity.entity_name %}
-    {% endfor %}
+		{% if perms.timetable.add_ttlesson %}
+	    {% for entity in entities %}
+	      {# Including add button #}
+	      {% url 'account:tt_lesson_register' as add_url %}
+	      {% date_convertor tt_lesson.date as conv_date %}
+	      {% include "add_button__blue.html" with add_link=add_url|add_str:"?"|add_str:entity.entity|add_str:"="|add_str:entity.entity_id|add_str:"&date="|add_str:conv_date|add_str:"&next="|add_str:this_url add_txt=entity.entity_name %}
+	    {% endfor %}
+		{% endif %}
   {% endif %}
 </div>
 

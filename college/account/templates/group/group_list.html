@@ -12,63 +12,73 @@
 
 {% block title %}Groups list{% endblock %}
 
-
 {% block content %}
-        {% with request.path as this_url %}
+  {% with request.path as this_url %}
     {% get_url_params request as url_params %}
     {% if url_params %}
     {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
     {% endif %}
     <div class="page_title">
-        {# Including page title #}
-                  {% original_query_string next_url as next_url %}
-        {% include "page_heading.html" with back_url="account:group_list" page_title="Список групп" next_url=next_url %}
-        {# Including add button #}
+      {# Including page title #}
+      {% original_query_string next_url as next_url %}
+      {% include "page_heading.html" with back_url="account:group_list" page_title="Список групп" next_url=next_url %}
+      {# Including add button #}
+      {% if perms.timetable.add_group %}
         {% url 'account:group_register' as add_url %}
         {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Группа" %}
+      {% endif %}
     </div>
 
     {% include "success_msg.html" %}
     <div class="items_list">
-        {% if groups %}
-            {# Number of previous semester. Initial -1 #}
-            {% with prev_max_sem=-1 %}
-                {% for group in groups %}
-                    {# Excluding semesters with number -1 #}
-                    {% if group.max_sem != -1 %}
-                        {# Opening div tag for semester, when all groups are listed or this semester is first #}
-                        {% if prev_max_sem != group.max_sem %}
-                            {# Closing div tag for semester, when all groups are listed #}
-                            {% if prev_max_sem != -1 %}
-            </div>
-                            {% endif %}
-            <h2 class="items_list_sem_heading">
-                {% if group.max_sem == 0 %}
-                    Семестр не указан
-                {% else %}
-                    Семестр {{ group.max_sem }}
+      {% if groups %}
+        {# Number of previous semester. Initial -1 #}
+        {% with prev_max_sem=-1 %}
+          {% for group in groups %}
+            {# Excluding semesters with number -1 #}
+            {% if group.max_sem != -1 %}
+              {# Opening div tag for semester, when all groups are listed or this semester is first #}
+              {% if prev_max_sem != group.max_sem %}
+                {# Closing div tag for semester, when all groups are listed #}
+                {% if prev_max_sem != -1 %}
+                  </div>
                 {% endif %}
-            </h2>
-            <div class="items_list_sem_items">
-                        {% endif %}
-                <div class="list_item">
-                    <div class="item_title">
-                        <a href="{{ group.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
-                            <h3 class="item_title_heading">{{ group.name }}</h3>
-                        </a>
-                    </div>
-                    {# Including control buttons edit and delete #}
-                    {% include "buttons_controllers.html" with edit_link=group.get_edit_url next_edit_link=this_url del_link=group.get_delete_url next_del_link=this_url %}
-
-                    {# Changing previous semester number on current #}
-                    {% update_variable group.max_sem as prev_max_sem %}
+                <h2 class="items_list_sem_heading">
+                  {% if group.max_sem == 0 %}
+                    Семестр не указан
+                  {% else %}
+                    Семестр {{ group.max_sem }}
+                  {% endif %}
+                </h2>
+                <div class="items_list_sem_items">
+              {% endif %}
+              <div class="list_item">
+                <div class="item_title">
+                  <a href="{{ group.get_absolute_url }}{% if this_url %}?next={{this_url}}{% endif %}">
+                    <h3 class="item_title_heading">{{ group.name }}</h3>
+                  </a>
                 </div>
+                {# Including control buttons edit and delete #}
+                {% if perms.timetable.change_group or perms.timetable.delete_group %}
+                  {% with edit_link=None del_link=None %}
+                    {% if perms.timetable.change_group %}
+                      {% update_variable group.get_edit_url as edit_link %}
                     {% endif %}
-                {% endfor %}
-            {% endwith %}
-            {# Closing last semester div tag #}
-            </div>
-        {% endif %}
+                    {% if perms.timetable.delete_group %}
+                      {% update_variable group.get_delete_url as del_link %}
+                    {% endif %}
+                    {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}
+                  {% endwith %}
+                {% endif %}
+
+                {# Changing previous semester number on current #}
+                {% update_variable group.max_sem as prev_max_sem %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endwith %}
+        </div> {# Closing last semester div tag #}
+      {% endif %}
     </div>
-{% endwith %}
+  {% endwith %}
 {% endblock %}

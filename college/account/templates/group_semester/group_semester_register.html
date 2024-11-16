@@ -28,7 +28,7 @@
   {% endif %}
 
   {% include 'form_success.html' with form=group_semester_form %}
-  <form class="register_form register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}?group_id={{group.group_id}}" novalidate>
+  <form class="register_form register_group_semester" method="post" data-max-semester="{% url 'account:ajax_load_max_semester' %}?group_id={{group.group_id}}">
     {% for field in group_semester_form %}
     <div>
       {% if group_semester_form.errors %}

@@ -1,0 +1,20 @@
+{# Template for 403 error page #}
+
+{% extends "base.html" %}
+
+{% block title %}Доступ запрещен{% endblock %}
+
+{% block meta %}
+  <meta name="robots" content="noindex, nofollow">
+{% endblock %}
+
+{% block content %}
+  {# Including page title #}
+  {% include "page_heading.html" with page_title="Доступ к странице запрещен" %}
+  <p class="content_error">Недостаточно прав для просмотра контента</p>
+  <p class="content_error_back">Возврат на
+    <a class="content_error_back_link" href="{% url 'account:welcome' %}">
+      главную страницу
+    </a>
+  </p>
+{% endblock %}

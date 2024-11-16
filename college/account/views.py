@@ -12,7 +12,7 @@ from itertools import groupby
 from django.urls import reverse, resolve, Resolver404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction, IntegrityError
 from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch, Q
@@ -77,16 +77,14 @@ def home(request):
         return HttpResponseRedirect(reverse('account:user_details', args=[request.user.id]))
 
 
-@login_required
-def dashboard(request):
+def welcome(request):
     """
-    View for plug page.
+    View for welcome page.
     :param request: user's request
     :return: HTTP response plug HTML page
     """
     return render(request,
-                  'account/dashboard.html',
-                  {'section': 'dashboard'})
+                  'account/welcome.html')
 
 
 def user_list(request):
@@ -95,6 +93,7 @@ def user_list(request):
     :param request: user's request
     :return: HTTP response HTML page with users list
     """
+    print(request.user.get_all_permissions())
     users_list = (CustomUser.objects
                   .filter(is_superuser=False, is_staff=False, is_active=True)
                   .order_by('last_name', 'first_name', 'second_name')
@@ -169,6 +168,7 @@ def user_details(request, id):
     return render(request, 'account/user_detail.html', context=context)
 
 
+@permission_required('timetable.add_customuser', raise_exception=True)
 @transaction.atomic
 def user_register(request):
     """
@@ -244,8 +244,10 @@ def user_register(request):
     return render(request, 'account/user_register.html', context=context)
 
 
+@permission_required('timetable.change_customuser', raise_exception=True)
 @transaction.atomic
 def user_edit(request, id):
+    print(request.user.get_all_permissions())
     """
     View for registering user.
     :param request: user's request
@@ -356,6 +358,7 @@ def user_edit(request, id):
     return render(request, 'account/user_edit.html', context=context)
 
 
+@permission_required('timetable.delete_customuser', raise_exception=True)
 def user_delete(request, id):
     """
     View for deleting user information.
@@ -400,6 +403,7 @@ def user_delete(request, id):
     return render(request, 'account/user_delete.html', context=context)
 
 
+@permission_required('timetable.delete_tutor', raise_exception=True)
 def user_delete_tutor(request, id):
     """
     View for deleting tutor information.
@@ -433,6 +437,7 @@ def user_delete_tutor(request, id):
     return render(request, 'account/tutor_delete.html', context=context)
 
 
+@permission_required('timetable.delete_student', raise_exception=True)
 def user_delete_student(request, id):
     """
     View for deleting student information.
@@ -613,6 +618,7 @@ def group_details(request, group_id):
     return render(request, 'group/group_detail.html', context=context)
 
 
+@permission_required('timetable.add_group', raise_exception=True)
 @transaction.atomic
 def group_register(request):
     """
@@ -645,6 +651,7 @@ def group_register(request):
     return render(request, 'group/group_form.html', context=context)
 
 
+@permission_required('timetable.change_group', raise_exception=True)
 def group_edit(request, group_id):
     """
     View for editing group information.
@@ -671,6 +678,7 @@ def group_edit(request, group_id):
     return render(request, 'group/group_form.html', context=context)
 
 
+@permission_required('timetable.delete_group', raise_exception=True)
 def group_delete(request, group_id):
     """
     View for deleting group information.
@@ -710,6 +718,7 @@ def group_delete(request, group_id):
 # DISCIPLINE BLOCK
 
 
+@permission_required('timetable.view_discipline', raise_exception=True)
 def discipline_list(request):
     """
     View for list of disciplines.
@@ -736,6 +745,7 @@ def discipline_list(request):
     return render(request, 'discipline/discipline_list.html', context=context)
 
 
+@permission_required('timetable.view_discipline', raise_exception=True)
 def discipline_details(request, discipline_id):
     """
     View for discipline details.
@@ -785,6 +795,7 @@ def discipline_details(request, discipline_id):
     return render(request, 'discipline/discipline_detail.html', context=context)
 
 
+@permission_required('timetable.register_discipline', raise_exception=True)
 def discipline_register(request):
     """
     View for discipline registration.
@@ -813,6 +824,7 @@ def discipline_register(request):
     return render(request, 'discipline/discipline_form.html', context=context)
 
 
+@permission_required('timetable.change_discipline', raise_exception=True)
 def discipline_edit(request, discipline_id):
     """
     View for editing discipline information.
@@ -839,6 +851,7 @@ def discipline_edit(request, discipline_id):
     return render(request, 'discipline/discipline_form.html', context=context)
 
 
+@permission_required('timetable.delete_discipline', raise_exception=True)
 def discipline_delete(request, discipline_id):
     """
     View for deleting discipline information.
@@ -917,6 +930,7 @@ def classroom_details(request, classroom_id):
     return render(request, 'classroom/classroom_detail.html', context=context)
 
 
+@permission_required('timetable.add_classroom', raise_exception=True)
 def classroom_register(request):
     """
     View for classroom registration.
@@ -944,6 +958,7 @@ def classroom_register(request):
     return render(request, 'classroom/classroom_form.html', context=context)
 
 
+@permission_required('timetable.change_classroom', raise_exception=True)
 def classroom_edit(request, classroom_id):
     """
     View for editing classroom information.
@@ -970,6 +985,7 @@ def classroom_edit(request, classroom_id):
     return render(request, 'classroom/classroom_form.html', context=context)
 
 
+@permission_required('timetable.delete_classroom', raise_exception=True)
 def classroom_delete(request, classroom_id):
     """
     View for deleting classroom information.
@@ -1006,6 +1022,7 @@ def classroom_delete(request, classroom_id):
     return render(request, 'classroom/classroom_delete.html', context=context)
 
 
+@permission_required('timetable.view_lessontime', raise_exception=True)
 def lesson_time_list(request):
     """
     View for list of lessons time.
@@ -1024,6 +1041,7 @@ def lesson_time_list(request):
     return render(request, 'lesson_time/lesson_time_list.html', context=context)
 
 
+@permission_required('timetable.view_lessontime', raise_exception=True)
 def lesson_time_details(request, lesson_id):
     """
     View for lesson time details.
@@ -1044,6 +1062,7 @@ def lesson_time_details(request, lesson_id):
     return render(request, 'lesson_time/lesson_time_detail.html', context=context)
 
 
+@permission_required('timetable.add_lessontime', raise_exception=True)
 def lesson_time_register(request):
     """
     View for lesson time registration.
@@ -1072,6 +1091,7 @@ def lesson_time_register(request):
     return render(request, 'lesson_time/lesson_time_form.html', context=context)
 
 
+@permission_required('timetable.change_lessontime', raise_exception=True)
 def lesson_time_edit(request, lesson_id):
     """
     View for editing lesson time information.
@@ -1097,6 +1117,7 @@ def lesson_time_edit(request, lesson_id):
     return render(request, 'lesson_time/lesson_time_form.html', context=context)
 
 
+@permission_required('timetable.delete_lessontime', raise_exception=True)
 def lesson_time_delete(request, lesson_id):
     """
     View for deleting lesson time information.
@@ -1151,6 +1172,7 @@ def load_max_semester(request):
         return JsonResponse(max_sem_num)
 
 
+@permission_required('timetable.add_groupsemester', raise_exception=True)
 def group_semester_register(request):
     """
     View for group semester registration.
@@ -1186,6 +1208,7 @@ def group_semester_register(request):
     return render(request, 'group_semester/group_semester_register.html', context)
 
 
+@permission_required('timetable.delete_groupsemester', raise_exception=True)
 def group_semester_delete(request):
     """
     View for deleting group semester information.
@@ -1230,6 +1253,7 @@ def group_semester_delete(request):
 # GROUP MEMBER BLOCK
 
 
+@permission_required('timetable.add_groupmember', raise_exception=True)
 def group_member_register(request):
     """
     View for group member registration.
@@ -1277,6 +1301,7 @@ def group_member_register(request):
     return render(request, 'group_member/group_member_register.html', context=context)
 
 
+@permission_required('timetable.delete_groupmember', raise_exception=True)
 def group_member_delete(request, group_member_id):
     """
     View for deleting group member information.
@@ -1330,6 +1355,7 @@ def group_member_delete(request, group_member_id):
 # CURRICULUM BLOCK
 
 
+@permission_required('timetable.add_curriculum', raise_exception=True)
 @transaction.atomic
 def curriculum_register(request):
     """
@@ -1406,6 +1432,7 @@ def curriculum_register(request):
     return render(request, 'curriculum/curriculum_from.html', context)
 
 
+@permission_required('timetable.delete_curriculum', raise_exception=True)
 def curriculum_delete(request, curriculum_id=None):
     """
     View for deleting curriculum information.
@@ -1474,7 +1501,10 @@ def curriculum_delete(request, curriculum_id=None):
 # CURRICULUM LESSON BLOCK
 
 
+@permission_required('timetable.view_curriculumlesson', raise_exception=True)
 def curriculum_lesson_group_details(request, group_id):
+    # print(request.user.get_all_permissions())
+    # print("000001")
     """
     View for curriculum lesson details.
     :param request: user's request
@@ -1540,6 +1570,7 @@ def curriculum_lesson_group_details(request, group_id):
     return render(request, 'curriculum_lesson/curriculum_lesson_group_detail.html', context=context)
 
 
+@permission_required('timetable.add_curriculumlesson', raise_exception=True)
 def curriculum_lesson_register(request):
     """
     View for curriculum lesson registration.
@@ -1599,6 +1630,7 @@ def curriculum_lesson_register(request):
     return render(request, 'curriculum_lesson/curriculum_lesson_form.html', context=context)
 
 
+@permission_required('timetable.change_curriculumlesson', raise_exception=True)
 def curriculum_lesson_edit(request, curriculum_lesson_id):
     """
     View for editing curriculum lesson information.
@@ -1629,6 +1661,7 @@ def curriculum_lesson_edit(request, curriculum_lesson_id):
     return render(request, 'curriculum_lesson/curriculum_lesson_form.html', context=context)
 
 
+@permission_required('timetable.delete_curriculumlesson', raise_exception=True)
 def curriculum_lesson_delete(request, curriculum_lesson_id):
     """
     View for deleting curriculum lesson information.
@@ -1941,6 +1974,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
     return context
 
 
+@permission_required('timetable.change_ttlesson', raise_exception=True)
 def tt_lesson_details_edit(request):
     """
     Function to watch timetable details and edit.
@@ -2085,6 +2119,7 @@ def tt_lesson_details_edit(request):
         # print(18)
 
 
+@permission_required('timetable.add_ttlesson', raise_exception=True)
 def tt_lesson_register(request):
     """
     View for timetable lesson registration.
@@ -2266,6 +2301,7 @@ def tt_lesson_register(request):
     return render(request, 'tt_lesson/tt_lesson_form.html', context=context)
 
 
+@permission_required('timetable.change_ttlesson', raise_exception=True)
 def tt_lesson_edit(request, tt_lesson_id):
     """
     View for editing timetable lesson information.
@@ -2292,6 +2328,7 @@ def tt_lesson_edit(request, tt_lesson_id):
     return render(request, 'tt_lesson/tt_lesson_form.html', context=context)
 
 
+@permission_required('timetable.delete_ttlesson', raise_exception=True)
 def tt_lesson_delete(request, tt_lesson_id):
     """
     View for deleting timetable lesson information.

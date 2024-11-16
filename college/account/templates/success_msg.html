@@ -5,47 +5,47 @@
 {% load static %}
 
 <div class="success_msg">
-    {% if obj_action %}
-        {% with obj_action as action %}
-            {% if action == "C" %}
-                {% update_variable "добавлен" as action %}
-            {% elif action == "U" %}
-                {% update_variable "изменен" as action %}
-            {% elif action == "D" %}
-                {% update_variable "удален" as action %}
-            {% else %}
-                {% update_variable None as action %}
-            {% endif %}
-            {% if action %}
-                {% if obj_status == "success" %}
-                    <div class="msg success_msg__success">
-                        <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
-                        <div class="msg_heading">
-                            <img class="msg_icon circle-check" src="{% static 'images/circle-check.svg' %}"/>
-                        <p class="msg_title">Информация</p>
-                        </div>
-                        <div class="msg_text">Объект {{obj_name}} успешно {{action}}</div>
-                    </div>
-                {% elif obj_status == "warning" %}
-                    <div class="msg success_msg__warning">
-                        <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
-                        <div class="msg_heading">
-                            <img class="msg_icon triangle-exclamation" src="{% static 'images/triangle-exclamation.svg' %}"/>
-                            <p class="msg_title">Внимание!</p>
-                        </div>
-                        <div class="msg_text">Объект {{obj_name}} {{action}} с ошибками</div>
-                    </div>
-                {% elif obj_status == "error" %}
-                    <div class="msg success_msg__error">
-                        <img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
-                        <div class="msg_heading">
-                            <img class="msg_icon circle-xmark" src="{% static 'images/circle-xmark.svg' %}"/>
-                            <p class="msg_title">Ошибка!</p>
-                        </div>
-                        <div class="msg_text">Объект {{obj_name}} не {{action}}</div>
-                    </div>
-                {% endif %}
-            {% endif %}
-        {% endwith %}
-   {% endif %}
+	{% if obj_action %}
+		{% with obj_action as action %}
+			{% if action == "C" %}
+				{% update_variable "добавлен" as action %}
+			{% elif action == "U" %}
+				{% update_variable "изменен" as action %}
+			{% elif action == "D" %}
+				{% update_variable "удален" as action %}
+			{% else %}
+				{% update_variable None as action %}
+			{% endif %}
+			{% if action %}
+				{% if obj_status == "success" %}
+					<div class="msg success_msg__success">
+						<img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+						<div class="msg_heading">
+							<img class="msg_icon circle-check" src="{% static 'images/circle-check.svg' %}"/>
+							<p class="msg_title">Информация</p>
+						</div>
+						<div class="msg_text">Объект {{obj_name}} успешно {{action}}</div>
+					</div>
+				{% elif obj_status == "warning" %}
+					<div class="msg success_msg__warning">
+						<img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+						<div class="msg_heading">
+							<img class="msg_icon triangle-exclamation" src="{% static 'images/triangle-exclamation.svg' %}"/>
+							<p class="msg_title">Внимание!</p>
+						</div>
+						<div class="msg_text">Объект {{obj_name}} {{action}} с ошибками</div>
+					</div>
+				{% elif obj_status == "error" %}
+					<div class="msg success_msg__error">
+						<img class="msg_icon msg_cross" src="{% static 'images/cross.svg' %}"/>
+						<div class="msg_heading">
+							<img class="msg_icon circle-xmark" src="{% static 'images/circle-xmark.svg' %}"/>
+							<p class="msg_title">Ошибка!</p>
+						</div>
+						<div class="msg_text">Объект {{obj_name}} не {{action}}</div>
+					</div>
+				{% endif %}
+			{% endif %}
+		{% endwith %}
+	{% endif %}
 </div>

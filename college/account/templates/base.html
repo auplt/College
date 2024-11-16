@@ -42,8 +42,13 @@
             <button class="header_entrance_txt" type="submit">Выйти</button>
           </form>
         {% else %}
-          <a class="header_entrance_txt" href="{% url 'account:login' %}?next={{request.path}}{% if request.GET.urlencode %}?{% change_query_string request.GET.urlencode %}{% endif %}">Войти</a>
-        {% endif %}
+	        {% url 'account:logout' as logout_url_cmp %}
+	        {% if request.path != logout_url_cmp %}
+            <a class="header_entrance_txt" href="{% url 'account:login' %}?next={{request.path}}{% if request.GET.urlencode %}?{% change_query_string request.GET.urlencode %}{% endif %}">Войти</a>
+          {% else %}
+	           <a class="header_entrance_txt" href="{% url 'account:login' %}">Войти</a>
+	        {% endif %}
+	      {% endif %}
       </span>
     </div>
     <div class="main_content">
@@ -61,9 +66,11 @@
         {% url 'account:user_list' as redirect_link %}
         {% include "navigation_item.html" with src_link=src_link nav_txt="Пользователи" redirect_link=redirect_link %}
 
-        {% static 'images/discipline.svg' as src_link %}
-        {% url 'account:discipline_list' as redirect_link %}
-        {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}
+        {% if perms.timetable.view_discipline %}
+          {% static 'images/discipline.svg' as src_link %}
+          {% url 'account:discipline_list' as redirect_link %}
+          {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}
+        {% endif %}
 
         {% static 'images/group.svg' as src_link %}
         {% url 'account:group_list' as redirect_link %}
@@ -81,9 +88,11 @@
 
         {% include "navigation_item.html" with src_link=src_link nav_txt="Домашние задания" redirect_link="#" %}
 
-        {% static 'images/clock.svg' as src_link %}
-        {% url 'account:lesson_time_list' as redirect_link %}
-        {% include "navigation_item.html" with src_link=src_link nav_txt="Время занятий" redirect_link=redirect_link %}
+        {% if perms.timetable.view_lesson_time %}
+          {% static 'images/clock.svg' as src_link %}
+          {% url 'account:lesson_time_list' as redirect_link %}
+          {% include "navigation_item.html" with src_link=src_link nav_txt="Время занятий" redirect_link=redirect_link %}
+        {% endif %}
       </nav>
       <div id="content">
         {% block content %}

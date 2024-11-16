@@ -14,114 +14,130 @@
 {% block title %}Информация о плане занятий{% endblock %}
 
 {% block content %}
-        {% with request.path as this_url %}
+  {% with request.path as this_url %}
     {% get_url_params request as url_params %}
     {% if url_params %}
     {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
     {% endif %}
-  {# Including page title #}
-  {% original_query_string next_url as next_url %}
-  {% include "page_heading.html" with back_url="account:group_details" back_id=group.group_id page_title="План занятий группы "|add_str:group.name next_url=next_url %}
-  {% include "success_msg.html" %}
-  <div class="details_description">
-    Текущий семестр: {{max_semester}}
-  </div>
-  <div class="details_controllers">
-    {# Including add button #}
-    {% url 'account:group_semester_register' as add_url %}
-    {% include "add_button__blue.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
 
-    {% if group_lessons %}
-      {# Including add button #}
-      {% url 'account:curriculum_register' as add_url %}
-      {% include "add_button__blue.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
-    {% endif %}
-  </div>
+    {# Including page title #}
+    {% original_query_string next_url as next_url %}
+    {% include "page_heading.html" with back_url="account:group_details" back_id=group.group_id page_title="План занятий группы "|add_str:group.name next_url=next_url %}
+    {% include "success_msg.html" %}
+    <div class="details_description">
+      Текущий семестр: {{max_semester}}
+    </div>
+    {% if perms.timetable.add_groupsemester or perms.timetable.add_curriculum %}
+      <div class="details_controllers">
+        {# Including add button #}
+        {% if perms.timetable.add_groupsemester %}
+          {% url 'account:group_semester_register' as add_url %}
+          {% include "add_button__blue.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
+        {% endif %}
 
-  <div class="group_info_wrapper">
-    <div class="curriculum_info_wrapper">
-      {% if group_lessons %}
-        <div class="curriculum_info">
-          {% with prev_semester_num=-1 prev_dis_name='' is_hidden="" %}
-            {% for group_lesson in group_lessons %}
-              {% if prev_semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
-                <div class="item_semester_number">
-                  <div class="semester_number_controller">
-                    <img class="semester_number_controller_img" src="{% static 'images/back.svg' %}"/>
-                  </div>
-                  <div class="item_semester_number_info">
-                    <div class="item_semester_number_info_name">
-                      Семестр {{group_lesson.curriculum_id__group_semester_id__semester_num}}
-                      {% if is_hidden == "" and prev_semester_num != -1 %}
-                        {% update_variable "hidden" as is_hidden %}
-                      {% endif %}
-                    </div>
-                    <div class="item_semester_number_info__ctrl">
-                      {# Including add button #}
-                      {% url 'account:curriculum_register' as add_url %}
-                      {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_lesson.curriculum_id__group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
-                    </div>
-                  </div>
-                  {# Including control buttons delete #}
-                  {% update_variable None as edit_link %}
-                  {% url 'account:group_semester_delete' as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_lesson.curriculum_id__group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
-                </div>
-                {% update_variable '' as prev_dis_name %}
-              {% endif %}
-              {% if prev_dis_name != group_lesson.curriculum_id__discipline_id__name %}
-                {% if group_lesson.curriculum_id__discipline_id__name %}
-                  <div class="curriculum_discipline_item toggle_name {{is_hidden}}">
-                    <a class="curriculum_discipline" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}">
-                      {{group_lesson.curriculum_id__discipline_id__name}}
-                    </a>
-                    {# Including add button #}
-                    {% url 'account:curriculum_lesson_register' as add_url %}
-                    {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&group_semester_id="|add_str:group_lesson.curriculum_id__group_semester_id__group_semester_id|add_str:"&discipline_id="|add_str:group_lesson.curriculum_id__discipline_id__discipline_id|add_str:"&next="|add_str:this_url add_txt="Преподаватель" %}
-
-                    {# Including control buttons delete #}
-                    {% update_variable None as edit_link %}
-                    {% url 'account:curriculum_delete_params' as del_link %}
-                    {% include "buttons_controllers.html" with del_link=del_link|add_str:"?discipline_id="|add_str:group_lesson.curriculum_id__discipline_id__discipline_id|add_str:"&group_semester_id="|add_str:group_lesson.curriculum_id__group_semester_id__group_semester_id|add_str:"&next="|add_str:this_url %}
-                  </div>
-                {% endif %}
-              {% endif %}
-              {% if group_lesson.tutor_id__user_id__id %}
-                <div class="curriculum_discipline_tutor_item toggle_detail {{is_hidden}}">
-                  <div class="curriculum_discipline_tutor_item_general">
-                    {% get_value lesson_types group_lesson.lesson_type as lesson_type %}
-                    {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
-                    <div class="tutor_item_general_hours">
-                      <div class="tutor_item_general_hours_icon">
-                        <img
-                            class="tutor_item_general_hours_icon_img"
-                            src="{% static 'images/clock.svg' %}"/>
-                        <span class="tooltiptext">Учебные часы</span>
-                      </div>
-                      <span class="tutor_item_general_hours_txt">{{group_lesson.duration}} ак/ч</span>
-                    </div>
-                    <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}">
-                      {{group_lesson.tutor_id__user_id__last_name}}
-                      {{ group_lesson.tutor_id__user_id__first_name|slicestring:"0:1"|add_str:"." }}
-                      {% if group_lesson.tutor_id__user_id__second_name %}
-                        {{ group_lesson.tutor_id__user_id__second_name|slicestring:"0:1"|add_str:"." }}
-                      {% endif %}
-                    </a>
-                  </div>
-                  {# Including control buttons edit and delete #}
-                  {% url 'account:curriculum_lesson_edit' group_lesson.curriculum_lesson_id as edit_link %}
-                  {% url 'account:curriculum_lesson_delete' group_lesson.curriculum_lesson_id as del_link %}
-
-                  {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}
-                </div>
-              {% endif %}
-              {% update_variable group_lesson.curriculum_id__group_semester_id__semester_num as prev_semester_num %}
-              {% update_variable group_lesson.curriculum_id__discipline_id__name as prev_dis_name %}
-            {% endfor %}
-          {% endwith %}
+        {% if group_lessons %}
+          {# Including add button #}
+          {% if perms.timetable.add_curriculum %}
+            {% url 'account:curriculum_register' as add_url %}
+            {% include "add_button__blue.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
+          {% endif %}
         {% endif %}
       </div>
+    {% endif %}
+
+    <div class="group_info_wrapper">
+      <div class="curriculum_info_wrapper">
+        {% if group_lessons %}
+          <div class="curriculum_info">
+            {% with prev_semester_num=-1 prev_dis_name='' is_hidden="" %}
+              {% for group_lesson in group_lessons %}
+                {% if prev_semester_num != group_lesson.curriculum_id__group_semester_id__semester_num %}
+                  <div class="item_semester_number">
+                    <div class="semester_number_controller">
+                      <img class="semester_number_controller_img" src="{% static 'images/back.svg' %}"/>
+                    </div>
+                    <div class="item_semester_number_info">
+                      <div class="item_semester_number_info_name">
+                        Семестр {{group_lesson.curriculum_id__group_semester_id__semester_num}}
+                        {% if is_hidden == "" and prev_semester_num != -1 %}
+                          {% update_variable "hidden" as is_hidden %}
+                        {% endif %}
+                      </div>
+                      <div class="item_semester_number_info__ctrl">
+                        {# Including add button #}
+                        {% if perms.timetable.add_curriculum %}
+                          {% url 'account:curriculum_register' as add_url %}
+                          {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_lesson.curriculum_id__group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    {# Including control buttons delete #}
+                    {% if perms.timetable.delete_groupsemester %}
+                      {% update_variable None as edit_link %}
+                      {% url 'account:group_semester_delete' as del_link %}
+                      {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_lesson.curriculum_id__group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
+                    {% endif %}
+                  </div>
+                  {% update_variable '' as prev_dis_name %}
+                {% endif %}
+                {% if prev_dis_name != group_lesson.curriculum_id__discipline_id__name %}
+                  {% if group_lesson.curriculum_id__discipline_id__name %}
+                    <div class="curriculum_discipline_item toggle_name {{is_hidden}}">
+                      <a class="curriculum_discipline" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}">
+                        {{group_lesson.curriculum_id__discipline_id__name}}
+                      </a>
+                      {# Including add button #}
+                      {% if perms.timetable.add_curriculumlesson %}
+                        {% url 'account:curriculum_lesson_register' as add_url %}
+                        {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&group_semester_id="|add_str:group_lesson.curriculum_id__group_semester_id__group_semester_id|add_str:"&discipline_id="|add_str:group_lesson.curriculum_id__discipline_id__discipline_id|add_str:"&next="|add_str:this_url add_txt="Преподаватель" %}
+                      {% endif %}
+
+                      {# Including control buttons delete #}
+                      {% if perms.timetable.delete_curriculum %}
+                        {% update_variable None as edit_link %}
+                        {% url 'account:curriculum_delete_params' as del_link %}
+                        {% include "buttons_controllers.html" with del_link=del_link|add_str:"?discipline_id="|add_str:group_lesson.curriculum_id__discipline_id__discipline_id|add_str:"&group_semester_id="|add_str:group_lesson.curriculum_id__group_semester_id__group_semester_id|add_str:"&next="|add_str:this_url %}
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endif %}
+                {% if group_lesson.tutor_id__user_id__id %}
+                  <div class="curriculum_discipline_tutor_item toggle_detail {{is_hidden}}">
+                    <div class="curriculum_discipline_tutor_item_general">
+                      {% get_value lesson_types group_lesson.lesson_type as lesson_type %}
+                      {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
+                      <div class="tutor_item_general_hours">
+                        <div class="tutor_item_general_hours_icon">
+                          <img
+                              class="tutor_item_general_hours_icon_img"
+                              src="{% static 'images/clock.svg' %}"/>
+                          <span class="tooltiptext">Учебные часы</span>
+                        </div>
+                        <span class="tutor_item_general_hours_txt">{{group_lesson.duration}} ак/ч</span>
+                      </div>
+                      <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}?next={{this_url}}">
+                        {{ group_lesson.tutor_id__user_id__last_name }}
+                        {{ group_lesson.tutor_id__user_id__first_name|slicestring:"0:1"|add_str:"." }}
+                        {% if group_lesson.tutor_id__user_id__second_name %}
+                          {{ group_lesson.tutor_id__user_id__second_name|slicestring:"0:1"|add_str:"." }}
+                        {% endif %}
+                      </a>
+                    </div>
+                    {# Including control buttons edit and delete #}
+                    {% if perms.timetable.change_curriculumlesson and perms.timetable.delete_curriculumlesson %}
+                      {% url 'account:curriculum_lesson_edit' group_lesson.curriculum_lesson_id as edit_link %}
+                      {% url 'account:curriculum_lesson_delete' group_lesson.curriculum_lesson_id as del_link %}
+                      {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% update_variable group_lesson.curriculum_id__group_semester_id__semester_num as prev_semester_num %}
+                {% update_variable group_lesson.curriculum_id__discipline_id__name as prev_dis_name %}
+              {% endfor %}
+            {% endwith %}
+          {% endif %}
+        </div>
+      </div>
     </div>
-  </div>
-{% endwith %}
+  {% endwith %}
 {% endblock %}

@@ -3,8 +3,12 @@ Configuration for timetable app models on admin panel.
 """
 
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import PermissionsMixin, Permission, Group, User
+
 from .models import Student
 from .models import FinalGrade
+from .models import CustomUser
 
 
 class MarksAdminSite(admin.ModelAdmin):
@@ -17,4 +21,6 @@ class MarksAdminSite(admin.ModelAdmin):
 
 
 admin.site.register(Student)
+# admin.site.unregister(User)
 admin.site.register(FinalGrade, MarksAdminSite)
+admin.site.register(CustomUser, UserAdmin)

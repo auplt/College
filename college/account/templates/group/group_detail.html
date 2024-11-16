@@ -28,24 +28,31 @@
   <div class="details_description">
     Текущий семестр: {{max_semester}}
   </div>
-  <div class="details_controllers">
-    <a class="controller_button details_controller_button__delete"
-       href="{{ group.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">
-      Удалить
-    </a>
-    <a class="controller_button details_controller_button__edit"
-       href="{{ group.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">
-      Редактировать
-    </a>
-  </div>
-
+  {% if perms.timetable.delete_group or perms.timetable.change_group %}
+    <div class="details_controllers">
+      {% if perms.timetable.delete_group %}
+        <a class="controller_button details_controller_button__delete"
+           href="{{ group.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">
+          Удалить
+        </a>
+      {% endif %}
+      {% if perms.timetable.change_group %}
+        <a class="controller_button details_controller_button__edit"
+           href="{{ group.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">
+          Редактировать
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
   <div class="group_info_wrapper">
     <div class="group_info_detail">
       <div class="group_info_detail_heading">
         <h2 class="group_info_detail_title">Студенты</h2>
         {# Including add button #}
-        {% url 'account:group_semester_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
+        {% if perms.timetable.add_groupsemester %}
+          {% url 'account:group_semester_register' as add_url %}
+          {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
+        {% endif %}
       </div>
       <div class="group_info_members">
         {% if group_members %}
@@ -65,13 +72,17 @@
                 </div>
                 <div class="group_members_semester_ctrl">
                   {# Including add button #}
-                  {% url 'account:group_member_register' as add_url %}
-                  {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Студент" %}
+                  {% if perms.timetable.add_groupmember %}
+                    {% url 'account:group_member_register' as add_url %}
+                    {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Студент" %}
+                  {% endif %}
                 </div>
                 <div class="group_members_semester_delete">
                   {# Including control buttons delete #}
-                  {% url 'account:group_semester_delete' as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group_member.group_semester_id__group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
+                  {% if perms.timetable.delete_groupsemester %}
+                    {% url 'account:group_semester_delete' as del_link %}
+                    {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group_member.group_semester_id__group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
+                  {% endif %}
                 </div>
               {% endif %}
               {% if group_member.student_id__user_id__id %}
@@ -84,8 +95,10 @@
                 </a>
                 <div class="group_members_ctrl toggle_ctrl {{is_hidden}}">
                   {# Including control buttons delete #}
-                  {% url 'account:group_member_delete' group_member.group_member_id as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
+                  {% if perms.timetable.delete_groupsemester %}
+                    {% url 'account:group_member_delete' group_member.group_member_id as del_link %}
+                    {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
+                  {% endif %}
                 </div>
                 {# Extra div needed for correct grid work #}
                 <div class="group_members_additional toggle_additional {{is_hidden}}">

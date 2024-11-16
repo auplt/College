@@ -42,9 +42,9 @@ LOGOUT_URL = 'account:logout'
 
 # def get_login_redirect_url(user):
 #     if user.is_superuser:
-#         return '/account/dashboard'
+#         return '/account/welcome'
 #     else:
-#         return '/account/dashboard'
+#         return '/account/welcome'
 
 # LOGIN_REDIRECT_URL = get_login_redirect_url
 

@@ -6,65 +6,73 @@
 
 {% block page_scripts %}
 {% load static %}
-<script src="{% static 'js/user_edit_form.js' %}"></script>
+  <script src="{% static 'js/user_edit_form.js' %}"></script>
 {% endblock %}
 
 {% block title %}Create an account{% endblock %}
 
 {% block content %}
-    {# Including page title #}
-    {% original_query_string next_url as next_url %}
-    {% include 'page_heading.html' with back_url='account:user_list' page_title="Изменение информации о пользователе" list_url='account:user_list' next_url=next_url %}
+  {# Including page title #}
+  {% original_query_string next_url as next_url %}
+  {% include 'page_heading.html' with back_url='account:user_list' page_title="Изменение информации о пользователе" list_url='account:user_list' next_url=next_url %}
 
-    {% include "form_success.html" with form=user_form %}
+  {% include "form_success.html" with form=user_form %}
     <form class="register_form edit_user" method="post">
-                <div class="user_main_form">
+      <div class="user_main_form">
         {{ user_form.as_div }}
-                            </div>
-            <div class="register_user__student">
-                <div class="register_form_checkbox">
-                    {{user_form.is_student.label_tag}}
-                </div>
-                <div class="more_info__student">
-                    <div class="more_info_heading">
-                        <h2 class="more_info_title">Дополнительная информация о студенте</h2>
-                    </div>
-                    <div class="more_info_content">
-                        {{ student_form.as_div }}
-                        {% if student %}
-                        {# Including control buttons delete #}
-                        {% url 'account:user_edit' user.id as next_url %}
-                        {% url 'account:user_delete_student' user.id as del_url %}
-                        {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="register_user__tutor">
-                <div class="register_form_checkbox">
-                    {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
-                </div>
-                <div class="more_info__tutor">
-                    <div class="more_info_heading">
-                        <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
-                    </div>
-                    <div class="more_info_content">
-                        {{ tutor_form.as_div }}
-                        {% if tutor %}
-                        {# Including control buttons delete #}
-                        {% url 'account:user_edit' user.id as next_url %}
-                        {% url 'account:user_delete_tutor' user.id as del_url %}
+      </div>
+      {% if perms.timetable.change_student %}
+		    <div class="register_user__student">
+	        <div class="register_form_checkbox">
+	          {{user_form.is_student.label_tag}}
+	        </div>
+		       <div class="more_info__student">
+	          <div class="more_info_heading">
+	            <h2 class="more_info_title">Дополнительная информация о студенте</h2>
+	          </div>
+	          <div class="more_info_content">
+	            {{ student_form.as_div }}
+	            {% if student %}
+	              {# Including control buttons delete #}
+	              {% if perms.timetable.delete_student %}
+	                {% url 'account:user_edit' user.id as next_url %}
+	                {% url 'account:user_delete_student' user.id as del_url %}
+	                {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+	              {% endif %}
+	            {% endif %}
+	          </div>
+	        </div>
+	      </div>
+	    {% endif %}
+	    {% if perms.timetable.change_tutor %}
+	      <div class="register_user__tutor">
+	        <div class="register_form_checkbox">
+	          {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
+	        </div>
+	        <div class="more_info__tutor">
+	          <div class="more_info_heading">
+	            <h2 class="more_info_title">Дополнительная информация о преподавателе</h2>
+	          </div>
+	          <div class="more_info_content">
+	            {{ tutor_form.as_div }}
+	            {% if tutor %}
+	              {# Including control buttons delete #}
+	              {% if perms.timetable.delete_tutor %}
+	                {% url 'account:user_edit' user.id as next_url %}
+	                {% url 'account:user_delete_tutor' user.id as del_url %}
 
-                        {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% csrf_token %}
-        <div>
-            <input class="controller_button form_submit_button__reg"
-                type="submit"
-                value="Изменить">
-        </div>
-    </form>
+	                {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
+	              {% endif %}
+	            {% endif %}
+	          </div>
+	        </div>
+	      </div>
+	    {% endif %}
+      {% csrf_token %}
+    <div>
+    <input class="controller_button form_submit_button__reg"
+      type="submit"
+      value="Изменить">
+    </div>
+  </form>
 {% endblock %}

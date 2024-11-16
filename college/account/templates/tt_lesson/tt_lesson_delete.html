@@ -7,32 +7,32 @@
 {% block title %}Group delete{% endblock %}
 
 {% block content %}
-    {# Including page title #}
-    {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url=next_url page_title="Удаление занятия из расписания" next_url=next_url %}
+	{# Including page title #}
+	{% original_query_string next_url as next_url %}
+	{% include "page_heading.html" with back_url=next_url page_title="Удаление занятия из расписания" next_url=next_url %}
 
-    <div class="delete_object">
-        <h2 class="delete_object_name">{{ tt_lesson.curriculum_lesson_id.discipline_id.name }}</h2>
-        <div class="delete_object_description">
-            Дата {{tt_lesson.date}}<br/>
-            Начало в {{ tt_lesson.lesson_time_id.start_time }}
-            окончание в {{ tt_lesson.lesson_time_id.end_time }}<br/>
+	<div class="delete_object">
+		<h2 class="delete_object_name">{{ tt_lesson.curriculum_lesson_id.discipline_id.name }}</h2>
+		<div class="delete_object_description">
+			Дата {{tt_lesson.date}}<br/>
+			Начало в {{ tt_lesson.lesson_time_id.start_time }}
+			окончание в {{ tt_lesson.lesson_time_id.end_time }}<br/>
 
-            Преподаватель
-            {{ tt_lesson.curriculum_lesson_id.tutor_id.user_id.last_name }}
-            {{ tt_lesson.curriculum_lesson_id.tutor_id.user_id.first_name }}
-            {{ tt_lesson.curriculum_lesson_id.tutor_id.user_id.second_name }}<br/>
+			Преподаватель
+			{{ tt_lesson.curriculum_lesson_id.tutor_id.user_id.last_name }}
+			{{ tt_lesson.curriculum_lesson_id.tutor_id.user_id.first_name }}
+			{{ tt_lesson.curriculum_lesson_id.tutor_id.user_id.second_name }}<br/>
 
-            Аудитория {{ tt_lesson.classroom_id.number }}<br/>
+			Аудитория {{ tt_lesson.classroom_id.number }}<br/>
 
-            Группа {{ tt_lesson.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.name }}<br/>
-            Семестр {{ tt_lesson.curriculum_lesson_id.curriculum_id.group_semester_id.semester_num }}
-        </div>
-    </div>
-    <form class="delete_form" method="POST">
-        <div class="delete_form_question">Вы действительно хотите удалить это занятие из расписания?</div>
-        {% original_query_string next_url as next_url %}
-        {% include "delete_from_controllers.html" with cancel_url="account:group_details" %}
-        {% csrf_token %}
-    </form>
+			Группа {{ tt_lesson.curriculum_lesson_id.curriculum_id.group_semester_id.group_id.name }}<br/>
+			Семестр {{ tt_lesson.curriculum_lesson_id.curriculum_id.group_semester_id.semester_num }}
+		</div>
+	</div>
+	<form class="delete_form" method="POST">
+		<div class="delete_form_question">Вы действительно хотите удалить это занятие из расписания?</div>
+		{% original_query_string next_url as next_url %}
+		{% include "delete_from_controllers.html" with cancel_url="account:group_details" %}
+		{% csrf_token %}
+	</form>
 {% endblock %}

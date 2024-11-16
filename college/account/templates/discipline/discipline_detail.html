@@ -13,100 +13,118 @@
 {% block title %}Информация о дисциплине{% endblock %}
 
 {% block content %}
-        {% with request.path as this_url %}
+  {% with request.path as this_url %}
     {% get_url_params request as url_params %}
     {% if url_params %}
     {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
     {% endif %}
-  {# Including page title #}
-  {% original_query_string next_url as next_url %}
-  {% include "page_heading.html" with back_url="account:discipline_list" page_title=discipline.name list_url="account:discipline_list" next_url=next_url %}
+    {# Including page title #}
+    {% original_query_string next_url as next_url %}
+    {% include "page_heading.html" with back_url="account:discipline_list" page_title=discipline.name list_url="account:discipline_list" next_url=next_url %}
 
-  {% include "success_msg.html" %}
-  <div class="details_description">
-    {{ discipline.description }}
-  </div>
-  <div class="details_controllers">
-    <a class="controller_button details_controller_button__delete"
-       href="{{ discipline.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">
-      Удалить
-    </a>
-    <a class="controller_button details_controller_button__edit"
-       href="{{ discipline.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">
-      Редактировать
-    </a>
-  </div>
-  <div class="discipline_info_wrapper">
-    <div class="discipline_info_detail">
-      <div class="discipline_info_detail_heading">
-        <h2 class="discipline_info_detail_title">Учебные группы</h2>
-        {# Including add button #}
-        {% url 'account:curriculum_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:this_url add_txt="Группа" %}
-      </div>
-      <div class="discipline_info_groups">
-        {% if groups %}
-          {# Grouping groups by semester number #}
-          {% with prev_semester_num_std=-1 is_hidden="" %}
-            {% for group in groups %}
-              {# Check weather semester number is changed #}
-              {% if prev_semester_num_std != group.group_semester_id__semester_num %}
-                <div class="item_semester_number">
-                  <div class="semester_number_controller">
-                    <img class="semester_number_controller_img" src="{% static 'images/back.svg' %}"/>
-                  </div>
-                  Семестр {{group.group_semester_id__semester_num}}
-                  {% if is_hidden == "" and prev_semester_num_std != -1 %}
-                    {% update_variable "hidden" as is_hidden %}
-                  {% endif %}
-                </div>
-                <div class="discipline_groups_semester_ctrl">
-                  {# Including add button #}
-                  {% url 'account:curriculum_register' as add_url %}
-                  {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&semester_num="|add_str:group.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Дисциплина" %}
-                </div>
-              {% endif %}
-              {% if group.group_semester_id__group_id__name %}
-                <a class="discipline_groups_name toggle_name {{is_hidden}}" href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}?next={% url 'account:discipline_details' discipline.discipline_id %}">
-                  <span>{{group.group_semester_id__group_id__name}}</span>
-                </a>
-                <div class="discipline_groups_ctrl toggle_ctrl {{is_hidden}}">
-                  {# Including control buttons delete #}
-                  {% url 'account:curriculum_delete' group.curriculum_id as del_link %}
-                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
-                </div>
-              {% endif %}
-              {% update_variable group.group_semester_id__semester_num as prev_semester_num_std %}
-            {% endfor %}
-          {% endwith %}
+    {% include "success_msg.html" %}
+    <div class="details_description">
+      {{ discipline.description }}
+    </div>
+    {% if perms.timetable.change_discipline or perms.timetable.delete_discipline %}
+      <div class="details_controllers">
+        {% if perms.timetable.delete_discipline %}
+          <a class="controller_button details_controller_button__delete"
+             href="{{ discipline.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">
+            Удалить
+          </a>
+        {% endif %}
+        {% if perms.timetable.change_discipline %}
+          <a class="controller_button details_controller_button__edit"
+             href="{{ discipline.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">
+            Редактировать
+          </a>
         {% endif %}
       </div>
-    </div>
-    <div class="discipline_info_detail">
-      <div class="discipline_info_detail_heading">
-        <h2 class="discipline_info_detail_title">Преподаватели</h2>
-        {# Including add button #}
-        {% url 'account:curriculum_lesson_register' as add_url %}
-        {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:this_url add_txt="Преподаватель" %}
-      </div>
-      {% if tutors %}
-        <div class="discipline_info_tutors">
-          <div class="discipline_info_tutors_list">
-            {% for tutor in tutors %}
-              <a class="tutors_item" href="{% url 'account:user_details' tutor.tutor_id__user_id__id %}">
-                <span>{{tutor.tutor_id__user_id__last_name}} {{tutor.tutor_id__user_id__first_name}} {{tutor.tutor_id__user_id__second_name}}</span>
-              </a>
-              {# Including control buttons delete #}
-                {% comment %}
-                  {% url 'account:curriculum_lesson_delete' tutor.curriculum_lesson_id as del_link %}
-                {% endcomment %}
-                {% url 'account:user_details' tutor.tutor_id__user_id__id as del_link %}
-                {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
-            {% endfor %}
-          </div>
+    {% endif %}
+    <div class="discipline_info_wrapper">
+      <div class="discipline_info_detail">
+        <div class="discipline_info_detail_heading">
+          <h2 class="discipline_info_detail_title">Учебные группы</h2>
+          {# Including add button #}
+          {% if perms.timetable.add_curriculum %}
+            {% url 'account:curriculum_register' as add_url %}
+            {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:this_url add_txt="Группа" %}
+          {% endif %}
         </div>
-      {% endif %}
+        <div class="discipline_info_groups">
+          {% if groups %}
+            {# Grouping groups by semester number #}
+            {% with prev_semester_num_std=-1 is_hidden="" %}
+              {% for group in groups %}
+                {# Check weather semester number is changed #}
+                {% if prev_semester_num_std != group.group_semester_id__semester_num %}
+                  <div class="item_semester_number">
+                    <div class="semester_number_controller">
+                      <img class="semester_number_controller_img" src="{% static 'images/back.svg' %}"/>
+                    </div>
+                    Семестр {{group.group_semester_id__semester_num}}
+                    {% if is_hidden == "" and prev_semester_num_std != -1 %}
+                      {% update_variable "hidden" as is_hidden %}
+                    {% endif %}
+                  </div>
+                  <div class="discipline_groups_semester_ctrl">
+                    {# Including add button #}
+                    {% if perms.timetable.add_curriculum %}
+                      {% url 'account:curriculum_register' as add_url %}
+                      {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&semester_num="|add_str:group.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Дисциплина" %}
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if group.group_semester_id__group_id__name %}
+                  <a class="discipline_groups_name toggle_name {{is_hidden}}" href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}?next={% url 'account:discipline_details' discipline.discipline_id %}">
+                    <span>{{group.group_semester_id__group_id__name}}</span>
+                  </a>
+                  <div class="discipline_groups_ctrl toggle_ctrl {{is_hidden}}">
+                    {# Including control buttons delete #}
+                    {% if perms.timetable.delete_curriculum %}
+                      {% url 'account:curriculum_delete' group.curriculum_id as del_link %}
+                      {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% update_variable group.group_semester_id__semester_num as prev_semester_num_std %}
+              {% endfor %}
+            {% endwith %}
+          {% endif %}
+        </div>
       </div>
-  </div>
-{% endwith %}
+      <div class="discipline_info_detail">
+        <div class="discipline_info_detail_heading">
+          <h2 class="discipline_info_detail_title">Преподаватели</h2>
+          {# Including add button #}
+          {% if perms.timetable.add_curriculum_lesson %}
+            {% url 'account:curriculum_lesson_register' as add_url %}
+            {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:this_url add_txt="Преподаватель" %}
+          {% endif %}
+        </div>
+        {% if tutors %}
+          <div class="discipline_info_tutors">
+            <div class="discipline_info_tutors_list">
+              {% for tutor in tutors %}
+                <a class="tutors_item" href="{% url 'account:user_details' tutor.tutor_id__user_id__id %}">
+                  <span>{{tutor.tutor_id__user_id__last_name}} {{tutor.tutor_id__user_id__first_name}} {{tutor.tutor_id__user_id__second_name}}</span>
+                </a>
+                {# Including control buttons delete #}
+	              <div class="delete_controller_wrapper">
+		              {% if perms.timetable.delete_curriculumlesson %}
+	                  {% comment %}
+	                    {% url 'account:curriculum_lesson_delete' tutor.curriculum_lesson_id as del_link %}
+	                  {% endcomment %}
+	                  {% url 'account:user_details' tutor.tutor_id__user_id__id as del_link %}
+	                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
+	                {% endif %}
+	              </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        </div>
+    </div>
+  {% endwith %}
 {% endblock %}

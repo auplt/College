@@ -92,6 +92,11 @@
   padding: 8px;
 }
 
+.delete_controller_wrapper {
+  display: flex;
+  justify-content: center;
+}
+
 .semester_number_controller {
   display: flex;
   cursor: pointer;

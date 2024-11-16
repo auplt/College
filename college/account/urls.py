@@ -38,7 +38,7 @@ urlpatterns = [
     # path('loginn/', auth_views.LoginView.as_view(), name='login'),
     # path('loginn/', views.user_login, name='login'),
 
-    path('', views.dashboard, name='dashboard'),
+    path('', views.welcome, name='welcome'),
 
     path('user/', views.user_list, name='user_list'),
     path('user/details/<int:id>', views.user_details, name='user_details'),

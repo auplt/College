@@ -4,23 +4,19 @@
 <link href="{% static 'css/pagination.css' %}" rel="stylesheet">
 
 <div class="pagination">
-    <span class="step-links">
-        {% if page.has_previous %}
-        <div class="change_page change_page_back" onclick="window.location = '?page={{page.previous_page_number}}'">
-            <img
-                class="change_page_back_img"
-                src="{% static 'images/next_page.svg' %}"/>
-        </div>
-        {% endif %}
-        <span class="current_page">
-            Страница {{page.number}}/{{page.paginator.num_pages}}
-        </span>
-        {% if page.has_next %}
-        <div class="change_page change_page_next" onclick="window.location = '?page={{page.next_page_number}}'">
-            <img
-                class="change_page_next_img"
-                src="{% static 'images/next_page.svg' %}"/>
-        </div>
-        {% endif %}
+	<span class="step-links">
+    {% if page.has_previous %}
+      <a class="change_page change_page_back" href="?page={{page.previous_page_number}}">
+        <img class="change_page_back_img" src="{% static 'images/next_page.svg' %}"/>
+      </a>
+    {% endif %}
+      <span class="current_page">
+        Страница {{page.number}}/{{page.paginator.num_pages}}
+      </span>
+      {% if page.has_next %}
+	      <a class="change_page change_page_next" href="?page={{page.next_page_number}}">
+          <img class="change_page_next_img" src="{% static 'images/next_page.svg' %}"/>
+	      </a>
+      {% endif %}
     </span>
 </div>

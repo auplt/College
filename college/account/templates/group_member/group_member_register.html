@@ -27,7 +27,7 @@
   {% endif %}
 
   {% include 'form_success.html' with form=group_member_form %}
-  <form class="register_form register_group_member" method="post" novalidate>
+  <form class="register_form register_group_member" method="post">
     {% for field in group_member_form %}
     <div>
       {% if group_member_form.errors %}

@@ -24,7 +24,7 @@
   {% endif %}
 
   {% include 'form_success.html' with form=discipline_form %}
-  <form class="register_form register_discipline" method="post" novalidate>
+  <form class="register_form register_discipline" method="post">
     {{ discipline_form.as_div }}
     {% csrf_token %}
     <div>

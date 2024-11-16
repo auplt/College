@@ -1,0 +1,18 @@
+{# Template for the main (personal) page #}
+
+{% extends "base.html" %}
+
+{% load group_extras %}
+
+{% block title %}Добро пожаловать{% endblock %}
+
+{% block content %}
+  {# Including page title #}
+  {% original_query_string next as next_url %}
+  {% include "page_heading.html" with page_title="Добро пожаловать в колледж" next_url=next_url %}
+  <p class="content_error_back">Если Вы являетесь сотрудником или студентом, вы можете
+  <a class="content_error_back_link" href="{% url 'account:login' %}">
+    войти
+  </a>
+  </p>
+{% endblock %}
