@@ -19,6 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 print(os.path.join(BASE_DIR, 'templates'))
 [os.path.join(f.path, 'templates') for f in os.scandir(BASE_DIR) if f.is_dir()]
 
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'app1/static/'),
+#     os.path.join(BASE_DIR, 'app2/static/'),
+# ]
+STATICFILES_DIRS =[os.path.join(f.path, 'static') for f in os.scandir(BASE_DIR) if f.is_dir()]
+# print(STATICFILES_DIRS)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
