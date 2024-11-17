@@ -98,7 +98,7 @@ def discipline_details(request, discipline_id):
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     print(context)
-    return render(request, 'discipline/discipline_detail.html', context=context)
+    return render(request, 'discipline/discipline_details.html', context=context)
 
 
 @permission_required('timetable.register_discipline', raise_exception=True)
@@ -407,7 +407,7 @@ def curriculum_lesson_group_details(request, group_id):
     # print(context)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'curriculum_lesson/curriculum_lesson_group_detail.html', context=context)
+    return render(request, 'curriculum_lesson/curriculum_lesson_group_details.html', context=context)
 
 
 @permission_required('timetable.add_curriculumlesson', raise_exception=True)

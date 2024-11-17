@@ -44,7 +44,7 @@
         {% url 'timetable:classroom_details' classroom.classroom_id as day_url %}
         {% create_tt_conf_dict entity="classroom_id" entity_id=classroom.classroom_id entity_name="Аудитория" as add_classroom %}
         {% add_to_list add_classroom as entities %}
-        {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}
+        {% include "tt_lesson/tt_lesson_details.html" with entities=entities day_url=day_url this_url=this_url %}
       </div>
     </div>
   {% endwith %}

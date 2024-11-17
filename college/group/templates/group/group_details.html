@@ -215,7 +215,7 @@
       {% url 'group:group_details' group.group_id as day_url %}
       {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}
       {% add_to_list add_group as entities %}
-      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}
+      {% include "tt_lesson/tt_lesson_details.html" with entities=entities day_url=day_url this_url=this_url %}
     </div>
   </div>
 {% endwith %}

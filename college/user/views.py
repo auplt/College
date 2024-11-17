@@ -132,7 +132,7 @@ def user_details(request, id):
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     print(context)
-    return render(request, 'user/user_detail.html', context=context)
+    return render(request, 'user/user_details.html', context=context)
 
 
 @permission_required('timetable.add_customuser', raise_exception=True)

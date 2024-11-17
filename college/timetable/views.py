@@ -56,7 +56,7 @@ def classroom_details(request, classroom_id):
     print(context)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'classroom/classroom_detail.html', context=context)
+    return render(request, 'classroom/classroom_details.html', context=context)
 
 
 @permission_required('timetable.add_classroom', raise_exception=True)
@@ -190,7 +190,7 @@ def lesson_time_details(request, lesson_id):
     print(context)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'lesson_time/lesson_time_detail.html', context=context)
+    return render(request, 'lesson_time/lesson_time_details.html', context=context)
 
 
 @permission_required('timetable.add_lessontime', raise_exception=True)
@@ -675,7 +675,7 @@ def tt_lesson_details_edit(request):
 
         print(1123)
 
-        return render(request, 'tt_lesson/tt_lesson_detail_edit.html', context=context)
+        return render(request, 'tt_lesson/tt_lesson_details_edit.html', context=context)
         # return render(request, 'group/group_list.html', context=context)
 
 

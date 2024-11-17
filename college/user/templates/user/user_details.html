@@ -165,7 +165,7 @@
 		        {% create_tt_conf_dict entity="student_id" entity_id=student.student_id entity_name="Студент" as add_student %}
 		        {% add_to_list add_student entities as entities %}
 		      {% endif %}
-		      {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}
+		      {% include "tt_lesson/tt_lesson_details.html" with entities=entities day_url=day_url this_url=this_url %}
 		    </div>
 		  {% endif %}
 	  </div>

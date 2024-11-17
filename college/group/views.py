@@ -166,7 +166,7 @@ def group_details(request, group_id):
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     # print(context)
-    return render(request, 'group/group_detail.html', context=context)
+    return render(request, 'group/group_details.html', context=context)
 
 
 @permission_required('timetable.add_group', raise_exception=True)
