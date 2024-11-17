@@ -86,7 +86,7 @@
                 </div>
               {% endif %}
               {% if group_member.student_id__user_id__id %}
-                <a class="group_members_name toggle_name {{is_hidden}}" href="{% url 'account:user_details' group_member.student_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                <a class="group_members_name toggle_name {{is_hidden}}" href="{% url 'user:user_details' group_member.student_id__user_id__id %}{% if this_url %}?next={{this_url}}{% endif %}">
                   <span>
                     {{ group_member.student_id__user_id__last_name }}
                     {{ group_member.student_id__user_id__first_name }}
@@ -186,7 +186,7 @@
                         <span class="tooltiptext">Преподаватели</span>
                       </div>
                       {% for tutor in tutor_lst %}
-                        <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' tutor.link %}{% if this_url %}?next={{this_url}}{% endif %}">
+                        <a class="curriculum_discipline_tutor" href="{% url 'user:user_details' tutor.link %}{% if this_url %}?next={{this_url}}{% endif %}">
                           {% if forloop.counter0 != tutor_lst|length|add:-1 %}
                             {{ tutor.name|add_str:"," }}
                           {% else %}

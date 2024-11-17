@@ -1,17 +1,13 @@
 """
-Forms for account app.
+Forms for user app.
 """
 
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
-from formset.widgets import DateCalendar
-from django.forms.utils import ErrorList, ErrorDict
 from django.utils.translation import gettext_lazy as _
 from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, \
     Curriculum, CurriculumLesson, TypesOfLesson, TTLesson
-
-from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -21,6 +17,8 @@ USER_TYPES = (
     ("ALL", "Все")
 )
 
+
+# AUTHENTICATION FORMS
 
 class CustomAuthenticationForm(AuthenticationForm):
     """
@@ -69,65 +67,7 @@ class CustomSetPasswordForm(SetPasswordForm):
                "autocomplete": "new-password"}))
 
 
-class StudentAdditionalForm(forms.ModelForm):
-    """
-    Form for additional student information.
-    """
-    date_of_birth = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=False,
-                                    widget=forms.TextInput(attrs={
-                                        'class': 'datepicker',
-                                        'placeholder': 'Дата рождения'
-                                    }))
-
-    class Meta:
-        """
-        Metaclass for student additional information form.
-        """
-        model = Student
-        fields = ['date_of_birth']
-
-    def __init__(self, required, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['date_of_birth'] = forms.DateField(label=False, input_formats=['%d.%m.%Y'],
-                                                       required=required,
-                                                       widget=forms.TextInput(attrs={
-                                                           'class': 'datepicker',
-                                                           'placeholder': 'Дата рождения'
-                                                       }))
-
-
-class TutorAdditionalForm(forms.ModelForm):
-    """
-    Form for additional tutor information.
-    """
-    date_of_birth = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=False,
-                                    widget=forms.TextInput(attrs={
-                                        'class': 'datepicker',
-                                        'placeholder': 'Дата рождения'
-                                    }))
-
-    class Meta:
-        """
-        Metaclass for tutor additional information form.
-        """
-        model = Tutor
-        fields = ['date_of_birth']
-
-    def __init__(self, required, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['date_of_birth'] = forms.DateField(label=False, input_formats=['%d.%m.%Y'],
-                                                       required=required,
-                                                       widget=forms.TextInput(attrs={
-                                                           'class': 'datepicker',
-                                                           'placeholder': 'Дата рождения'
-                                                       }))
-
-    # def change_required(self, required):
-    #     self.date_of_birth = forms.DateField(label='Дата рождения', input_formats=['%d.%m.%Y'], required=required,
-    #                                 widget=forms.TextInput(attrs={
-    #                                     'class': 'datepicker'
-    #                                 }))
-
+# USER FORMS
 
 class UserRegistrationForm(forms.ModelForm):
     """
@@ -193,18 +133,6 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError('Введенные пароли не совпадают')
         return cd['password2']
 
-    # def clean(self):
-    #     print("Hey")
-    #     cleaned_data = super().clean()
-    #     self._errors = ErrorDict()
-    #     print(self.data.getlist('std-date_of_birth', None))
-    #
-    #     if self.data['is_student']:
-    #         if self.data.getlist('std-date_of_birth', None)[0] == '':
-    #             self.add_error('std-date_of_birth', ["Поле должно быть заполнено.", ])
-    #
-    #     return cleaned_data
-
 
 class UserEditForm(forms.ModelForm):
     """
@@ -247,41 +175,55 @@ class UserEditForm(forms.ModelForm):
         return cleaned_data
 
 
+class StudentAdditionalForm(forms.ModelForm):
+    """
+    Form for additional student information.
+    """
+    date_of_birth = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=False,
+                                    widget=forms.TextInput(attrs={
+                                        'class': 'datepicker',
+                                        'placeholder': 'Дата рождения'
+                                    }))
+
+    class Meta:
+        """
+        Metaclass for student additional information form.
+        """
+        model = Student
+        fields = ['date_of_birth']
+
+    def __init__(self, required, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'] = forms.DateField(label=False, input_formats=['%d.%m.%Y'],
+                                                       required=required,
+                                                       widget=forms.TextInput(attrs={
+                                                           'class': 'datepicker',
+                                                           'placeholder': 'Дата рождения'
+                                                       }))
 
 
+class TutorAdditionalForm(forms.ModelForm):
+    """
+    Form for additional tutor information.
+    """
+    date_of_birth = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=False,
+                                    widget=forms.TextInput(attrs={
+                                        'class': 'datepicker',
+                                        'placeholder': 'Дата рождения'
+                                    }))
 
+    class Meta:
+        """
+        Metaclass for tutor additional information form.
+        """
+        model = Tutor
+        fields = ['date_of_birth']
 
-
-
-
-
-
-
-
-
-# class LessonTimeEditForm(forms.ModelForm):
-#     name = forms.CharField(label='Название времени занятия')
-#     start_time = forms.TimeField(label='Начало занятия',
-#                                  widget=forms.TextInput(attrs={
-#                                      'class': 'timepicker'
-#                                  })
-#                                  )
-#     end_time = forms.TimeField(label='Окончание занятия',
-#                                widget=forms.TextInput(attrs={
-#                                    'class': 'timepicker'
-#                                })
-#                                )
-#
-#     class Meta:
-#         model = LessonTime
-#         fields = ['name', 'start_time', 'end_time']
-#
-#     class Media:
-#         js = ('js/lesson_time_form.js',)
-
-
-
-
-
-
-
+    def __init__(self, required, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date_of_birth'] = forms.DateField(label=False, input_formats=['%d.%m.%Y'],
+                                                       required=required,
+                                                       widget=forms.TextInput(attrs={
+                                                           'class': 'datepicker',
+                                                           'placeholder': 'Дата рождения'
+                                                       }))

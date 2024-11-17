@@ -37,16 +37,16 @@
       <span class="header_logo">Колледж</span>
       <span class="header_entrance">
         {% if request.user.is_authenticated %}
-          <form action="{% url 'account:logout' %}" method="post">
+          <form action="{% url 'user:logout' %}" method="post">
             {% csrf_token %}
             <button class="header_entrance_txt" type="submit">Выйти</button>
           </form>
         {% else %}
-	        {% url 'account:logout' as logout_url_cmp %}
+	        {% url 'user:logout' as logout_url_cmp %}
 	        {% if request.path != logout_url_cmp %}
-            <a class="header_entrance_txt" href="{% url 'account:login' %}?next={{request.path}}{% if request.GET.urlencode %}?{% change_query_string request.GET.urlencode %}{% endif %}">Войти</a>
+            <a class="header_entrance_txt" href="{% url 'user:login' %}?next={{request.path}}{% if request.GET.urlencode %}?{% change_query_string request.GET.urlencode %}{% endif %}">Войти</a>
           {% else %}
-	           <a class="header_entrance_txt" href="{% url 'account:login' %}">Войти</a>
+	           <a class="header_entrance_txt" href="{% url 'user:login' %}">Войти</a>
 	        {% endif %}
 	      {% endif %}
       </span>
@@ -56,14 +56,14 @@
         {# Include navigation templates #}
         {% static 'images/home.svg' as src_link %}
         {% if request.user.is_authenticated %}
-          {% url 'account:user_details' request.user.id as redirect_link %}
+          {% url 'user:user_details' request.user.id as redirect_link %}
         {% else %}
-          {% url 'account:login' as redirect_link %}
+          {% url 'user:login' as redirect_link %}
         {% endif %}
         {% include "navigation_item.html" with src_link=src_link nav_txt="Личная страница" redirect_link=redirect_link %}
 
         {% static 'images/user.svg' as src_link %}
-        {% url 'account:user_list' as redirect_link %}
+        {% url 'user:user_list' as redirect_link %}
         {% include "navigation_item.html" with src_link=src_link nav_txt="Пользователи" redirect_link=redirect_link %}
 
         {% if perms.timetable.view_discipline %}

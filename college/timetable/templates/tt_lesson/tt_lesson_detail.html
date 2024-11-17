@@ -106,7 +106,7 @@
                         <div class="tt_lesson_info_tutor_list">
                           {% for lesson_inf in day_inf.lesson_info %}
                             {% ifchanged lesson_inf.tutor.id %}
-                              <a class="tutor_item_name" href="{% url 'account:user_details' lesson_inf.tutor.id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                              <a class="tutor_item_name" href="{% url 'user:user_details' lesson_inf.tutor.id %}{% if this_url %}?next={{this_url}}{% endif %}">
                                 {% update_variable group_lessons|next:forloop.counter0 as next_tutor %}
                                 {% if next_tutor.tutor.id != next_tutor.tutor.id %}
                                   {{ lesson_inf.tutor.last_name }}

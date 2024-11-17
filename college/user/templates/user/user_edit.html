@@ -14,7 +14,7 @@
 {% block content %}
   {# Including page title #}
   {% original_query_string next_url as next_url %}
-  {% include 'page_heading.html' with back_url='account:user_list' page_title="Изменение информации о пользователе" list_url='account:user_list' next_url=next_url %}
+  {% include 'page_heading.html' with back_url='user:user_list' page_title="Изменение информации о пользователе" list_url='user:user_list' next_url=next_url %}
 
   {% include "form_success.html" with form=user_form %}
     <form class="register_form edit_user" method="post">
@@ -35,8 +35,8 @@
 	            {% if student %}
 	              {# Including control buttons delete #}
 	              {% if perms.timetable.delete_student %}
-	                {% url 'account:user_edit' user.id as next_url %}
-	                {% url 'account:user_delete_student' user.id as del_url %}
+	                {% url 'user:user_edit' user.id as next_url %}
+	                {% url 'user:user_delete_student' user.id as del_url %}
 	                {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
 	              {% endif %}
 	            {% endif %}
@@ -58,8 +58,8 @@
 	            {% if tutor %}
 	              {# Including control buttons delete #}
 	              {% if perms.timetable.delete_tutor %}
-	                {% url 'account:user_edit' user.id as next_url %}
-	                {% url 'account:user_delete_tutor' user.id as del_url %}
+	                {% url 'user:user_edit' user.id as next_url %}
+	                {% url 'user:user_delete_tutor' user.id as del_url %}
 
 	                {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
 	              {% endif %}

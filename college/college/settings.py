@@ -36,11 +36,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# LOGIN_REDIRECT_URL = 'account:details'
-LOGIN_REDIRECT_URL = 'account:home'
-# LOGOUT_REDIRECT_URL = 'account:login'
-LOGIN_URL = 'account:login'
-LOGOUT_URL = 'account:logout'
+# LOGIN_REDIRECT_URL = 'user:details'
+LOGIN_REDIRECT_URL = 'user:home'
+# LOGOUT_REDIRECT_URL = 'user:login'
+LOGIN_URL = 'user:login'
+LOGOUT_URL = 'user:logout'
 
 # from django.contrib.auth.models import User
 
@@ -48,9 +48,9 @@ LOGOUT_URL = 'account:logout'
 
 # def get_login_redirect_url(user):
 #     if user.is_superuser:
-#         return '/account/welcome'
+#         return '/user/welcome'
 #     else:
-#         return '/account/welcome'
+#         return '/user/welcome'
 
 # LOGIN_REDIRECT_URL = get_login_redirect_url
 
@@ -62,7 +62,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Application definition
 
 INSTALLED_APPS = [
-    'account.apps.AccountConfig',
+    'user.apps.UserConfig',
     'curriculum.apps.CurriculumConfig',
     'group.apps.GroupConfig',
     'timetable.apps.TimeTableConfig',

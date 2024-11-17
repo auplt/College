@@ -107,7 +107,7 @@
           <div class="discipline_info_tutors">
             <div class="discipline_info_tutors_list">
               {% for tutor in tutors %}
-                <a class="tutors_item" href="{% url 'account:user_details' tutor.tutor_id__user_id__id %}">
+                <a class="tutors_item" href="{% url 'user:user_details' tutor.tutor_id__user_id__id %}">
                   <span>{{tutor.tutor_id__user_id__last_name}} {{tutor.tutor_id__user_id__first_name}} {{tutor.tutor_id__user_id__second_name}}</span>
                 </a>
                 {# Including control buttons delete #}
@@ -116,7 +116,7 @@
 	                  {% comment %}
 	                    {% url 'curriculum:curriculum_lesson_delete' tutor.curriculum_lesson_id as del_link %}
 	                  {% endcomment %}
-	                  {% url 'account:user_details' tutor.tutor_id__user_id__id as del_link %}
+	                  {% url 'user:user_details' tutor.tutor_id__user_id__id as del_link %}
 	                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
 	                {% endif %}
 	              </div>

@@ -21,7 +21,7 @@
 		{# Including page title #}
 	  {% original_query_string next_url as next_url %}
 	  {% with user.last_name|add_str:" "|add_str:user.first_name|add_str:" "|add_str:user.second_name as page_title %}
-	    {% include "page_heading.html" with back_url="account:user_list" page_title=page_title list_url="account:user_list" next_url=next_url %}
+	    {% include "page_heading.html" with back_url="user:user_list" page_title=page_title list_url="user:user_list" next_url=next_url %}
 	  {% endwith %}
 
     {% include "success_msg.html" %}
@@ -75,7 +75,7 @@
 			  {% endif %}
 			  {% if request.user.id == user.id %}
 			    <a class="controller_button details_controller_button__delete"
-			       href="{% url 'account:password_change' %}{% if this_url %}?next={{this_url}}{% endif %}">
+			       href="{% url 'user:password_change' %}{% if this_url %}?next={{this_url}}{% endif %}">
 			      Изменить пароль
 			    </a>
 			  {% endif %}
@@ -142,7 +142,7 @@
 		                  {% comment %}
 		                    {% url 'curriculum:curriculum_lesson_delete' discipline.curriculum_lesson_id as del_link %}
 		                  {% endcomment %}
-		                  {% url 'account:user_details' user.id as del_link %}
+		                  {% url 'user:user_details' user.id as del_link %}
 		                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
 			              {% endif %}
 		              </div>
@@ -155,7 +155,7 @@
 		  {% if student or tutor %}
 		    <div class="user_info_detail">
 		      {# Include lesson timetable template #}
-		      {% url 'account:user_details' user.user_id as day_url %}
+		      {% url 'user:user_details' user.user_id as day_url %}
 		      {% update_variable None as entities %}
 		      {% if tutor.tutor_id %}
 		        {% create_tt_conf_dict entity="tutor_id" entity_id=tutor.tutor_id entity_name="Преподаватель" as add_tutor %}

@@ -14,7 +14,7 @@
 {% block content %}
   {# Including page title #}
   {% original_query_string next_url as next_url %}
-  {% include 'page_heading.html' with back_url='account:user_list' page_title="Создание аккаунта" list_url='account:user_list' next_url=next_url %}
+  {% include 'page_heading.html' with back_url='user:user_list' page_title="Создание аккаунта" list_url='user:user_list' next_url=next_url %}
 
   {% include "form_success.html" with form=user_form %}
   <form class="register_form register_user" method="post">

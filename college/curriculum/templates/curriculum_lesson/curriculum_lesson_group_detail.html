@@ -115,7 +115,7 @@
                         </div>
                         <span class="tutor_item_general_hours_txt">{{group_lesson.duration}} ак/ч</span>
                       </div>
-                      <a class="curriculum_discipline_tutor" href="{% url 'account:user_details' group_lesson.tutor_id__user_id__id %}?next={{this_url}}">
+                      <a class="curriculum_discipline_tutor" href="{% url 'user:user_details' group_lesson.tutor_id__user_id__id %}?next={{this_url}}">
                         {{ group_lesson.tutor_id__user_id__last_name }}
                         {{ group_lesson.tutor_id__user_id__first_name|slicestring:"0:1"|add_str:"." }}
                         {% if group_lesson.tutor_id__user_id__second_name %}

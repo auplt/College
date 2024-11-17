@@ -1,64 +1,22 @@
 """
-Views for account app.
+Views for user app.
 """
-import copy
-from ast import literal_eval
-from datetime import datetime, timedelta, date
 
-import django.db.transaction
-from django import forms
-# import simplejson
-from itertools import groupby
 from django.urls import reverse, resolve, Resolver404
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import PermissionDenied
-from django.db import transaction, IntegrityError
-from django.db.models import Max, ProtectedError, Subquery, OuterRef, Prefetch, Q
-from django.db.models.expressions import Col, F
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect, Http404
+from django.db import transaction
+from django.db.models import ProtectedError
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models.functions import Coalesce
-from django.views.generic import UpdateView
-from django.db import connection
-from django.contrib.postgres.aggregates import StringAgg
-from psycopg2.errors import UniqueViolation
 
-from .forms import (UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm, \
-     \
-
-# , TTLessonRegisterForm
-                    )
+from .forms import UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm
 from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
     GroupMember, CurriculumLesson, Group, TypesOfLesson, TTLesson
 
 from timetable.views import tt_lesson_details
 
-
-# def user_login(request):
-#     """
-#     View for logging user in.
-#     :param request: user's request
-#     :return: HTTP response HTML page with login form
-#     """
-#     if request.method == 'POST':
-#         form = LoginForm(request.POST)
-#         if form.is_valid():
-#             cd = form.cleaned_data
-#             user = authenticate(request,
-#                                 username=cd['username'],
-#                                 password=cd['password'])
-#             if user is not None:
-#                 if user.is_active:
-#                     login(request, user)
-#                     return HttpResponse('Authenticated successfully')
-#                 return HttpResponse('Disabled account')
-#             return HttpResponse('Invalid login')
-#     else:
-#         form = LoginForm()
-#     return render(request, 'account/login.html', {'form': form})
 
 @login_required
 def home(request):
@@ -73,12 +31,12 @@ def home(request):
             return redirect(next_url)
 
         except Resolver404 or KeyError:
-            return HttpResponseRedirect(reverse('account:user_details', args=[request.user.id]))
+            return HttpResponseRedirect(reverse('user:user_details', args=[request.user.id]))
 
         # resolve_match = resolve(request.GET.get('next'))
         # return redirect(request.GET.get('next'))
     else:
-        return HttpResponseRedirect(reverse('account:user_details', args=[request.user.id]))
+        return HttpResponseRedirect(reverse('user:user_details', args=[request.user.id]))
 
 
 def welcome(request):
@@ -88,8 +46,10 @@ def welcome(request):
     :return: HTTP response plug HTML page
     """
     return render(request,
-                  'account/welcome.html')
+                  'user/welcome.html')
 
+
+# USER BLOCK
 
 def user_list(request):
     """
@@ -119,7 +79,7 @@ def user_list(request):
     context.update(obj_stats)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/user_list.html', context=context)
+    return render(request, 'user/user_list.html', context=context)
 
 
 def user_details(request, id):
@@ -169,7 +129,7 @@ def user_details(request, id):
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
     print(context)
-    return render(request, 'account/user_detail.html', context=context)
+    return render(request, 'user/user_detail.html', context=context)
 
 
 @permission_required('timetable.add_customuser', raise_exception=True)
@@ -231,7 +191,7 @@ def user_register(request):
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError:
-                return redirect(reverse('account:user_list'))
+                return redirect(reverse('user:user_list'))
     else:
         user_form = UserRegistrationForm()
         student_form = StudentAdditionalForm(False, prefix='std')
@@ -245,7 +205,7 @@ def user_register(request):
     print(tutor_form)
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/user_register.html', context=context)
+    return render(request, 'user/user_register.html', context=context)
 
 
 @permission_required('timetable.change_customuser', raise_exception=True)
@@ -343,13 +303,13 @@ def user_edit(request, id):
                     resolve_match = resolve(request.GET.get('next'))
                     return redirect(request.GET.get('next'))
                 except Resolver404 or KeyError:
-                    return redirect(reverse('account:user_details', kwargs={'id': id}))
-                # return render(request, 'account/register_done.html', {'new_user': new_user})
+                    return redirect(reverse('user:user_details', kwargs={'id': id}))
+                # return render(request, 'user/register_done.html', {'new_user': new_user})
     # else:
     #     user_form = UserRegistrationForm()
     #     student_form = StudentAdditionalForm(False, prefix='std')
     #     tutor_form = TutorAdditionalForm(False, prefix='tut')
-    # return render(request, 'account/user_register.html', {'user_form': user_form,
+    # return render(request, 'user/user_register.html', {'user_form': user_form,
     #                                                          'student_form': student_form,
     #                                                          'tutor_form': tutor_form})
 
@@ -362,7 +322,7 @@ def user_edit(request, id):
                'action': 'U'}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/user_edit.html', context=context)
+    return render(request, 'user/user_edit.html', context=context)
 
 
 @permission_required('timetable.delete_customuser', raise_exception=True)
@@ -394,20 +354,20 @@ def user_delete(request, id):
                     raise Http404
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:user_list'))
+                return redirect(reverse('user:user_list'))
         except Http404:
-            return redirect(reverse('account:user_list'))
+            return redirect(reverse('user:user_list'))
         except ProtectedError:
             request.session["obj_status"] = 'error'
             try:
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:user_details', kwargs={'id': id}))
+                return redirect(reverse('user:user_details', kwargs={'id': id}))
     context = {'user': user}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/user_delete.html', context=context)
+    return render(request, 'user/user_delete.html', context=context)
 
 
 @permission_required('timetable.delete_tutor', raise_exception=True)
@@ -430,18 +390,18 @@ def user_delete_tutor(request, id):
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:user_details', kwargs={'id': id}))
+                return redirect(reverse('user:user_details', kwargs={'id': id}))
         except ProtectedError:
             request.session["obj_status"] = 'error'
             try:
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:user_details', kwargs={'id': id}))
+                return redirect(reverse('user:user_details', kwargs={'id': id}))
     context = {'user': user_obj}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/tutor_delete.html', context=context)
+    return render(request, 'user/tutor_delete.html', context=context)
 
 
 @permission_required('timetable.delete_student', raise_exception=True)
@@ -464,23 +424,15 @@ def user_delete_student(request, id):
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:user_details', kwargs={'id': id}))
+                return redirect(reverse('user:user_details', kwargs={'id': id}))
         except ProtectedError:
             request.session["obj_status"] = 'error'
             try:
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:user_details', kwargs={'id': id}))
+                return redirect(reverse('user:user_details', kwargs={'id': id}))
     context = {'user': user_obj}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
-    return render(request, 'account/student_delete.html', context=context)
-
-
-
-
-
-
-
-
+    return render(request, 'user/student_delete.html', context=context)

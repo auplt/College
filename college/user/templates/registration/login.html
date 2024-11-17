@@ -14,9 +14,9 @@
 {% block content %}
   {# Including page title #}
   {% original_query_string next as next_url %}
-  {% include "page_heading.html" with back_url="account:login" page_title="Вход" next_url=next_url %}
+  {% include "page_heading.html" with back_url="user:login" page_title="Вход" next_url=next_url %}
 
-  <form class="register_form register_lesson_time" action="{% url 'account:login' %}" method="post">
+  <form class="register_form register_lesson_time" action="{% url 'user:login' %}" method="post">
     {{ form.as_div }}
     {% csrf_token %}
     <div>
@@ -25,7 +25,7 @@
     </div>
   </form>
   <div>
-    <a class="register_form_link" href="{% url 'account:password_reset' %}">
+    <a class="register_form_link" href="{% url 'user:password_reset' %}">
       Забыли пароль?
     </a>
   </div>
