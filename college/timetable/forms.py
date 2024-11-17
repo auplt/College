@@ -6,6 +6,34 @@ from django import forms
 from .models import Classroom, LessonTime, CurriculumLesson, TTLesson
 
 
+# LESSON FORMS FORMS
+
+class LessonTimeRegisterForm(forms.ModelForm):
+    name = forms.CharField(label=False,
+                           widget=forms.TextInput(attrs={
+                               'placeholder': 'Название'
+                           })
+                           )
+    start_time = forms.TimeField(label=False,
+                                 widget=forms.TimeInput(attrs={
+                                     'class': 'timepicker',
+                                     'placeholder': 'Начало занятия'
+                                 }, format='%H:%M')
+                                 )
+    end_time = forms.TimeField(label=False,
+                               widget=forms.TimeInput(attrs={
+                                   'class': 'timepicker',
+                                   'placeholder': 'Окончание занятия'
+                               }, format='%H:%M')
+                               )
+
+    class Meta:
+        model = LessonTime
+        fields = ['name', 'start_time', 'end_time']
+
+
+# TIMETABLE LESSON FORMS
+
 class TTLessonRegisterForm(forms.ModelForm):
     date = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=True,
                            widget=forms.TextInput(attrs={

@@ -289,31 +289,7 @@ class ClassroomRegisterForm(forms.ModelForm):
         fields = ['number', 'description']
 
 
-class LessonTimeRegisterForm(forms.ModelForm):
-    name = forms.CharField(label=False,
-                           widget=forms.TextInput(attrs={
-                               'placeholder': 'Название'
-                           })
-                           )
-    start_time = forms.TimeField(label=False,
-                                 widget=forms.TimeInput(attrs={
-                                     'class': 'timepicker',
-                                     'placeholder': 'Начало занятия'
-                                 }, format='%H:%M')
-                                 )
-    end_time = forms.TimeField(label=False,
-                               widget=forms.TimeInput(attrs={
-                                   'class': 'timepicker',
-                                   'placeholder': 'Окончание занятия'
-                               }, format='%H:%M')
-                               )
 
-    class Meta:
-        model = LessonTime
-        fields = ['name', 'start_time', 'end_time']
-
-    # class Media:
-    #     js = ('js/lesson_time_form.js',)
 
 
 # class LessonTimeEditForm(forms.ModelForm):

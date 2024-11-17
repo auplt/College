@@ -67,11 +67,7 @@ urlpatterns = [
     path('classroom/edit/<int:classroom_id>', views.classroom_edit, name='classroom_edit'),
     path('classroom/delete/<int:classroom_id>', views.classroom_delete, name='classroom_delete'),
 
-    path('lesson_time/', views.lesson_time_list, name='lesson_time_list'),
-    path('lesson_time/register', views.lesson_time_register, name='lesson_time_register'),
-    path('lesson_time/details/<int:lesson_id>', views.lesson_time_details, name='lesson_time_details'),
-    path('lesson_time/edit/<int:lesson_id>', views.lesson_time_edit, name='lesson_time_edit'),
-    path('lesson_time/delete/<int:lesson_id>', views.lesson_time_delete, name='lesson_time_delete'),
+
 
     re_path(r'group_semester/register/?(?P<group_id>\d+)?/?$', views.group_semester_register,
             name='group_semester_register'),

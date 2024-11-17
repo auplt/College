@@ -16,7 +16,7 @@
 
     {# Including page title #}
     {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url="account:lesson_time_list" page_title=lesson_time.name list_url="account:lesson_time_list" next_url=next_url %}
+    {% include "page_heading.html" with back_url="timetable:lesson_time_list" page_title=lesson_time.name list_url="timetable:lesson_time_list" next_url=next_url %}
 
     {% include "success_msg.html" %}
     <div class="details_description">

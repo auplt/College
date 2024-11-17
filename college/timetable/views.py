@@ -14,9 +14,146 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from psycopg2.errors import UniqueViolation
 
-from .forms import TTLessonRegisterForm
-from .models import Classroom, GroupMember, CurriculumLesson, TypesOfLesson, TTLesson
+from .forms import TTLessonRegisterForm, LessonTimeRegisterForm
+from .models import Classroom, GroupMember, CurriculumLesson, TypesOfLesson, TTLesson, LessonTime
 
+
+# LESSON TIME BLOCK
+
+@permission_required('timetable.view_lessontime', raise_exception=True)
+def lesson_time_list(request):
+    """
+    View for list of lessons time.
+    :param request: user's request
+    :return: HTTP response HTML page with lesson times list
+    """
+    lesson_times = LessonTime.objects.order_by('start_time', 'end_time').all()
+    obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
+    if obj_stats:
+        for obj_stat in obj_stats:
+            del request.session[obj_stat]
+    context = {'lesson_times': lesson_times}
+    context.update(obj_stats)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'lesson_time/lesson_time_list.html', context=context)
+
+
+@permission_required('timetable.view_lessontime', raise_exception=True)
+def lesson_time_details(request, lesson_id):
+    """
+    View for lesson time details.
+    :param request: user's request
+    :param lesson_id: lesson time entity identifier
+    :return: HTTP response HTML page with lesson time details
+    """
+    lesson_time = LessonTime.objects.get(lesson_id=lesson_id)
+    context = {'lesson_time': lesson_time}
+    obj_stats = {key: value for key, value in request.session.items() if key.startswith('obj_')}
+    if obj_stats:
+        for obj_stat in obj_stats:
+            del request.session[obj_stat]
+    context.update(obj_stats)
+    print(context)
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'lesson_time/lesson_time_detail.html', context=context)
+
+
+@permission_required('timetable.add_lessontime', raise_exception=True)
+def lesson_time_register(request):
+    """
+    View for lesson time registration.
+    :param request: user's request
+    :return: HTTP response HTML page with form to register lesson time entity or redirect page
+    """
+    if request.method == 'POST':
+        lesson_time_form = LessonTimeRegisterForm(request.POST)
+        if lesson_time_form.is_valid():
+            new_lesson_time = lesson_time_form.save(commit=False)
+            new_lesson_time.save()
+            print(new_lesson_time)
+            request.session["obj_status"] = 'success'
+            request.session["obj_name"] = 'время занятия'
+            request.session["obj_action"] = 'C'
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('timetable:lesson_time_list'))
+    else:
+        lesson_time_form = LessonTimeRegisterForm()
+    context = {'lesson_time_form': lesson_time_form, 'action': 'C'}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'lesson_time/lesson_time_form.html', context=context)
+
+
+@permission_required('timetable.change_lessontime', raise_exception=True)
+def lesson_time_edit(request, lesson_id):
+    """
+    View for editing lesson time information.
+    :param request: user's request
+    :param lesson_id: lesson time entity identifier
+    :return: HTTP response HTML page with form to edit lesson time information or redirect page
+    """
+    lesson_time_obj = get_object_or_404(LessonTime, lesson_id=lesson_id)
+    lesson_time_form = LessonTimeRegisterForm(request.POST or None, instance=lesson_time_obj)
+    if lesson_time_form.is_valid():
+        lesson_time_form.save()
+        request.session["obj_status"] = 'success'
+        request.session["obj_name"] = 'время занятия'
+        request.session["obj_action"] = 'U'
+        try:
+            resolve_match = resolve(request.GET.get('next'))
+            return redirect(request.GET.get('next'))
+        except Resolver404 or KeyError:
+            return redirect(reverse('timetable:lesson_time_details', kwargs={'lesson_id': lesson_id}))
+    context = {'lesson_time_form': lesson_time_form, 'action': 'U'}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'lesson_time/lesson_time_form.html', context=context)
+
+
+@permission_required('timetable.delete_lessontime', raise_exception=True)
+def lesson_time_delete(request, lesson_id):
+    """
+    View for deleting lesson time information.
+    :param request: user's request
+    :param lesson_id: lesson time entity identifier
+    :return: HTTP response HTML page with form to delete lesson time information or redirect page
+    """
+    lesson_time_obj = get_object_or_404(LessonTime, lesson_id=lesson_id)
+    if request.method == 'POST':
+        request.session["obj_name"] = 'время занятия'
+        request.session["obj_action"] = 'D'
+        try:
+            lesson_time_obj.delete()
+            request.session["obj_status"] = 'success'
+
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                if resolve_match.url_name == 'lesson_time_details':
+                    raise Http404
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('timetable:lesson_time_list'))
+        except Http404:
+            return redirect(reverse('timetable:lesson_time_list'))
+        except ProtectedError:
+            request.session["obj_status"] = 'error'
+            try:
+                resolve_match = resolve(request.GET.get('next'))
+                return redirect(request.GET.get('next'))
+            except Resolver404 or KeyError:
+                return redirect(reverse('timetable:lesson_time_details', kwargs={'lesson_id': lesson_id}))
+    context = {'lesson_time': lesson_time_obj}
+    if 'next' in request.GET.keys():
+        context['next_url'] = request.GET.get('next')
+    return render(request, 'lesson_time/lesson_time_delete.html', context=context)
+
+
+# TIMETABLE LESSON BLOCK
 
 def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
     """

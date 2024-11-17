@@ -90,7 +90,7 @@
 
         {% if perms.timetable.view_lesson_time %}
           {% static 'images/clock.svg' as src_link %}
-          {% url 'account:lesson_time_list' as redirect_link %}
+          {% url 'timetable:lesson_time_list' as redirect_link %}
           {% include "navigation_item.html" with src_link=src_link nav_txt="Время занятий" redirect_link=redirect_link %}
         {% endif %}
       </nav>
