@@ -1,3 +1,5 @@
+ALTER SEQUENCE timetable_customuser_groups_id_seq RESTART WITH 3;
+
 INSERT INTO public.timetable_customuser_groups (customuser_id,group_id) VALUES
 	 (2,2),
 	 (3,2),

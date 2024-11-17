@@ -2,18 +2,21 @@
 URL configuration for group app.
 """
 
-from django.urls import path, re_path
+from django.urls import path, re_path, register_converter
 from . import views
+from timetable.converters import DateConverter
 
 app_name = 'group'
 
+register_converter(DateConverter, 'date')
+
 urlpatterns = [
-    path('group/', views.group_list, name='group_list'),
-    re_path(r'group/details/(?P<group_id>\d+)?/?(?P<week>(True|False))?&?(?P<day_delta>\d+)?/?$', views.group_details,
+    path('list/', views.group_list, name='group_list'),
+    re_path(r'details/(?P<group_id>\d+)?/?(?P<week>(True|False))?&?(?P<day_delta>\d+)?/?$', views.group_details,
             name='group_details'),
-    path('group/register', views.group_register, name='group_register'),
-    path('group/edit/<int:group_id>', views.group_edit, name='group_edit'),
-    path('group/delete/<int:group_id>', views.group_delete, name='group_delete'),
+    path('register', views.group_register, name='group_register'),
+    path('edit/<int:group_id>', views.group_edit, name='group_edit'),
+    path('delete/<int:group_id>', views.group_delete, name='group_delete'),
 
     re_path(r'group_semester/register/?(?P<group_id>\d+)?/?$', views.group_semester_register,
             name='group_semester_register'),

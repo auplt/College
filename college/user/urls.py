@@ -5,7 +5,7 @@ URL configuration for user app.
 from django.urls import path, register_converter, re_path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from . import views
-from .converters import DateConverter
+from timetable.converters import DateConverter
 from .forms import CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm, CustomPasswordChangeForm
 
 app_name = 'user'
@@ -13,7 +13,7 @@ app_name = 'user'
 register_converter(DateConverter, 'date')
 
 urlpatterns = [
-    path('', views.welcome, name='welcome'),
+    path('welcome/', views.welcome, name='welcome'),
     re_path(r'^home/$', views.home, name='home'),
     re_path(r'^login/$', auth_views.LoginView.as_view(form_class=CustomAuthenticationForm), name='login'),
     re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
@@ -33,11 +33,11 @@ urlpatterns = [
          name='password_reset_confirm'),
     re_path(r'^reset/done/$', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
-    path('user/', views.user_list, name='user_list'),
-    path('user/details/<int:id>', views.user_details, name='user_details'),
-    path('user/register/', views.user_register, name='user_register'),
-    path('user/edit/<int:id>', views.user_edit, name='user_edit'),
-    path('user/delete/<int:id>', views.user_delete, name='user_delete'),
-    path('user/delete/<int:id>/tutor', views.user_delete_tutor, name='user_delete_tutor'),
-    path('user/delete/<int:id>/student', views.user_delete_student, name='user_delete_student'),
+    path('list/', views.user_list, name='user_list'),
+    path('details/<int:id>', views.user_details, name='user_details'),
+    path('register/', views.user_register, name='user_register'),
+    path('edit/<int:id>', views.user_edit, name='user_edit'),
+    path('delete/<int:id>', views.user_delete, name='user_delete'),
+    path('delete/<int:id>/tutor', views.user_delete_tutor, name='user_delete_tutor'),
+    path('delete/<int:id>/student', views.user_delete_student, name='user_delete_student'),
 ]

@@ -9,16 +9,21 @@ from django.db.models import Max, ProtectedError, Subquery, OuterRef
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models.functions import Coalesce
+from django.apps import apps
 
 from .forms import GroupRegisterForm, GroupMemberRegisterForm, GroupSemesterRegisterForm
-from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
-    GroupMember, CurriculumLesson, Group, TypesOfLesson, TTLesson
-
+from timetable.models import TypesOfLesson
 from timetable.views import tt_lesson_details
 
 
-# GROUP BLOCK
+GroupSemester = apps.get_model('timetable', 'GroupSemester')
+Student = apps.get_model('timetable', 'Student')
+GroupMember = apps.get_model('timetable', 'GroupMember')
+CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
+Group = apps.get_model('timetable', 'Group')
 
+
+# GROUP BLOCK
 
 def group_list(request):
     """

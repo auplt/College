@@ -10,13 +10,16 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.apps import apps
 
 from .forms import UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm
-from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
-    GroupMember, CurriculumLesson, Group, TypesOfLesson, TTLesson
-
 from timetable.views import tt_lesson_details
 
+Tutor = apps.get_model('timetable', 'Tutor')
+Student = apps.get_model('timetable', 'Student')
+CustomUser = apps.get_model('timetable', 'CustomUser')
+GroupMember = apps.get_model('timetable', 'GroupMember')
+CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
 
 @login_required
 def home(request):

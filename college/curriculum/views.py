@@ -9,10 +9,17 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.apps import apps
 
 from .forms import DisciplineRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm
-from timetable.models import GroupSemester, Curriculum, Discipline, Tutor, LessonTime, Classroom, Student, CustomUser, \
-    GroupMember, CurriculumLesson, Group, TypesOfLesson, TTLesson
+from timetable.models import TypesOfLesson
+
+GroupSemester = apps.get_model('timetable', 'GroupSemester')
+Curriculum = apps.get_model('timetable', 'Curriculum')
+Discipline = apps.get_model('timetable', 'Discipline')
+Tutor = apps.get_model('timetable', 'Tutor')
+CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
+Group = apps.get_model('timetable', 'Group')
 
 
 # DISCIPLINE BLOCK

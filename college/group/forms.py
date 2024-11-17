@@ -3,10 +3,16 @@ Forms for group app.
 """
 
 from django import forms
+from django.apps import apps
 
-from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, \
-    Curriculum, CurriculumLesson, TypesOfLesson, TTLesson
 
+GroupSemester = apps.get_model('timetable', 'GroupSemester')
+Student = apps.get_model('timetable', 'Student')
+GroupMember = apps.get_model('timetable', 'GroupMember')
+Group = apps.get_model('timetable', 'Group')
+
+
+# GROUP FORMS
 
 class GroupRegisterForm(forms.ModelForm):
     name = forms.CharField(label=False,
