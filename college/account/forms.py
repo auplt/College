@@ -265,20 +265,7 @@ class DisciplineRegisterForm(forms.ModelForm):
         fields = ['name', 'description']
 
 
-class ClassroomRegisterForm(forms.ModelForm):
-    number = forms.CharField(label=False,
-                             widget=forms.TextInput(attrs={
-                                 'placeholder': 'Номер'
-                             }))
-    description = forms.CharField(label=False,
-                                  required=False,
-                                  widget=forms.TextInput(attrs={
-                                      'placeholder': 'Описание'
-                                  }))
 
-    class Meta:
-        model = Classroom
-        fields = ['number', 'description']
 
 
 

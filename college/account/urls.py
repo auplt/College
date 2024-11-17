@@ -57,11 +57,7 @@ urlpatterns = [
     path('discipline/edit/<int:discipline_id>', views.discipline_edit, name='discipline_edit'),
     path('discipline/delete/<int:discipline_id>', views.discipline_delete, name='discipline_delete'),
 
-    path('classroom/', views.classroom_list, name='classroom_list'),
-    path('classroom/register', views.classroom_register, name='classroom_register'),
-    path('classroom/details/<int:classroom_id>', views.classroom_details, name='classroom_details'),
-    path('classroom/edit/<int:classroom_id>', views.classroom_edit, name='classroom_edit'),
-    path('classroom/delete/<int:classroom_id>', views.classroom_delete, name='classroom_delete'),
+
 
 
 
