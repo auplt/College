@@ -94,7 +94,7 @@
 	          <h2 class="user_info_detail_title">Учебные группы</h2>
 	          {# Including add button #}
 		        {% if perms.timetable.add_groupmember %}
-	          {% url 'account:group_member_register' as add_url %}
+	          {% url 'group:group_member_register' as add_url %}
 	          {% include "add_button.html" with add_link=add_url|add_str:"?student_id="|add_str:student.student_id|add_str:"&next="|add_str:this_url add_txt="Группа" %}
 		        {% endif %}
 	        </div>
@@ -103,13 +103,13 @@
 	            <div class="user_info_groups_list">
 	              {% for group in groups %}
 	                <span class="groups_item_semester">Семестр {{group.group_semester_id__semester_num}}</span>
-	                <a class="groups_item_group" href="{% url 'account:group_details' group.group_semester_id__group_id__group_id %}?next={{this_url}}">
+	                <a class="groups_item_group" href="{% url 'group:group_details' group.group_semester_id__group_id__group_id %}?next={{this_url}}">
 	                  <span>{{group.group_semester_id__group_id__name}}</span>
 	                </a>
 		              <div class="delete_controller_wrapper">
 	                  {# Including control buttons delete #}
 		                {% if perms.timetable.delete_groupmember %}
-		                  {% url 'account:group_member_delete' group.group_member_id as del_link %}
+		                  {% url 'group:group_member_delete' group.group_member_id as del_link %}
 		                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
 		                {% endif %}
 		              </div>

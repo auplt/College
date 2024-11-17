@@ -32,7 +32,7 @@
 	<form class="delete_form" method="POST">
 		<div class="delete_form_question">Вы действительно хотите удалить это занятие из расписания?</div>
 		{% original_query_string next_url as next_url %}
-		{% include "delete_from_controllers.html" with cancel_url="account:group_details" %}
+		{% include "delete_from_controllers.html" with cancel_url="group:group_details" %}
 		{% csrf_token %}
 	</form>
 {% endblock %}

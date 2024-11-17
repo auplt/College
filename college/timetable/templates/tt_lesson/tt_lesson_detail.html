@@ -138,7 +138,7 @@
                       </div>
                       <div class="tt_lesson_info_group_list">
                         {% for lesson_inf in day_inf.lesson_info %}
-                          <a class="group_item_name" href="{% url 'account:group_details' lesson_inf.group.group_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                          <a class="group_item_name" href="{% url 'group:group_details' lesson_inf.group.group_id %}{% if this_url %}?next={{this_url}}{% endif %}">
                             {% if forloop.counter0 != day_inf.lesson_info|length|add:-1 %}
                               {{ lesson_inf.group.name }},
                             {% else %}

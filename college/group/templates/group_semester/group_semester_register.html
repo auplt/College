@@ -21,10 +21,10 @@
 {% original_query_string next_url as next_url %}
   {% if group %}
     {% if group.group_id %}
-      {% include 'page_heading.html' with back_url="account:group_details" back_id=group.group_id page_title="Добавление нового семестра" list_url='account:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url="group:group_details" back_id=group.group_id page_title="Добавление нового семестра" list_url='group:group_list' next_url=next_url %}
     {% endif %}
   {% else %}
-     {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление нового семестра" list_url='account:group_list' next_url=next_url %}
+     {% include 'page_heading.html' with back_url="group:group_list" page_title="Добавление нового семестра" list_url='group:group_list' next_url=next_url %}
   {% endif %}
 
   {% include 'form_success.html' with form=group_semester_form %}
@@ -40,7 +40,7 @@
       {# Links to redirect to another page #}
       {% if field.auto_id == "id_group_id" %}
         {% if group %}
-          <a class="register_form_link" href="{% url 'account:group_register' %}?group_id={{ group.group_id }}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
+          <a class="register_form_link" href="{% url 'group:group_register' %}?group_id={{ group.group_id }}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
         {% endif %}
       {% endif %}
     </div>

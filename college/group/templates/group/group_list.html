@@ -21,10 +21,10 @@
     <div class="page_title">
       {# Including page title #}
       {% original_query_string next_url as next_url %}
-      {% include "page_heading.html" with back_url="account:group_list" page_title="Список групп" next_url=next_url %}
+      {% include "page_heading.html" with back_url="group:group_list" page_title="Список групп" next_url=next_url %}
       {# Including add button #}
       {% if perms.timetable.add_group %}
-        {% url 'account:group_register' as add_url %}
+        {% url 'group:group_register' as add_url %}
         {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Группа" %}
       {% endif %}
     </div>

@@ -63,6 +63,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS = [
     'account.apps.AccountConfig',
+    'group.apps.GroupConfig',
     'timetable.apps.TimeTableConfig',
     'formset',
     'django.contrib.admin',
@@ -89,7 +90,7 @@ ROOT_URLCONF = 'college.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(f.path, 'static\\templates') for f in os.scandir(BASE_DIR) if f.is_dir()] ,
+        'DIRS': [os.path.join(f.path, 'templates') for f in os.scandir(BASE_DIR) if f.is_dir()] ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

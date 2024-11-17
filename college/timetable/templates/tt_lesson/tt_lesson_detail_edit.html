@@ -20,7 +20,7 @@
 
 	  {# Including page title #}
 	  {% original_query_string next_url as next_url %}
-	  {% include "page_heading.html" with back_url="account:group_list" page_title="Редактирование расписания" next_url=next_url %}
+	  {% include "page_heading.html" with back_url="group:group_list" page_title="Редактирование расписания" next_url=next_url %}
 
     {% include "success_msg.html" %}
 	  <div class="tt_lesson_content">
@@ -94,7 +94,7 @@
 	                    {% for lesson_inf in day_inf.lesson_info %}
 	                      <div class="tt_lesson_info_group_item">
 		                      <div class="group_item_name_wrapper">
-		                        <a class="group_item_name" href="{% url 'account:group_details' lesson_inf.group.group_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+		                        <a class="group_item_name" href="{% url 'group:group_details' lesson_inf.group.group_id %}{% if this_url %}?next={{this_url}}{% endif %}">
 		                          {{lesson_inf.group.name}}
 		                        </a>
 		                      </div>

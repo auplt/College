@@ -22,7 +22,7 @@
   {% endif %}
   {# Including page title #}
   {% original_query_string next_url as next_url %}
-  {% include "page_heading.html" with back_url="account:group_list" page_title=group.name list_url="account:group_list" next_url=next_url %}
+  {% include "page_heading.html" with back_url="group:group_list" page_title=group.name list_url="group:group_list" next_url=next_url %}
 
   {% include "success_msg.html" %}
   <div class="details_description">
@@ -50,7 +50,7 @@
         <h2 class="group_info_detail_title">Студенты</h2>
         {# Including add button #}
         {% if perms.timetable.add_groupsemester %}
-          {% url 'account:group_semester_register' as add_url %}
+          {% url 'group:group_semester_register' as add_url %}
           {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
         {% endif %}
       </div>
@@ -73,14 +73,14 @@
                 <div class="group_members_semester_ctrl">
                   {# Including add button #}
                   {% if perms.timetable.add_groupmember %}
-                    {% url 'account:group_member_register' as add_url %}
+                    {% url 'group:group_member_register' as add_url %}
                     {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Студент" %}
                   {% endif %}
                 </div>
                 <div class="group_members_semester_delete">
                   {# Including control buttons delete #}
                   {% if perms.timetable.delete_groupsemester %}
-                    {% url 'account:group_semester_delete' as del_link %}
+                    {% url 'group:group_semester_delete' as del_link %}
                     {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group_member.group_semester_id__group_id|add_str:"&semester_num="|add_str:group_member.group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
                   {% endif %}
                 </div>
@@ -96,7 +96,7 @@
                 <div class="group_members_ctrl toggle_ctrl {{is_hidden}}">
                   {# Including control buttons delete #}
                   {% if perms.timetable.delete_groupsemester %}
-                    {% url 'account:group_member_delete' group_member.group_member_id as del_link %}
+                    {% url 'group:group_member_delete' group_member.group_member_id as del_link %}
                     {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
                   {% endif %}
                 </div>
@@ -212,7 +212,7 @@
   <div class="group_info_wrapper">
     <div class="group_info_detail">
       {# Include lesson timetable template #}
-      {% url 'account:group_details' group.group_id as day_url %}
+      {% url 'group:group_details' group.group_id as day_url %}
       {% create_tt_conf_dict entity="group_id" entity_id=group.group_id entity_name="Группа" as add_group %}
       {% add_to_list add_group as entities %}
       {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}

@@ -9,7 +9,7 @@
 {% block content %}
     {# Including page title #}
           {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url="account:curriculum_lesson_group_details" back_id=group_semester.group_id page_title="Удаление плана занятий" list_url="account:group_list" %}
+    {% include "page_heading.html" with back_url="account:curriculum_lesson_group_details" back_id=group_semester.group_id page_title="Удаление плана занятий" list_url="group:group_list" %}
 
     <div class="delete_object">
         <h2 class="delete_object_name">{{ discipline.name }}</h2>

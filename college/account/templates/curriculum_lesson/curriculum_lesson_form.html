@@ -24,13 +24,13 @@
     {% endif %}
 
     {% if group %}
-      {% include 'page_heading.html' with back_url='account:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='account:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='account:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% elif discipline %}
-      {% include 'page_heading.html' with back_url='account:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='account:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='account:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% elif tutor %}
-      {% include 'page_heading.html' with back_url='account:user_details' back_id=tutor.user_id.id page_title=page_title list_url='account:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='account:user_details' back_id=tutor.user_id.id page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% else %}
-       {% include 'page_heading.html' with back_url="account:group_list" page_title=page_title list_url='account:group_list' next_url=next_url %}
+       {% include 'page_heading.html' with back_url="group:group_list" page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% endif %}
   {% endwith %}
 

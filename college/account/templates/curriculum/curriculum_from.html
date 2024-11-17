@@ -24,12 +24,12 @@
   {% original_query_string next_url as next_url %}
   {% if group %}
     {% if group %}
-      {% include 'page_heading.html' with back_url="account:curriculum_lesson_group_details" back_id=group.group_id page_title="Добавление дисциплины группе" list_url='account:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url="account:curriculum_lesson_group_details" back_id=group.group_id page_title="Добавление дисциплины группе" list_url='group:group_list' next_url=next_url %}
     {% elif group.student_id %}
-      {% include 'page_heading.html' with back_url="account:curriculum_lesson_group_details" back_id=group.student_id page_title="Добавление дисциплины группе" list_url='account:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url="account:curriculum_lesson_group_details" back_id=group.student_id page_title="Добавление дисциплины группе" list_url='group:group_list' next_url=next_url %}
     {% endif %}
   {% else %}
-     {% include 'page_heading.html' with back_url="account:group_list" page_title="Добавление дисциплины группе" list_url='account:group_list' next_url=next_url %}
+     {% include 'page_heading.html' with back_url="group:group_list" page_title="Добавление дисциплины группе" list_url='group:group_list' next_url=next_url %}
   {% endif %}
 
 
@@ -83,7 +83,7 @@
     </div>
         {% if group %}
             {% if group|get_type == 'Group' %}
-        <a class="register_form_link"  href="{% url 'account:group_semester_register' %}?group_id={{group.group_id}}{% if this_url %}&next={{this_url}}{% endif %}">
+        <a class="register_form_link"  href="{% url 'group:group_semester_register' %}?group_id={{group.group_id}}{% if this_url %}&next={{this_url}}{% endif %}">
             Нужной группы нет в списке
         </a>
         {% endif %}

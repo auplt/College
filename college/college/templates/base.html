@@ -73,7 +73,7 @@
         {% endif %}
 
         {% static 'images/group.svg' as src_link %}
-        {% url 'account:group_list' as redirect_link %}
+        {% url 'group:group_list' as redirect_link %}
         {% include "navigation_item.html" with src_link=src_link nav_txt="Группы" redirect_link=redirect_link %}
 
         {% static 'images/classroom.svg' as src_link %}

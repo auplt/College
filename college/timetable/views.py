@@ -573,7 +573,7 @@ def tt_lesson_register(request):
                     resolve_match = resolve(request.GET.get('next').split('?')[0])
                     return redirect(request.GET.get('next').replace(':', '&'))
                 except Resolver404 or KeyError:
-                    return redirect(reverse('account:group_list'))
+                    return redirect(reverse('group:group_list'))
             except IntegrityError as ex:
                 if isinstance(ex.__cause__, UniqueViolation):
                     if ex.__cause__.diag.constraint_name == 'tt_lesson_day_week_time_curriculum_les_unique':
@@ -753,7 +753,7 @@ def tt_lesson_edit(request, tt_lesson_id):
             resolve_match = resolve(request.GET.get('next').split('?')[0])
             return redirect(request.GET.get('next').replace(':', '&'))
         except Resolver404 or KeyError:
-            return redirect(reverse('account:group_list'))
+            return redirect(reverse('group:group_list'))
     context = {'tt_lesson_form': tt_lesson_form, 'action': 'U'}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
@@ -781,16 +781,16 @@ def tt_lesson_delete(request, tt_lesson_id):
                 resolve_match = resolve(request.GET.get('next').split('?')[0])
                 return redirect(request.GET.get('next').replace(':', '&'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:group_list'))
+                return redirect(reverse('group:group_list'))
         except Http404:
-            return redirect(reverse('account:group_list'))
+            return redirect(reverse('group:group_list'))
         except ProtectedError:
             request.session["obj_status"] = 'error'
             try:
                 resolve_match = resolve(request.GET.get('next').split('?')[0])
                 return redirect(request.GET.get('next').replace(':', '&'))
             except Resolver404 or KeyError or Http404:
-                return redirect(reverse('account:group_list'))
+                return redirect(reverse('group:group_list'))
     context = {'tt_lesson': tt_lesson_obj}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
