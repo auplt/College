@@ -24,9 +24,9 @@
     {% endif %}
 
     {% if group %}
-      {% include 'page_heading.html' with back_url='account:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='group:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='curriculum:curriculum_lesson_group_details' back_id=group.group_id page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% elif discipline %}
-      {% include 'page_heading.html' with back_url='account:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='group:group_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='curriculum:discipline_details' back_id=discipline.discipline_id page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% elif tutor %}
       {% include 'page_heading.html' with back_url='account:user_details' back_id=tutor.user_id.id page_title=page_title list_url='group:group_list' next_url=next_url %}
     {% else %}
@@ -47,9 +47,9 @@
         {# Links to redirect to another page #}
         {% if field.auto_id == "id_curriculum_id" %}
           {% if group %}
-            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?group_id={{group.group_id}}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
+            <a class="register_form_link" href="{% url 'curriculum:curriculum_register' %}?group_id={{group.group_id}}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
           {% elif discipline %}
-            <a class="register_form_link" href="{% url 'account:curriculum_register' %}?discipline_id={{discipline.discipline_id}}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
+            <a class="register_form_link" href="{% url 'curriculum:curriculum_register' %}?discipline_id={{discipline.discipline_id}}{% if this_url %}&next={{this_url}}{% endif %}">Нужной группы нет в списке</a>
         {% endif %}
       {% endif %}
       </div>

@@ -20,11 +20,11 @@
     <div class="page_title">
       {# Including page title #}
       {% original_query_string next_url as next_url %}
-      {% include "page_heading.html" with back_url="account:classroom_list" page_title="Список аудиторий" next_url=next_url %}
+      {% include "page_heading.html" with back_url="timetable:classroom_list" page_title="Список аудиторий" next_url=next_url %}
 
       {# Including add button #}
       {% if perms.timetable.add_classroom %}
-        {% url 'account:classroom_register' as add_url %}
+        {% url 'timetable:classroom_register' as add_url %}
         {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Аудитория" %}
       {% endif %}
     </div>

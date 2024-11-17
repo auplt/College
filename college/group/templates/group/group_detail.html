@@ -116,7 +116,7 @@
       <div class="group_info_detail_heading">
         <h2 class="group_info_detail_title">План занятий</h2>
         {# Including add button #}
-        {% url 'account:curriculum_lesson_group_details' group.group_id as add_url %}
+        {% url 'curriculum:curriculum_lesson_group_details' group.group_id as add_url %}
         {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Подробнее" no_tip="Y" no_img="Y" %}
       </div>
       {% if group_lessons %}
@@ -142,7 +142,7 @@
                     <div class="curriculum_discipline_tutor_item">
                   {% endif %}
                   <div class="curriculum_discipline_wrapper">
-                    <a class="curriculum_discipline" href="{% url 'account:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                    <a class="curriculum_discipline" href="{% url 'curriculum:discipline_details' group_lesson.curriculum_id__discipline_id__discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
                       {{ group_lesson.curriculum_id__discipline_id__name }}
                     </a>
                   </div>

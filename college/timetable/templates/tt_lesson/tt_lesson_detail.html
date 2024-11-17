@@ -65,7 +65,7 @@
                         {% get_value lesson_types day_inf.lesson_type as lesson_type %}
                         {% include "tags.html" with tag_txt=lesson_type|lower|slicestring:"0:3" %}
                       </div>
-                      <a class="info_discipline_name" href="{% url 'account:discipline_details' day_inf.discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                      <a class="info_discipline_name" href="{% url 'curriculum:discipline_details' day_inf.discipline_id %}{% if this_url %}?next={{this_url}}{% endif %}">
                         {{day_inf.discipline_name}}
                       </a>
                     </div>
@@ -92,7 +92,7 @@
                               src="{% static 'images/classroom.svg' %}"/>
                           <span class="tooltiptext">Аудитория</span>
                         </div>
-                        <a class="tt_lesson_classroom_name" href="{% url 'account:classroom_details' day_inf.classroom_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+                        <a class="tt_lesson_classroom_name" href="{% url 'timetable:classroom_details' day_inf.classroom_id %}{% if this_url %}?next={{this_url}}{% endif %}">
                           {{ day_inf.classroom_number }}
                         </a>
                       </div>

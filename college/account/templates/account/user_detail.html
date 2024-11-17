@@ -125,7 +125,7 @@
 	          <h2 class="user_info_detail_title">Преподаваемые дисциплины</h2>
 	          {# Including add button #}
 		        {% if perms.timetable.add_curriculumlesson %}
-		          {% url 'account:curriculum_lesson_register' as add_url %}
+		          {% url 'curriculum:curriculum_lesson_register' as add_url %}
 		          {% include "add_button.html" with add_link=add_url|add_str:"?tutor_id="|add_str:tutor.tutor_id|add_str:"&next="|add_str:this_url add_txt="Дисциплина" %}
 	          {% endif %}
 	        </div>
@@ -133,14 +133,14 @@
 	          <div class="user_info_disciplines">
 	            <div class="user_info_disciplines_list">
 	              {% for discipline in disciplines %}
-	                <a class="disciplines_item" href="{% url 'account:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">
+	                <a class="disciplines_item" href="{% url 'curriculum:discipline_details' discipline.curriculum_id__discipline_id__discipline_id %}">
 	                  <span>{{discipline.curriculum_id__discipline_id__name}}</span>
 	                </a>
 	                {# Including control buttons delete #}
 		              <div class="delete_controller_wrapper">
 			              {% if perms.timetable.delete_curriculum_lesson %}
 		                  {% comment %}
-		                    {% url 'account:curriculum_lesson_delete' discipline.curriculum_lesson_id as del_link %}
+		                    {% url 'curriculum:curriculum_lesson_delete' discipline.curriculum_lesson_id as del_link %}
 		                  {% endcomment %}
 		                  {% url 'account:user_details' user.id as del_link %}
 		                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}

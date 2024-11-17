@@ -9,7 +9,7 @@
 {% block content %}
     {# Including page title #}
   {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url="account:curriculum_lesson_group_details" back_id=curriculum_lesson.curriculum_id__group_semester_id__group_id page_title="Удаление занятия из плана" list_url="group:group_list" next_url=next_url %}
+    {% include "page_heading.html" with back_url="curriculum:curriculum_lesson_group_details" back_id=curriculum_lesson.curriculum_id__group_semester_id__group_id page_title="Удаление занятия из плана" list_url="group:group_list" next_url=next_url %}
 
     <div class="delete_object">
         <h2 class="delete_object_name">{{ curriculum_lesson.curriculum_id__discipline_id__name }}</h2>
@@ -23,7 +23,7 @@
     </div>
     <form class="delete_form" method="POST">
         <div class="delete_form_question">Вы действительно хотите данное занятие?</div>
-        {% include "delete_from_controllers.html" with cancel_url="account:curriculum_lesson_group_details" cancel_id=curriculum_lesson.curriculum_id__group_semester_id__group_id__group_id %}
+        {% include "delete_from_controllers.html" with cancel_url="curriculum:curriculum_lesson_group_details" cancel_id=curriculum_lesson.curriculum_id__group_semester_id__group_id__group_id %}
         {% csrf_token %}
     </form>
 {% endblock %}

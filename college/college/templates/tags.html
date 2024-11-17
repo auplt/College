@@ -49,7 +49,7 @@
 		</div>
 	{% else %}
 		<div class="tt_lesson_classroom">
-		  <a class="tt_lesson_classroom_name" href="{% url 'account:classroom_details' day_inf.classroom_id %}{% if this_url %}?next={{this_url}}{% endif %}">
+		  <a class="tt_lesson_classroom_name" href="{% url 'timetable:classroom_details' day_inf.classroom_id %}{% if this_url %}?next={{this_url}}{% endif %}">
 		    {{day_inf.classroom_number}}
 		  </a>
 		</div>

@@ -68,7 +68,7 @@
 
         {% if perms.timetable.view_discipline %}
           {% static 'images/discipline.svg' as src_link %}
-          {% url 'account:discipline_list' as redirect_link %}
+          {% url 'curriculum:discipline_list' as redirect_link %}
           {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}
         {% endif %}
 
@@ -77,7 +77,7 @@
         {% include "navigation_item.html" with src_link=src_link nav_txt="Группы" redirect_link=redirect_link %}
 
         {% static 'images/classroom.svg' as src_link %}
-        {% url 'account:classroom_list' as redirect_link %}
+        {% url 'timetable:classroom_list' as redirect_link %}
         {% include "navigation_item.html" with src_link=src_link nav_txt="Аудитории" redirect_link=redirect_link %}
 
         {% static 'images/mark.svg' as src_link %}

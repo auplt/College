@@ -78,7 +78,7 @@ def classroom_register(request):
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError:
-                return redirect(reverse('account:classroom_list'))
+                return redirect(reverse('timetable:classroom_list'))
     else:
         classroom_form = ClassroomRegisterForm()
     context = {'classroom_form': classroom_form, 'action': 'C'}
@@ -107,7 +107,7 @@ def classroom_edit(request, classroom_id):
             resolve_match = resolve(request.GET.get('next'))
             return redirect(request.GET.get('next'))
         except Resolver404 or KeyError:
-            return redirect(reverse('account:classroom_details', kwargs={'classroom_id': classroom_id}))
+            return redirect(reverse('timetable:classroom_details', kwargs={'classroom_id': classroom_id}))
     context = {'classroom_form': classroom_form, 'action': 'U'}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')
@@ -135,16 +135,16 @@ def classroom_delete(request, classroom_id):
                     raise Http404
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError:
-                return redirect(reverse('account:classroom_list'))
+                return redirect(reverse('timetable:classroom_list'))
         except Http404:
-            return redirect(reverse('account:classroom_list'))
+            return redirect(reverse('timetable:classroom_list'))
         except ProtectedError:
             request.session["obj_status"] = 'error'
             try:
                 resolve_match = resolve(request.GET.get('next'))
                 return redirect(request.GET.get('next'))
             except Resolver404 or KeyError:
-                return redirect(reverse('account:classroom_details', kwargs={'classroom_id': classroom_id}))
+                return redirect(reverse('timetable:classroom_details', kwargs={'classroom_id': classroom_id}))
     context = {'classroom': classroom_obj}
     if 'next' in request.GET.keys():
         context['next_url'] = request.GET.get('next')

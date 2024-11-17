@@ -63,6 +63,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS = [
     'account.apps.AccountConfig',
+    'curriculum.apps.CurriculumConfig',
     'group.apps.GroupConfig',
     'timetable.apps.TimeTableConfig',
     'formset',

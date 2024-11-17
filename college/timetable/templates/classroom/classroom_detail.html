@@ -17,7 +17,7 @@
     {% endif %}
     {# Including page title #}
     {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url="account:classroom_list" page_title=classroom.number list_url="account:classroom_list" next_url=next_url %}
+    {% include "page_heading.html" with back_url="timetable:classroom_list" page_title=classroom.number list_url="timetable:classroom_list" next_url=next_url %}
     {% include "success_msg.html" %}
     <div class="details_description">
       {{classroom.description}}
@@ -41,7 +41,7 @@
     <div class="classroom_info_wrapper">
       <div class="classroom_info_detail">
         {# Include lesson timetable template #}
-        {% url 'account:classroom_details' classroom.classroom_id as day_url %}
+        {% url 'timetable:classroom_details' classroom.classroom_id as day_url %}
         {% create_tt_conf_dict entity="classroom_id" entity_id=classroom.classroom_id entity_name="Аудитория" as add_classroom %}
         {% add_to_list add_classroom as entities %}
         {% include "tt_lesson/tt_lesson_detail.html" with entities=entities day_url=day_url this_url=this_url %}

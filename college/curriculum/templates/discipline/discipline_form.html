@@ -11,15 +11,15 @@
   {% original_query_string next_url as next_url %}
   {% if action == 'C' %}
     {% with page_title='Добавление дисциплины' %}
-      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='curriculum:discipline_list' page_title=page_title list_url='curriculum:discipline_list' next_url=next_url %}
     {% endwith %}
   {% elif action == 'U' %}
     {% with page_title='Изменение дисциплины' %}
-      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='curriculum:discipline_list' page_title=page_title list_url='curriculum:discipline_list' next_url=next_url %}
     {% endwith %}
   {% else %}
     {% with page_title='Форма дисциплины' %}
-      {% include 'page_heading.html' with back_url='account:discipline_list' page_title=page_title list_url='account:discipline_list' next_url=next_url %}
+      {% include 'page_heading.html' with back_url='curriculum:discipline_list' page_title=page_title list_url='curriculum:discipline_list' next_url=next_url %}
     {% endwith %}
   {% endif %}
 

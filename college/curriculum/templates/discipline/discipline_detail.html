@@ -20,7 +20,7 @@
     {% endif %}
     {# Including page title #}
     {% original_query_string next_url as next_url %}
-    {% include "page_heading.html" with back_url="account:discipline_list" page_title=discipline.name list_url="account:discipline_list" next_url=next_url %}
+    {% include "page_heading.html" with back_url="curriculum:discipline_list" page_title=discipline.name list_url="curriculum:discipline_list" next_url=next_url %}
 
     {% include "success_msg.html" %}
     <div class="details_description">
@@ -48,7 +48,7 @@
           <h2 class="discipline_info_detail_title">Учебные группы</h2>
           {# Including add button #}
           {% if perms.timetable.add_curriculum %}
-            {% url 'account:curriculum_register' as add_url %}
+            {% url 'curriculum:curriculum_register' as add_url %}
             {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:this_url add_txt="Группа" %}
           {% endif %}
         </div>
@@ -71,19 +71,19 @@
                   <div class="discipline_groups_semester_ctrl">
                     {# Including add button #}
                     {% if perms.timetable.add_curriculum %}
-                      {% url 'account:curriculum_register' as add_url %}
+                      {% url 'curriculum:curriculum_register' as add_url %}
                       {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&semester_num="|add_str:group.group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Дисциплина" %}
                     {% endif %}
                   </div>
                 {% endif %}
                 {% if group.group_semester_id__group_id__name %}
-                  <a class="discipline_groups_name toggle_name {{is_hidden}}" href="{% url 'group:group_details' group.group_semester_id__group_id__group_id %}?next={% url 'account:discipline_details' discipline.discipline_id %}">
+                  <a class="discipline_groups_name toggle_name {{is_hidden}}" href="{% url 'group:group_details' group.group_semester_id__group_id__group_id %}?next={% url 'curriculum:discipline_details' discipline.discipline_id %}">
                     <span>{{group.group_semester_id__group_id__name}}</span>
                   </a>
                   <div class="discipline_groups_ctrl toggle_ctrl {{is_hidden}}">
                     {# Including control buttons delete #}
                     {% if perms.timetable.delete_curriculum %}
-                      {% url 'account:curriculum_delete' group.curriculum_id as del_link %}
+                      {% url 'curriculum:curriculum_delete' group.curriculum_id as del_link %}
                       {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
                     {% endif %}
                   </div>
@@ -99,7 +99,7 @@
           <h2 class="discipline_info_detail_title">Преподаватели</h2>
           {# Including add button #}
           {% if perms.timetable.add_curriculum_lesson %}
-            {% url 'account:curriculum_lesson_register' as add_url %}
+            {% url 'curriculum:curriculum_lesson_register' as add_url %}
             {% include "add_button.html" with add_link=add_url|add_str:"?discipline_id="|add_str:discipline.discipline_id|add_str:"&next="|add_str:this_url add_txt="Преподаватель" %}
           {% endif %}
         </div>
@@ -114,7 +114,7 @@
 	              <div class="delete_controller_wrapper">
 		              {% if perms.timetable.delete_curriculumlesson %}
 	                  {% comment %}
-	                    {% url 'account:curriculum_lesson_delete' tutor.curriculum_lesson_id as del_link %}
+	                    {% url 'curriculum:curriculum_lesson_delete' tutor.curriculum_lesson_id as del_link %}
 	                  {% endcomment %}
 	                  {% url 'account:user_details' tutor.tutor_id__user_id__id as del_link %}
 	                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
