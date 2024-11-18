@@ -302,6 +302,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
     """
     is_week = False
     week_delta = None
+    student_group_id = None
     tt_lesson_objs = []
     selected_tt_lesson_objs = []
     try:
@@ -387,6 +388,15 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
 
         # Case for users (tutors & students)
         elif user_id is not None:
+            student_group_id = (GroupMember.objects
+                                .select_related('student_id__user_id__id',
+                                                'group_semester_id')
+                                .values('group_semester_id__group_id')
+                                .order_by('-group_semester_id__semester_num')
+                                .first())
+            if student_group_id:
+                student_group_id = student_group_id['group_semester_id__group_id']
+
             # Searching for tt_lesson's identifiers (day_name, week_type, lesson_time_id) related to tutor
             # to get whole info about all groups, tutors, etc. involved in the lesson
             tt_lesson_tutor = \
@@ -485,11 +495,17 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
         for tt_lesson_obj in tt_lesson_objs:
             if group_id:
                 for les_inf in tt_lesson_obj['lesson_info']:
-                    if str(les_inf['group']['group_id']) == group_id:
+                    if str(les_inf['group']['group_id']) == str(group_id):
+                        selected_tt_lesson_objs.append(tt_lesson_obj)
+                        break
+            if user_id:
+                for les_inf in tt_lesson_obj['lesson_info']:
+                    if (str(les_inf['tutor']['id']) == str(user_id) or
+                            str(les_inf['group']['group_id']) == str(student_group_id)):
                         selected_tt_lesson_objs.append(tt_lesson_obj)
                         break
 
-        if classroom_id or user_id:
+        if classroom_id:
             selected_tt_lesson_objs.extend(copy.deepcopy(tt_lesson_objs))
 
     # Grouping list of tt_lesson_objects by days
