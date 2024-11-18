@@ -106,6 +106,7 @@ def user_details(request, id):
                 'group_semester_id__semester_num',
                 'group_semester_id__group_id__group_id') \
         .filter(student_id__user_id__id=id) \
+        .order_by('-group_semester_id__semester_num') \
         .all()
 
     disciplines = CurriculumLesson.objects.select_related('tutor_id__user_id',
@@ -115,6 +116,7 @@ def user_details(request, id):
         'curriculum_id__discipline_id__name',
         'curriculum_id__discipline_id__discipline_id') \
         .filter(tutor_id__user_id__id=id) \
+        .order_by('curriculum_id__discipline_id__name') \
         .distinct() \
         .all()
     # print(groups.query)
