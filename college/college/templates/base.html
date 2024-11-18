@@ -66,7 +66,7 @@
         {% url 'user:user_list' as redirect_link %}
         {% include "navigation_item.html" with src_link=src_link nav_txt="Пользователи" redirect_link=redirect_link %}
 
-        {% if perms.timetable.view_discipline %}
+        {% if perms.curriculum.view_discipline %}
           {% static 'images/discipline.svg' as src_link %}
           {% url 'curriculum:discipline_list' as redirect_link %}
           {% include "navigation_item.html" with src_link=src_link nav_txt="Предметы" redirect_link=redirect_link %}

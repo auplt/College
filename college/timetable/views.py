@@ -15,7 +15,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from psycopg2.errors import UniqueViolation
 
 from .forms import TTLessonRegisterForm, LessonTimeRegisterForm, ClassroomRegisterForm
-from .models import Classroom, GroupMember, CurriculumLesson, TypesOfLesson, TTLesson, LessonTime
+
+from group.models import GroupMember
+from curriculum.models import CurriculumLesson, TypesOfLesson
+from .models import Classroom, TTLesson, LessonTime
 
 
 # CLASSROOM BLOCK

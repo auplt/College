@@ -27,17 +27,17 @@
     <div class="details_description">
       Текущий семестр: {{max_semester}}
     </div>
-    {% if perms.timetable.add_groupsemester or perms.timetable.add_curriculum %}
+    {% if perms.group.add_groupsemester or perms.curriculum.add_curriculum %}
       <div class="details_controllers">
         {# Including add button #}
-        {% if perms.timetable.add_groupsemester %}
+        {% if perms.group.add_groupsemester %}
           {% url 'group:group_semester_register' as add_url %}
           {% include "add_button__blue.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Семестр" %}
         {% endif %}
 
         {% if group_lessons %}
           {# Including add button #}
-          {% if perms.timetable.add_curriculum %}
+          {% if perms.curriculum.add_curriculum %}
             {% url 'curriculum:curriculum_register' as add_url %}
             {% include "add_button__blue.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
           {% endif %}
@@ -65,14 +65,14 @@
                       </div>
                       <div class="item_semester_number_info__ctrl">
                         {# Including add button #}
-                        {% if perms.timetable.add_curriculum %}
+                        {% if perms.curriculum.add_curriculum %}
                           {% url 'curriculum:curriculum_register' as add_url %}
                           {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_lesson.curriculum_id__group_semester_id__semester_num|add_str:"&next="|add_str:this_url add_txt="Занятие" %}
                         {% endif %}
                       </div>
                     </div>
                     {# Including control buttons delete #}
-                    {% if perms.timetable.delete_groupsemester %}
+                    {% if perms.group.delete_groupsemester %}
                       {% update_variable None as edit_link %}
                       {% url 'group:group_semester_delete' as del_link %}
                       {% include "buttons_controllers.html" with del_link=del_link|add_str:"?group_id="|add_str:group.group_id|add_str:"&semester_num="|add_str:group_lesson.curriculum_id__group_semester_id__semester_num|add_str:"&next="|add_str:this_url %}
@@ -87,13 +87,13 @@
                         {{group_lesson.curriculum_id__discipline_id__name}}
                       </a>
                       {# Including add button #}
-                      {% if perms.timetable.add_curriculumlesson %}
+                      {% if perms.curriculum.add_curriculumlesson %}
                         {% url 'curriculum:curriculum_lesson_register' as add_url %}
                         {% include "add_button.html" with add_link=add_url|add_str:"?group_id="|add_str:group.group_id|add_str:"&group_semester_id="|add_str:group_lesson.curriculum_id__group_semester_id__group_semester_id|add_str:"&discipline_id="|add_str:group_lesson.curriculum_id__discipline_id__discipline_id|add_str:"&next="|add_str:this_url add_txt="Преподаватель" %}
                       {% endif %}
 
                       {# Including control buttons delete #}
-                      {% if perms.timetable.delete_curriculum %}
+                      {% if perms.curriculum.delete_curriculum %}
                         {% update_variable None as edit_link %}
                         {% url 'curriculum:curriculum_delete_params' as del_link %}
                         {% include "buttons_controllers.html" with del_link=del_link|add_str:"?discipline_id="|add_str:group_lesson.curriculum_id__discipline_id__discipline_id|add_str:"&group_semester_id="|add_str:group_lesson.curriculum_id__group_semester_id__group_semester_id|add_str:"&next="|add_str:this_url %}
@@ -124,7 +124,7 @@
                       </a>
                     </div>
                     {# Including control buttons edit and delete #}
-                    {% if perms.timetable.change_curriculumlesson and perms.timetable.delete_curriculumlesson %}
+                    {% if perms.curriculum.change_curriculumlesson and perms.curriculum.delete_curriculumlesson %}
                       {% url 'curriculum:curriculum_lesson_edit' group_lesson.curriculum_lesson_id as edit_link %}
                       {% url 'curriculum:curriculum_lesson_delete' group_lesson.curriculum_lesson_id as del_link %}
                       {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}

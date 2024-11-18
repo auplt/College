@@ -23,7 +23,7 @@
       {% original_query_string next_url as next_url %}
       {% include "page_heading.html" with back_url="user:user_list" page_title="Список пользователей" next_url=next_url %}
       {# Including add button #}
-      {% if perms.timetable.add_customuser %}
+      {% if perms.user.add_customuser %}
         {% url 'user:user_register' as add_url %}
         {% include "add_button.html" with add_link=add_url|add_str:"?next="|add_str:this_url add_txt="Пользователь" %}
       {% endif %}
@@ -41,12 +41,12 @@
             </a>
           </div>
           {# Including control buttons edit and delete #}
-          {% if perms.timetable.change_customuser or perms.timetable.delete_customuser %}
+          {% if perms.user.change_customuser and request.user.is_superuser or perms.user.delete_customuser and request.user.is_superuser %}
             {% with edit_link=None del_link=None %}
-              {% if perms.timetable.change_customuser %}
+              {% if perms.user.change_customuser %}
                 {% update_variable user.get_edit_url as edit_link %}
               {% endif %}
-              {% if perms.timetable.delete_customuser %}
+              {% if perms.user.delete_customuser %}
                 {% update_variable user.get_delete_url as del_link %}
               {% endif %}
               {% include "buttons_controllers.html" with edit_link=edit_link next_edit_link=this_url del_link=del_link next_del_link=this_url %}

@@ -59,15 +59,15 @@
 		  {% endif %}
 	  </div>
 
-		{% if perms.timetable.change_customuser and request.user.is_superuser or perms.timetable.delete_customuser and request.user.is_superuser or request.user.id == user.id %}
+		{% if perms.user.change_customuser and request.user.is_superuser or perms.user.delete_customuser and request.user.is_superuser or request.user.id == user.id %}
 		  <div class="details_controllers">
-				{% if perms.timetable.delete_customuser and request.user.is_superuser %}
+				{% if perms.user.delete_customuser and request.user.is_superuser %}
 			    <a class="controller_button details_controller_button__delete"
 			       href="{{ user.get_delete_url }}{% if this_url %}?next={{this_url}}{% endif %}">
 			      Удалить
 			    </a>
 			  {% endif %}
-			  {% if perms.timetable.change_customuser and request.user.is_superuser %}
+			  {% if perms.user.change_customuser and request.user.is_superuser %}
 			    <a class="controller_button details_controller_button__edit"
 			       href="{{ user.get_edit_url }}{% if this_url %}?next={{this_url}}{% endif %}">
 			      Редактировать
@@ -93,7 +93,7 @@
 	        <div class="user_info_detail_heading">
 	          <h2 class="user_info_detail_title">Учебные группы</h2>
 	          {# Including add button #}
-		        {% if perms.timetable.add_groupmember %}
+		        {% if perms.group.add_groupmember %}
 	          {% url 'group:group_member_register' as add_url %}
 	          {% include "add_button.html" with add_link=add_url|add_str:"?student_id="|add_str:student.student_id|add_str:"&next="|add_str:this_url add_txt="Группа" %}
 		        {% endif %}
@@ -108,7 +108,7 @@
 	                </a>
 		              <div class="delete_controller_wrapper">
 	                  {# Including control buttons delete #}
-		                {% if perms.timetable.delete_groupmember %}
+		                {% if perms.group.delete_groupmember %}
 		                  {% url 'group:group_member_delete' group.group_member_id as del_link %}
 		                  {% include "buttons_controllers.html" with del_link=del_link next_del_link=this_url %}
 		                {% endif %}
@@ -124,7 +124,7 @@
 	        <div class="user_info_detail_heading">
 	          <h2 class="user_info_detail_title">Преподаваемые дисциплины</h2>
 	          {# Including add button #}
-		        {% if perms.timetable.add_curriculumlesson %}
+		        {% if perms.curriculum.add_curriculumlesson %}
 		          {% url 'curriculum:curriculum_lesson_register' as add_url %}
 		          {% include "add_button.html" with add_link=add_url|add_str:"?tutor_id="|add_str:tutor.tutor_id|add_str:"&next="|add_str:this_url add_txt="Дисциплина" %}
 	          {% endif %}
@@ -138,7 +138,7 @@
 	                </a>
 	                {# Including control buttons delete #}
 		              <div class="delete_controller_wrapper">
-			              {% if perms.timetable.delete_curriculum_lesson %}
+			              {% if perms.curriculum.delete_curriculum_lesson %}
 		                  {% comment %}
 		                    {% url 'curriculum:curriculum_lesson_delete' discipline.curriculum_lesson_id as del_link %}
 		                  {% endcomment %}

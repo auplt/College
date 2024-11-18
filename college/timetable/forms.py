@@ -3,7 +3,9 @@ Forms for timetable app.
 """
 
 from django import forms
-from .models import Classroom, LessonTime, CurriculumLesson, TTLesson
+
+from curriculum.models import CurriculumLesson
+from .models import Classroom, LessonTime, TTLesson
 
 
 # CLASSROOM FORMS

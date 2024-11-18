@@ -10,19 +10,21 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from django.apps import apps
 
+from .models import CustomUser, Tutor, Student
+from group.models import GroupMember
+from curriculum.models import CurriculumLesson
 from .forms import UserRegistrationForm, UserEditForm, StudentAdditionalForm, TutorAdditionalForm
 from timetable.views import tt_lesson_details
 
-Tutor = apps.get_model('timetable', 'Tutor')
-Student = apps.get_model('timetable', 'Student')
-CustomUser = apps.get_model('timetable', 'CustomUser')
-GroupMember = apps.get_model('timetable', 'GroupMember')
-CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
 
 @login_required
 def home(request):
+    """
+    View that redirects to home page.
+    :param request: user's request
+    :return: HTTP response HTML page with home page
+    """
     if 'next' in request.GET.keys():
         try:
             next_url = request.GET.get('next')
@@ -135,7 +137,7 @@ def user_details(request, id):
     return render(request, 'user/user_details.html', context=context)
 
 
-@permission_required('timetable.add_customuser', raise_exception=True)
+@permission_required('user.add_customuser', raise_exception=True)
 @transaction.atomic
 def user_register(request):
     """
@@ -211,7 +213,7 @@ def user_register(request):
     return render(request, 'user/user_register.html', context=context)
 
 
-@permission_required('timetable.change_customuser', raise_exception=True)
+@permission_required('user.change_customuser', raise_exception=True)
 @transaction.atomic
 def user_edit(request, id):
     print(request.user.get_all_permissions())
@@ -328,7 +330,7 @@ def user_edit(request, id):
     return render(request, 'user/user_edit.html', context=context)
 
 
-@permission_required('timetable.delete_customuser', raise_exception=True)
+@permission_required('user.delete_customuser', raise_exception=True)
 def user_delete(request, id):
     """
     View for deleting user information.
@@ -373,7 +375,7 @@ def user_delete(request, id):
     return render(request, 'user/user_delete.html', context=context)
 
 
-@permission_required('timetable.delete_tutor', raise_exception=True)
+@permission_required('user.delete_tutor', raise_exception=True)
 def user_delete_tutor(request, id):
     """
     View for deleting tutor information.
@@ -407,7 +409,7 @@ def user_delete_tutor(request, id):
     return render(request, 'user/tutor_delete.html', context=context)
 
 
-@permission_required('timetable.delete_student', raise_exception=True)
+@permission_required('user.delete_student', raise_exception=True)
 def user_delete_student(request, id):
     """
     View for deleting student information.

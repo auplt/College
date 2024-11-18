@@ -9,18 +9,12 @@ from django.db.models import Max, ProtectedError, Subquery, OuterRef
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models.functions import Coalesce
-from django.apps import apps
 
+from user.models import Student
+from .models import Group, GroupMember, GroupSemester
+from curriculum.models import CurriculumLesson, TypesOfLesson
 from .forms import GroupRegisterForm, GroupMemberRegisterForm, GroupSemesterRegisterForm
-from timetable.models import TypesOfLesson
 from timetable.views import tt_lesson_details
-
-
-GroupSemester = apps.get_model('timetable', 'GroupSemester')
-Student = apps.get_model('timetable', 'Student')
-GroupMember = apps.get_model('timetable', 'GroupMember')
-CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
-Group = apps.get_model('timetable', 'Group')
 
 
 # GROUP BLOCK
@@ -88,7 +82,7 @@ def group_details(request, group_id):
     group_members_obj.query.alias_map['group_members'].join_type = "FULL OUTER JOIN"
     group_members_obj.query.alias_map['group_semesters'].join_type = "FULL OUTER JOIN"
     group_members_obj.query.alias_map['students'].join_type = "LEFT OUTER JOIN"
-    group_members_obj.query.alias_map['timetable_customuser'].join_type = "LEFT OUTER JOIN"
+    group_members_obj.query.alias_map['user_customuser'].join_type = "LEFT OUTER JOIN"
 
     print(group_members_obj)
     print(group_members_obj.query)
@@ -135,7 +129,7 @@ def group_details(request, group_id):
     group_lessons_obj.query.alias_map['disciplines'].join_type = "FULL OUTER JOIN"
     group_lessons_obj.query.alias_map['group_semesters'].join_type = "FULL OUTER JOIN"
     group_lessons_obj.query.alias_map['tutors'].join_type = "FULL OUTER JOIN"
-    group_lessons_obj.query.alias_map['timetable_customuser'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['user_customuser'].join_type = "FULL OUTER JOIN"
 
     print(group_lessons_obj.query)
     print(group_lessons_obj)
@@ -169,7 +163,7 @@ def group_details(request, group_id):
     return render(request, 'group/group_details.html', context=context)
 
 
-@permission_required('timetable.add_group', raise_exception=True)
+@permission_required('group.add_group', raise_exception=True)
 @transaction.atomic
 def group_register(request):
     """
@@ -202,7 +196,7 @@ def group_register(request):
     return render(request, 'group/group_form.html', context=context)
 
 
-@permission_required('timetable.change_group', raise_exception=True)
+@permission_required('group.change_group', raise_exception=True)
 def group_edit(request, group_id):
     """
     View for editing group information.
@@ -229,7 +223,7 @@ def group_edit(request, group_id):
     return render(request, 'group/group_form.html', context=context)
 
 
-@permission_required('timetable.delete_group', raise_exception=True)
+@permission_required('group.delete_group', raise_exception=True)
 def group_delete(request, group_id):
     """
     View for deleting group information.
@@ -283,7 +277,7 @@ def load_max_semester(request):
         return JsonResponse(max_sem_num)
 
 
-@permission_required('timetable.add_groupsemester', raise_exception=True)
+@permission_required('group.add_groupsemester', raise_exception=True)
 def group_semester_register(request):
     """
     View for group semester registration.
@@ -319,7 +313,7 @@ def group_semester_register(request):
     return render(request, 'group_semester/group_semester_register.html', context)
 
 
-@permission_required('timetable.delete_groupsemester', raise_exception=True)
+@permission_required('group.delete_groupsemester', raise_exception=True)
 def group_semester_delete(request):
     """
     View for deleting group semester information.
@@ -364,7 +358,7 @@ def group_semester_delete(request):
 # GROUP MEMBER BLOCK
 
 
-@permission_required('timetable.add_groupmember', raise_exception=True)
+@permission_required('group.add_groupmember', raise_exception=True)
 def group_member_register(request):
     """
     View for group member registration.
@@ -412,7 +406,7 @@ def group_member_register(request):
     return render(request, 'group_member/group_member_register.html', context=context)
 
 
-@permission_required('timetable.delete_groupmember', raise_exception=True)
+@permission_required('group.delete_groupmember', raise_exception=True)
 def group_member_delete(request, group_member_id):
     """
     View for deleting group member information.

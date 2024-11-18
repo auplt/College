@@ -21,7 +21,7 @@
       <div class="user_main_form">
         {{ user_form.as_div }}
       </div>
-      {% if perms.timetable.change_student %}
+      {% if perms.user.change_student %}
 		    <div class="register_user__student">
 	        <div class="register_form_checkbox">
 	          {{user_form.is_student.label_tag}}
@@ -34,7 +34,7 @@
 	            {{ student_form.as_div }}
 	            {% if student %}
 	              {# Including control buttons delete #}
-	              {% if perms.timetable.delete_student %}
+	              {% if perms.user.delete_student %}
 	                {% url 'user:user_edit' user.id as next_url %}
 	                {% url 'user:user_delete_student' user.id as del_url %}
 	                {% include "buttons_controllers.html" with del_link=del_url next_del_link=next_url %}
@@ -44,7 +44,7 @@
 	        </div>
 	      </div>
 	    {% endif %}
-	    {% if perms.timetable.change_tutor %}
+	    {% if perms.user.change_tutor %}
 	      <div class="register_user__tutor">
 	        <div class="register_form_checkbox">
 	          {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}
@@ -57,7 +57,7 @@
 	            {{ tutor_form.as_div }}
 	            {% if tutor %}
 	              {# Including control buttons delete #}
-	              {% if perms.timetable.delete_tutor %}
+	              {% if perms.user.delete_tutor %}
 	                {% url 'user:user_edit' user.id as next_url %}
 	                {% url 'user:user_delete_tutor' user.id as del_url %}
 

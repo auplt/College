@@ -3,13 +3,9 @@ Forms for group app.
 """
 
 from django import forms
-from django.apps import apps
 
-
-GroupSemester = apps.get_model('timetable', 'GroupSemester')
-Student = apps.get_model('timetable', 'Student')
-GroupMember = apps.get_model('timetable', 'GroupMember')
-Group = apps.get_model('timetable', 'Group')
+from user.models import Student
+from .models import Group, GroupMember, GroupSemester
 
 
 # GROUP FORMS

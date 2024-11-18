@@ -4,15 +4,10 @@ Forms for curriculum app.
 
 from django import forms
 from django.forms.utils import ErrorDict
-from django.apps import apps
 
-from timetable.models import TypesOfLesson
-
-GroupSemester = apps.get_model('timetable', 'GroupSemester')
-Curriculum = apps.get_model('timetable', 'Curriculum')
-Discipline = apps.get_model('timetable', 'Discipline')
-Tutor = apps.get_model('timetable', 'Tutor')
-CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
+from user.models import Tutor
+from group.models import GroupSemester
+from .models import Discipline, Curriculum, CurriculumLesson, TypesOfLesson
 
 
 # DISCIPLINE FORMS

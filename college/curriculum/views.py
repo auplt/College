@@ -9,22 +9,17 @@ from django.db import transaction
 from django.db.models import ProtectedError
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from django.apps import apps
 
 from .forms import DisciplineRegisterForm, CurriculumRegisterForm, CurriculumLessonRegisterForm
-from timetable.models import TypesOfLesson
 
-GroupSemester = apps.get_model('timetable', 'GroupSemester')
-Curriculum = apps.get_model('timetable', 'Curriculum')
-Discipline = apps.get_model('timetable', 'Discipline')
-Tutor = apps.get_model('timetable', 'Tutor')
-CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
-Group = apps.get_model('timetable', 'Group')
+from user.models import Tutor
+from group.models import Group, GroupSemester
+from .models import Discipline, Curriculum, CurriculumLesson, TypesOfLesson
 
 
 # DISCIPLINE BLOCK
 
-@permission_required('timetable.view_discipline', raise_exception=True)
+@permission_required('curriculum.view_discipline', raise_exception=True)
 def discipline_list(request):
     """
     View for list of disciplines.
@@ -51,7 +46,7 @@ def discipline_list(request):
     return render(request, 'discipline/discipline_list.html', context=context)
 
 
-@permission_required('timetable.view_discipline', raise_exception=True)
+@permission_required('curriculum.view_discipline', raise_exception=True)
 def discipline_details(request, discipline_id):
     """
     View for discipline details.
@@ -101,7 +96,7 @@ def discipline_details(request, discipline_id):
     return render(request, 'discipline/discipline_details.html', context=context)
 
 
-@permission_required('timetable.register_discipline', raise_exception=True)
+@permission_required('curriculum.register_discipline', raise_exception=True)
 def discipline_register(request):
     """
     View for discipline registration.
@@ -130,7 +125,7 @@ def discipline_register(request):
     return render(request, 'discipline/discipline_form.html', context=context)
 
 
-@permission_required('timetable.change_discipline', raise_exception=True)
+@permission_required('curriculum.change_discipline', raise_exception=True)
 def discipline_edit(request, discipline_id):
     """
     View for editing discipline information.
@@ -157,7 +152,7 @@ def discipline_edit(request, discipline_id):
     return render(request, 'discipline/discipline_form.html', context=context)
 
 
-@permission_required('timetable.delete_discipline', raise_exception=True)
+@permission_required('curriculum.delete_discipline', raise_exception=True)
 def discipline_delete(request, discipline_id):
     """
     View for deleting discipline information.
@@ -196,7 +191,7 @@ def discipline_delete(request, discipline_id):
 
 # CURRICULUM BLOCK
 
-@permission_required('timetable.add_curriculum', raise_exception=True)
+@permission_required('curriculum.add_curriculum', raise_exception=True)
 @transaction.atomic
 def curriculum_register(request):
     """
@@ -273,7 +268,7 @@ def curriculum_register(request):
     return render(request, 'curriculum/curriculum_from.html', context)
 
 
-@permission_required('timetable.delete_curriculum', raise_exception=True)
+@permission_required('curriculum.delete_curriculum', raise_exception=True)
 def curriculum_delete(request, curriculum_id=None):
     """
     View for deleting curriculum information.
@@ -341,7 +336,7 @@ def curriculum_delete(request, curriculum_id=None):
 
 # CURRICULUM LESSON BLOCK
 
-@permission_required('timetable.view_curriculumlesson', raise_exception=True)
+@permission_required('curriculum.view_curriculumlesson', raise_exception=True)
 def curriculum_lesson_group_details(request, group_id):
     # print(request.user.get_all_permissions())
     # print("000001")
@@ -386,9 +381,12 @@ def curriculum_lesson_group_details(request, group_id):
     group_lessons_obj.query.alias_map['disciplines'].join_type = "FULL OUTER JOIN"
     group_lessons_obj.query.alias_map['group_semesters'].join_type = "FULL OUTER JOIN"
     group_lessons_obj.query.alias_map['tutors'].join_type = "FULL OUTER JOIN"
-    group_lessons_obj.query.alias_map['timetable_customuser'].join_type = "FULL OUTER JOIN"
+    group_lessons_obj.query.alias_map['user_customuser'].join_type = "FULL OUTER JOIN"
 
-    max_semester = max([gm.get('curriculum_id__group_semester_id__semester_num') for gm in group_lessons_obj])
+    if group_lessons_obj:
+        max_semester = max([gm.get('curriculum_id__group_semester_id__semester_num') for gm in group_lessons_obj])
+    else:
+        max_semester = 0
 
     print(group_lessons_obj.query)
     print(group_lessons_obj)
@@ -410,7 +408,7 @@ def curriculum_lesson_group_details(request, group_id):
     return render(request, 'curriculum_lesson/curriculum_lesson_group_details.html', context=context)
 
 
-@permission_required('timetable.add_curriculumlesson', raise_exception=True)
+@permission_required('curriculum.add_curriculumlesson', raise_exception=True)
 def curriculum_lesson_register(request):
     """
     View for curriculum lesson registration.
@@ -470,7 +468,7 @@ def curriculum_lesson_register(request):
     return render(request, 'curriculum_lesson/curriculum_lesson_form.html', context=context)
 
 
-@permission_required('timetable.change_curriculumlesson', raise_exception=True)
+@permission_required('curriculum.change_curriculumlesson', raise_exception=True)
 def curriculum_lesson_edit(request, curriculum_lesson_id):
     """
     View for editing curriculum lesson information.
@@ -501,7 +499,7 @@ def curriculum_lesson_edit(request, curriculum_lesson_id):
     return render(request, 'curriculum_lesson/curriculum_lesson_form.html', context=context)
 
 
-@permission_required('timetable.delete_curriculumlesson', raise_exception=True)
+@permission_required('curriculum.delete_curriculumlesson', raise_exception=True)
 def curriculum_lesson_delete(request, curriculum_lesson_id):
     """
     View for deleting curriculum lesson information.

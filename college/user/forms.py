@@ -6,24 +6,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, PasswordChangeForm
 from django.utils.translation import gettext_lazy as _
-from django.apps import apps
 
-# from timetable.models import Student, Tutor, Group, Discipline, Classroom, LessonTime, GroupSemester, GroupMember, \
-#     Curriculum, CurriculumLesson, TypesOfLesson, TTLesson
-
-# GroupSemester = apps.get_model('timetable', 'GroupSemester')
-# Curriculum = apps.get_model('timetable', 'Curriculum')
-# Discipline = apps.get_model('timetable', 'Discipline')
-Tutor = apps.get_model('timetable', 'Tutor')
-# LessonTime = apps.get_model('timetable', 'LessonTime')
-# Classroom = apps.get_model('timetable', 'Classroom')
-Student = apps.get_model('timetable', 'Student')
-# CustomUser = apps.get_model('timetable', 'CustomUser')
-# GroupMember = apps.get_model('timetable', 'GroupMember')
-# CurriculumLesson = apps.get_model('timetable', 'CurriculumLesson')
-# Group = apps.get_model('timetable', 'Group')
-# TTLesson = apps.get_model('timetable', 'TTLesson')
-
+from .models import Tutor, Student
 
 
 User = get_user_model()

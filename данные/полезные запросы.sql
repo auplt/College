@@ -7,14 +7,14 @@ from tt_lessons tl
 	inner join curriculums c on cl.curriculum_id = c.curriculum_id 
 	inner join disciplines d on c.discipline_id = d.discipline_id 
 	inner join tutors t on cl.tutor_id = t.tutor_id 
-	inner join timetable_customuser tc on t.user_id = tc.id 
+	inner join user_customuser tc on t.user_id = tc.id
 where date between '02.12.2024' and '13.12.2024'
 order by c.group_semester_id, tl."date" ;
 
 
 -- СПИСОК СТУДЕНТОВ В ГРУППЕ В АЛФАВИТНОМ ПОРЯДКЕ
 select s.student_id, tc.last_name, tc.first_name, tc.second_name, gm.group_semester_id 
-from timetable_customuser tc 
+from user_customuser tc
 	inner join students s on s.user_id = tc.id
 	left join group_members gm on gm.student_id = s.student_id
 where gm.group_semester_id = 3

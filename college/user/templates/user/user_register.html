@@ -30,7 +30,7 @@
         </div>
       {% endfor %}
     </div>
-    {% if perms.timetable.add_student %}
+    {% if perms.user.add_student %}
       <div class="register_user__student">
         <div class="register_form_checkbox">
           {{user_form.is_student.label_tag}} {{user_form.is_student}}
@@ -41,7 +41,7 @@
         </div>
       </div>
     {% endif %}
-    {% if perms.timetable.add_tutor %}
+    {% if perms.user.add_tutor %}
       <div class="register_user__tutor">
         <div class="register_form_checkbox">
           {{user_form.is_tutor.label_tag}} {{user_form.is_tutor}}

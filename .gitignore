@@ -160,11 +160,8 @@ cython_debug/
 .idea/
 
 # Migration files
-college/timetable/migrations/*
+#college/timetable/migrations/*
 
 # Pylint
 college/.pylintrc
 college/.pylintrc1
-
-# JQuery code
-college/account/static/jquery-ui-1.13.3
