@@ -302,7 +302,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
     """
     is_week = False
     week_delta = None
-    student_group_id = None
+    student_group_id, student_group_semester_id = None, None
     tt_lesson_objs = []
     selected_tt_lesson_objs = []
     try:
@@ -388,15 +388,17 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
 
         # Case for users (tutors & students)
         elif user_id is not None:
-            student_group_id = (GroupMember.objects
-                                .select_related('student_id__user_id__id',
-                                                'group_semester_id')
-                                .values('group_semester_id__group_id')
-                                .order_by('-group_semester_id__semester_num')
-                                .first())
-            if student_group_id:
-                student_group_id = student_group_id['group_semester_id__group_id']
-
+            student_group_obj = (GroupMember.objects
+                                 .select_related('student_id__user_id__id',
+                                                 'group_semester_id')
+                                 .filter(student_id__user_id__id=user_id)
+                                 .values('group_semester_id__group_id', 'group_semester_id')
+                                 .order_by('-group_semester_id__semester_num')
+                                 .first())
+            if student_group_obj:
+                student_group_id = student_group_obj['group_semester_id__group_id']
+                student_group_semester_id = student_group_obj['group_semester_id']
+            print(user_id, student_group_id, student_group_semester_id)
             # Searching for tt_lesson's identifiers (day_name, week_type, lesson_time_id) related to tutor
             # to get whole info about all groups, tutors, etc. involved in the lesson
             tt_lesson_tutor = \
@@ -412,10 +414,12 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                 (TTLesson.objects
                  .select_related('curriculum_lesson_id__curriculum_id')
                  .filter(date=dt,
-                         curriculum_lesson_id__curriculum_id__group_semester_id__in=group_semester_ids)
+                         curriculum_lesson_id__curriculum_id__group_semester_id=student_group_semester_id)
                  .values('day_name', 'week_type', 'curriculum_lesson_id', 'lesson_time_id'))
 
+            print(tt_lesson_student.query)
             tt_lesson_ids = tt_lesson_tutor.union(tt_lesson_student)
+            print(tt_lesson_ids)
             day_name_list = [tt_lesson_id['day_name'] for tt_lesson_id in tt_lesson_ids]
             week_type_list = [tt_lesson_id['week_type'] for tt_lesson_id in tt_lesson_ids]
             lesson_time_id_list = [tt_lesson_id['lesson_time_id'] for tt_lesson_id in tt_lesson_ids]
@@ -439,6 +443,7 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
                              ))
         else:
             raise Http404
+        print(obj)
 
         # Grouping tt_lesson_objects by curriculum_lesson
         tt_lesson_obj = [
@@ -488,6 +493,9 @@ def tt_lesson_details(request, user_id=None, classroom_id=None, group_id=None):
         ]
 
         tt_lesson_objs.extend(tt_lesson_obj)
+
+        print("^^^^^")
+        print(tt_lesson_objs)
 
         selected_tt_lesson_objs = []
 
