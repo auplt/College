@@ -9,14 +9,17 @@ ALTER SEQUENCE auth_group_id_seq RESTART WITH 1;
 
 
 -- Группы прав
+
 INSERT INTO public.auth_group (name) VALUES
 	('students_perm'),
 	('tutor_perm'),
 	('super_perm'),
-	('anon_perm');
+	('anon_perm')
+;
 	 
 	
 -- Разрешения для групп
+
 INSERT INTO public.auth_group_permissions (group_id,permission_id) VALUES
 	 (4,40),
 	 (4,72),
@@ -145,10 +148,12 @@ INSERT INTO public.auth_group_permissions (group_id,permission_id) VALUES
 	 (1,24),
 	 (1,56),
 	 (1,28),
-	 (1,2);
+	 (1,2)
+;
 
 	
 -- Распределение пользователей по группам
+	
 INSERT INTO public.user_customuser_groups (customuser_id,group_id) VALUES
 	 (2,2),
 	 (3,2),
@@ -186,4 +191,5 @@ INSERT INTO public.user_customuser_groups (customuser_id,group_id) VALUES
 	 (35,1),
 	 (36,1),
 	 (37,3),
-	 (38,3);
+	 (38,3)
+;
