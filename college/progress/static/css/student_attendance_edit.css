@@ -1,0 +1,25 @@
+/* CSS file for lesson timetable template */
+
+.sa_content {
+  
+}
+
+.sa_content .list_ctrl_trash_img,
+.sa_content .list_ctrl_edit_img {
+  width: 16px;
+  height: 16px;
+}
+
+.sa_content__no_lessons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
+
+  color: var(--primary-text-color);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 1px;
+  text-align: left;
+}

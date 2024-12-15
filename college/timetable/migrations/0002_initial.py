@@ -15,21 +15,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='finalgrade',
-            name='student_id',
-            field=models.ForeignKey(db_column='student_id', on_delete=django.db.models.deletion.PROTECT, to='user.student'),
-        ),
-        migrations.AddField(
-            model_name='grade',
-            name='coefficient_id',
-            field=models.ForeignKey(db_column='coefficient_id', on_delete=django.db.models.deletion.PROTECT, to='timetable.coefficient'),
-        ),
-        migrations.AddField(
-            model_name='homework',
-            name='student_id',
-            field=models.ForeignKey(db_column='student_id', on_delete=django.db.models.deletion.PROTECT, to='user.student'),
-        ),
         migrations.AddConstraint(
             model_name='lessontime',
             constraint=models.CheckConstraint(check=models.Q(('end_time__gt', models.F('start_time'))), name='check_start_time'),
@@ -37,21 +22,6 @@ class Migration(migrations.Migration):
         migrations.AddConstraint(
             model_name='lessontime',
             constraint=models.UniqueConstraint(fields=('start_time', 'end_time'), name='lesson_time_start_time_end_time_unique'),
-        ),
-        migrations.AddField(
-            model_name='studentattendance',
-            name='student_id',
-            field=models.ForeignKey(db_column='student_id', on_delete=django.db.models.deletion.PROTECT, to='user.student'),
-        ),
-        migrations.AddField(
-            model_name='studentprogress',
-            name='grade_id',
-            field=models.ForeignKey(db_column='grade_id', on_delete=django.db.models.deletion.PROTECT, to='timetable.grade'),
-        ),
-        migrations.AddField(
-            model_name='studentprogress',
-            name='student_id',
-            field=models.ForeignKey(db_column='student_id', on_delete=django.db.models.deletion.PROTECT, to='user.student'),
         ),
         migrations.AddField(
             model_name='ttlesson',
@@ -67,58 +37,6 @@ class Migration(migrations.Migration):
             model_name='ttlesson',
             name='lesson_time_id',
             field=models.ForeignKey(db_column='lesson_time_id', on_delete=django.db.models.deletion.PROTECT, to='timetable.lessontime'),
-        ),
-        migrations.AddField(
-            model_name='studentprogress',
-            name='tt_lesson_id',
-            field=models.ForeignKey(db_column='tt_lesson_id', on_delete=django.db.models.deletion.PROTECT, to='timetable.ttlesson'),
-        ),
-        migrations.AddField(
-            model_name='studentattendance',
-            name='tt_lesson_id',
-            field=models.ForeignKey(db_column='tt_lesson_id', on_delete=django.db.models.deletion.PROTECT, to='timetable.ttlesson'),
-        ),
-        migrations.AddField(
-            model_name='homework',
-            name='day_due',
-            field=models.ForeignKey(db_column='day_due', on_delete=django.db.models.deletion.PROTECT, related_name='day_due', to='timetable.ttlesson'),
-        ),
-        migrations.AddField(
-            model_name='homework',
-            name='day_given',
-            field=models.ForeignKey(db_column='day_given', on_delete=django.db.models.deletion.PROTECT, related_name='day_given', to='timetable.ttlesson'),
-        ),
-        migrations.AddConstraint(
-            model_name='finalgrade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_5__lte', 5)), name='timetable_finalgrade_mark_scale_5_lte_5'),
-        ),
-        migrations.AddConstraint(
-            model_name='finalgrade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_100__lte', 100)), name='timetable_finalgrade_mark_scale_100_lte_100'),
-        ),
-        migrations.AddConstraint(
-            model_name='finalgrade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_word__in', ['отлично', 'хорошо', 'удовлетворительно', 'неудовлетворительно'])), name='timetable_finalgrade_mark_scale_word_correct'),
-        ),
-        migrations.AddConstraint(
-            model_name='finalgrade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_letter__in', ['A', 'B', 'C', 'D', 'E', 'F'])), name='timetable_finalgrade_mark_scale_letter_correct'),
-        ),
-        migrations.AddConstraint(
-            model_name='grade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_5__lte', 5)), name='timetable_grade_mark_scale_5_lte_5'),
-        ),
-        migrations.AddConstraint(
-            model_name='grade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_100__lte', 100)), name='timetable_grade_mark_scale_100_lte_100'),
-        ),
-        migrations.AddConstraint(
-            model_name='grade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_word__in', ['отлично', 'хорошо', 'удовлетворительно', 'неудовлетворительно'])), name='timetable_grade_mark_scale_word_correct'),
-        ),
-        migrations.AddConstraint(
-            model_name='grade',
-            constraint=models.CheckConstraint(check=models.Q(('scale_letter__in', ['A', 'B', 'C', 'D', 'E', 'F'])), name='timetable_grade_mark_scale_letter_correct'),
         ),
         migrations.AddConstraint(
             model_name='ttlesson',

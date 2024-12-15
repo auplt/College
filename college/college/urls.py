@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('curriculum/', include('curriculum.urls', namespace='curriculum')),
     path('group/', include('group.urls', namespace='group')),
+    path('progress/', include('progress.urls', namespace='progress')),
     path('timetable/', include('timetable.urls', namespace='timetable')),
     path('user/', include('user.urls', namespace='user'))
 ]

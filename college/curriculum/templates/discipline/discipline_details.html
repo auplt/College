@@ -16,7 +16,7 @@
   {% with request.path as this_url %}
     {% get_url_params request as url_params %}
     {% if url_params %}
-    {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
+      {% change_query_string this_url|add_str:"?"|add_str:url_params as this_url %}
     {% endif %}
     {# Including page title #}
     {% original_query_string next_url as next_url %}

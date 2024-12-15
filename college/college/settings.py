@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'user.apps.UserConfig',
     'curriculum.apps.CurriculumConfig',
     'group.apps.GroupConfig',
+    'progress.apps.ProgressConfig',
     'timetable.apps.TimeTableConfig',
     'formset',
     'django.contrib.admin',
@@ -73,6 +74,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
     'computed_property',
 ]
 

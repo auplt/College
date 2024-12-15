@@ -26,53 +26,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Coefficient',
-            fields=[
-                ('coefficient_id', models.AutoField(primary_key=True, serialize=False)),
-                ('coef_num', models.PositiveSmallIntegerField()),
-                ('description', models.CharField(max_length=64)),
-            ],
-            options={
-                'db_table': 'coefficients',
-            },
-        ),
-        migrations.CreateModel(
-            name='File',
-            fields=[
-                ('file_id', models.AutoField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=64)),
-                ('description', models.CharField(blank=True, max_length=2048)),
-                ('file', models.BinaryField()),
-            ],
-            options={
-                'db_table': 'files',
-            },
-        ),
-        migrations.CreateModel(
-            name='Grade',
-            fields=[
-                ('grade_id', models.AutoField(primary_key=True, serialize=False)),
-                ('scale_5', models.PositiveSmallIntegerField()),
-                ('scale_word', models.CharField(max_length=32)),
-                ('scale_100', models.PositiveSmallIntegerField()),
-                ('scale_letter', models.CharField(max_length=1)),
-            ],
-            options={
-                'db_table': 'grades',
-            },
-        ),
-        migrations.CreateModel(
-            name='Homework',
-            fields=[
-                ('hw_id', models.AutoField(primary_key=True, serialize=False)),
-                ('description', models.CharField(max_length=2048)),
-                ('hw_type', models.PositiveSmallIntegerField()),
-            ],
-            options={
-                'db_table': 'homeworks',
-            },
-        ),
-        migrations.CreateModel(
             name='LessonTime',
             fields=[
                 ('lesson_id', models.AutoField(primary_key=True, serialize=False)),
@@ -85,25 +38,6 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='StudentAttendance',
-            fields=[
-                ('attendance_id', models.AutoField(primary_key=True, serialize=False)),
-                ('is_present', models.BooleanField()),
-            ],
-            options={
-                'db_table': 'students_attendances',
-            },
-        ),
-        migrations.CreateModel(
-            name='StudentProgress',
-            fields=[
-                ('progress_id', models.AutoField(primary_key=True, serialize=False)),
-            ],
-            options={
-                'db_table': 'students_progresses',
-            },
-        ),
-        migrations.CreateModel(
             name='TTLesson',
             fields=[
                 ('tt_lesson_id', models.AutoField(primary_key=True, serialize=False)),
@@ -113,21 +47,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 'db_table': 'tt_lessons',
-            },
-        ),
-        migrations.CreateModel(
-            name='FinalGrade',
-            fields=[
-                ('final_grade_id', models.AutoField(primary_key=True, serialize=False)),
-                ('is_final', models.BooleanField()),
-                ('scale_100', models.PositiveSmallIntegerField()),
-                ('scale_5', computed_property.fields.ComputedIntegerField(compute_from='calc_scale_5', editable=False)),
-                ('scale_word', computed_property.fields.ComputedTextField(compute_from='calc_scale_word', editable=False, max_length=128)),
-                ('scale_letter', computed_property.fields.ComputedCharField(compute_from='calc_scale_letter', editable=False, max_length=1)),
-                ('curriculum_id', models.ForeignKey(db_column='curriculum_id', on_delete=django.db.models.deletion.PROTECT, to='curriculum.curriculum')),
-            ],
-            options={
-                'db_table': 'final_grades',
             },
         ),
     ]

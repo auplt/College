@@ -26,7 +26,6 @@ class ClassroomRegisterForm(forms.ModelForm):
 
 
 # LESSON FORMS FORMS
-
 class LessonTimeRegisterForm(forms.ModelForm):
     name = forms.CharField(label=False,
                            widget=forms.TextInput(attrs={
@@ -52,7 +51,6 @@ class LessonTimeRegisterForm(forms.ModelForm):
 
 
 # TIMETABLE LESSON FORMS
-
 class TTLessonRegisterForm(forms.ModelForm):
     date = forms.DateField(label=False, input_formats=['%d.%m.%Y'], required=True,
                            widget=forms.TextInput(attrs={
