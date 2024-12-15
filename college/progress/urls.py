@@ -11,6 +11,4 @@ app_name = 'progress'
 register_converter(DateConverter, 'date')
 
 urlpatterns = [
-    path('student_attendance/choose', views.student_attendance_choose, name='student_attendance_choose'),
-    path('student_attendance/edit/<int:curriculum_lesson_id>', views.student_attendance_edit, name='student_attendance_edit')
 ]

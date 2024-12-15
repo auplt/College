@@ -1,11 +1,12 @@
 """
-Models for timetable app.
+Models for progress app.
 """
 
 from math import floor
 from computed_property import ComputedTextField, ComputedIntegerField, ComputedCharField
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 
 from user.models import Student
@@ -15,7 +16,7 @@ from timetable.models import TTLesson
 
 class StudentAttendance(models.Model):
     attendance_id = models.AutoField(primary_key=True)
-    is_present = models.BooleanField()
+    is_present = models.BooleanField(default=True)
     tt_lesson_id = models.ForeignKey(TTLesson, on_delete=models.PROTECT, db_column='tt_lesson_id')
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
 
@@ -26,11 +27,16 @@ class StudentAttendance(models.Model):
 class File(models.Model):
     file_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64)
-    description = models.CharField(max_length=2048, blank=True)
+    description = models.CharField(max_length=2048, blank=True, null=True)
     file = models.BinaryField()
 
     class Meta:
         db_table = 'files'
+
+
+class TypesOfHomework(models.TextChoices):
+    INDIVIDUAL = "IND", _("Индивидуальное")
+    GROUP = "GRP", _("Групповое")
 
 
 class Homework(models.Model):
@@ -38,10 +44,11 @@ class Homework(models.Model):
     description = models.CharField(max_length=2048)
     day_given = models.ForeignKey(TTLesson, on_delete=models.PROTECT, related_name='day_given', db_column='day_given')
     day_due = models.ForeignKey(TTLesson, on_delete=models.PROTECT, related_name='day_due', db_column='day_due')
-    hw_type = models.PositiveSmallIntegerField()
-    student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
-
-    file_id = models.ForeignKey(File, on_delete=models.PROTECT, db_column='file_id')
+    hw_type = models.CharField(max_length=3,
+                                choices=TypesOfHomework.choices
+                                )
+    student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id', blank=True, null=True)
+    file_id = models.ForeignKey(File, on_delete=models.PROTECT, db_column='file_id', blank=True, null=True)
 
     class Meta:
         db_table = 'homeworks'
@@ -54,13 +61,22 @@ class GradesScaleWord:
     UNSATISFYING = "неудовлетворительно"
 
 
+class TypesOfFinalGrade(models.TextChoices):
+    EXAM = "EXM", _("экзамен")
+    CREDIT = "CRD", _("зачёт")
+    SEMESTR1 = "SEM1", _("1 полусеместр")
+    SEMESTR2 = "SEM2", _("2 полусеместр")
+
+
 class FinalGrade(models.Model):
     final_grade_id = models.AutoField(primary_key=True)
-    is_final = models.BooleanField()
+    grade_type = models.CharField(max_length=4,
+                                   choices=TypesOfFinalGrade.choices
+                                   )
     scale_100 = models.PositiveSmallIntegerField()
-    scale_5 = ComputedIntegerField(compute_from='calc_scale_5')
-    scale_word = ComputedTextField(max_length=128, compute_from='calc_scale_word')
-    scale_letter = ComputedCharField(max_length=1, compute_from='calc_scale_letter')
+    scale_5 = models.PositiveSmallIntegerField()
+    scale_word = models.CharField(max_length=32)
+    scale_letter = models.CharField(max_length=1)
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
     curriculum_id = models.ForeignKey(Curriculum, on_delete=models.PROTECT, db_column='curriculum_id')
 
@@ -144,7 +160,7 @@ class Grade(models.Model):
     scale_word = models.CharField(max_length=32)
     scale_100 = models.PositiveSmallIntegerField()
     scale_letter = models.CharField(max_length=1)
-    coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id')
+    coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id', default=1)
 
     @property
     def calc_scale_5(self):

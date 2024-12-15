@@ -12,8 +12,8 @@ class MarksAdminSite(admin.ModelAdmin):
     Class for custom configuration for models.
     """
     model = FinalGrade
-    fields = ['is_final', 'scale_100']
-    list_display = ('is_final', 'scale_100', 'scale_5', 'scale_word', 'scale_letter')
+    fields = ['grade_type', 'scale_100']
+    list_display = ('grade_type', 'scale_100', 'scale_5', 'scale_word', 'scale_letter')
 
 
 admin.site.register(FinalGrade, MarksAdminSite)
