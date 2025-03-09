@@ -74,9 +74,9 @@ class FinalGrade(models.Model):
                                    choices=TypesOfFinalGrade.choices
                                    )
     scale_100 = models.PositiveSmallIntegerField()
-    scale_5 = models.PositiveSmallIntegerField()
-    scale_word = models.CharField(max_length=32)
-    scale_letter = models.CharField(max_length=1)
+    scale_5 = ComputedIntegerField(compute_from='calc_scale_5')
+    scale_word = ComputedTextField(max_length=32, compute_from='calc_scale_word')
+    scale_letter = ComputedCharField(max_length=1, compute_from='calc_scale_letter')
     student_id = models.ForeignKey(Student, on_delete=models.PROTECT, db_column='student_id')
     curriculum_id = models.ForeignKey(Curriculum, on_delete=models.PROTECT, db_column='curriculum_id')
 
@@ -156,10 +156,10 @@ class Coefficient(models.Model):
 
 class Grade(models.Model):
     grade_id = models.AutoField(primary_key=True)
-    scale_5 = models.PositiveSmallIntegerField()
-    scale_word = models.CharField(max_length=32)
     scale_100 = models.PositiveSmallIntegerField()
-    scale_letter = models.CharField(max_length=1)
+    scale_5 = ComputedIntegerField(compute_from='calc_scale_5')
+    scale_word = ComputedTextField(max_length=32, compute_from='calc_scale_word')
+    scale_letter = ComputedCharField(max_length=1, compute_from='calc_scale_letter')
     coefficient_id = models.ForeignKey(Coefficient, on_delete=models.PROTECT, db_column='coefficient_id', default=1)
 
     @property

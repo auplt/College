@@ -11,4 +11,5 @@ app_name = 'progress'
 register_converter(DateConverter, 'date')
 
 urlpatterns = [
+    path('homeworks/edit/<int:hw_id>', views.homeworks_edit, name='homeworks_edit'),
 ]

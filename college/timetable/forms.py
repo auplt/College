@@ -25,7 +25,7 @@ class ClassroomRegisterForm(forms.ModelForm):
         fields = ['number', 'description']
 
 
-# LESSON FORMS FORMS
+# LESSON TIME FORMS
 class LessonTimeRegisterForm(forms.ModelForm):
     name = forms.CharField(label=False,
                            widget=forms.TextInput(attrs={

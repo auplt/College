@@ -20,6 +20,14 @@ from user_customuser tc
 where gm.group_semester_id = 3
 order by gm.group_semester_id, tc.last_name, tc.first_name, tc.second_name;
 
+-- СПИСОК РЕДМЕТОВ ГРУППЫ В АЛФАВИТНОМ ПОРЯДКЕ
+select  d."name" 
+from group_semesters gs 
+	inner join curriculums c on c.group_semester_id = gs.group_semester_id
+	inner join disciplines d on c.discipline_id = d.discipline_id 
+where gs.group_semester_id = 6
+order by d."name";
+
 
 -- удаление любимой БДшки :((
 SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity
